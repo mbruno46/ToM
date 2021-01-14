@@ -59,12 +59,16 @@ body {
   width: 40%;
   height: 100%;
   border-left: 1px solid black;
+  display: flex;
+  flex-flow: column;
 }
 
 .viewer {
   width: 40%;
   height: 100%;
   border-left: 1px solid black;
+  display: flex;
+  flex-flow: column;
 }
 
 .toolbar {
@@ -80,11 +84,17 @@ body {
   overflow-y: scroll;
 }
 
-.viewer-pdf {
-  height: 100%;
+.editor-inner {
   flex-grow: 1;
+}
+
+.viewer-pdf {
+  flex-grow: 1;
+  height: 100%;
   overflow: scroll;
   background-color:  var(--base3);
+  display: flex;
+  flex-flow: column;
 }
 
 /* Style buttons */
@@ -107,14 +117,15 @@ body {
 
 
 .page-div {
-  width: 100%;
   align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
-.page-canvas {
+.page-canvas{
   width: 90%;
-  height: 90%;
-  padding: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
 }
 
 /* file tree instructions */

@@ -11,6 +11,7 @@ function createPage(num) {
 
   var page = document.createElement('div');
   page.setAttribute('class','page-div');
+  page.setAttribute('style','width: 100%;');
 
   var canvas = document.createElement('canvas');
   canvas.setAttribute('id',num);
@@ -31,7 +32,7 @@ function loadPage(num) {
 
   // Fetch the page
   pdf.getPage(num).then(function(page) {
-    var scale = 1.0;
+    var scale = 5.0;
     var viewport = page.getViewport({scale: scale});
 
     // Prepare canvas using PDF page dimensions
@@ -69,3 +70,23 @@ function refreshViewer() {
     alert(reason);
   });
 };
+
+function zoom(sign) {
+  var pages = document.getElementsByClassName("page-div");
+
+  var w = parseInt(pages[0].style.width,10);
+  w += sign * 10;
+  if (w<100) {
+    p = (100-w)/2;
+  }
+  else {
+    p = 0;
+  }
+
+  var i;
+  for (i=0; i<pages.length; i++) {
+    pages[i].style.width = w +'%';
+    pages[i].style.paddingLeft = p + '%';
+    pages[i].style.paddingRight = p + '%';
+  }
+}
