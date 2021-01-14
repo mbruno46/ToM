@@ -14,7 +14,7 @@ const {dialog} = require('electron').remote;
 // fires up browser with current working directory
 const app = require('electron').remote.app;
 //fireBrowser(app.getAppPath());
-fireBrowser("/Users/mbruno/Physics/jura/src/cm");
+fireBrowser("/Users/mbruno/Physics/talks/valencia_19");
 
 setViewerPDF("/Users/mbruno/Physics/talks/soton_20/soton20-bruno.pdf");
 refreshViewer();

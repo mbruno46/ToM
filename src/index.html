@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>jura</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
     <link rel="stylesheet" href="index.css">
+
+    <!-- icons -->
+    <link rel="stylesheet" href="css/mfglabs_iconset.css">
 
     <script src="cm/codemirror.js"></script>
     <link rel="stylesheet" href="cm/codemirror.css">
@@ -14,23 +17,39 @@
   <body>
     <div id="header" class="header">
       <h3>Jura: A simple tex editor for the everyday CERN physicist.</h3>
-      <button id="open" class="button">Open</button>
     </div>
 
     <div class="container">
 
       <div class="browser">
-        <div class="toolbar"></div>
-        <ul id="filetree"></ul>
+        <div class="toolbar">
+          <button id="open" class="btn">
+            <i class="icon-file_open"></i>
+          </button>
+          <button id="new-file" class="btn">
+            <i class="icon-sheet"></i>
+          </button>
+        </div>
+        <div class="browser-inner">
+          <ul id="filetree"></ul>
+        </div>
       </div>
 
       <div class="editor">
-        <div class="toolbar"></div>
+        <div class="toolbar">
+        </div>
         <textarea id="editor" style="height: 100%"></textarea>
       </div>
 
       <div id="viewer" class="viewer">
-        <div class="toolbar"></div>
+        <div class="toolbar">
+          <button id="zoom_in" class="btn">
+            <i class="icon-magnifying_plus"></i>
+          </button>
+          <button id="zoom_out" class="btn">
+            <i class="icon-magnifying_minus"></i>
+          </button>
+        </div>
         <div id="viewer-pdf" class="viewer-pdf" style="width: 100%"></div>
       </div>
     </div>
