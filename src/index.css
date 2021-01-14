@@ -40,9 +40,12 @@ body {
 .viewer {
   width: 40%;
   height: 100%;
-  overflow: scroll;
-  /* background: SlateGray; */
   border-left: 1px solid black;
+}
+
+.viewer-pdf {
+  height: 100%;
+  overflow: scroll;
 }
 
 .toolbar {
