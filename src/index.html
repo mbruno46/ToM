@@ -2,11 +2,45 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>jura</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="index.css">
+
+    <script src="cm/codemirror.js"></script>
+    <link rel="stylesheet" href="cm/codemirror.css">
+    <script src="cm/stex.js"></script>
+
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <div id="header" class="header">
+      <h3>Jura: A simple tex editor for the everyday CERN physicist.</h3>
+      <button id="open" class="button">Open</button>
+    </div>
+
+    <div class="container">
+
+      <div class="browser">
+        <div class="toolbar"></div>
+        <ul id="filetree"></ul>
+      </div>
+
+      <div class="editor">
+        <div class="toolbar"></div>
+        <textarea id="editor" style="height: 100%"></textarea>
+      </div>
+
+      <div id="viewer" class="viewer">
+        <div class="toolbar"></div>
+        <div id="viewer-pdf" class="viewer-pdf" style="width: 100%"></div>
+      </div>
+    </div>
+
+    <div class="footer">Copyright Mattia Bruno 2020</div>
+
+    <script src="filetree.js"></script>
+    <script src="editor.js"></script>
+    <script src="viewer.js"></script>
+    <!-- <script>require('./renderer.js');</script> -->
+    <script src="renderer.js"></script>
   </body>
 </html>
