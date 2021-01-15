@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <title>jura</title>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <!-- icons -->
     <link rel="stylesheet" href="css/mfglabs_iconset.css">
-
-    <script src="cm/codemirror.js"></script>
-    <link rel="stylesheet" href="cm/codemirror.css">
-    <script src="cm/stex.js"></script>
 
   </head>
   <body>
@@ -39,8 +35,11 @@
         <div class="toolbar">
           <div id="file-name" class="file-name">empty</div>
         </div>
-        <div class="editor-inner">
-          <textarea id="editor" style="height: 100%"></textarea>
+        <div id="editor-inner" class="editor-inner">
+          <!-- <textarea id="editor" style="height: 100%"></textarea> -->
+          function foo() {
+            return 'ciao';
+          }
         </div>
       </div>
 
@@ -61,12 +60,13 @@
     </div>
 
     <div class="footer">Copyright Mattia Bruno 2020</div>
-    
-    <script src="filetree.js"></script>
-    <script src="editor.js"></script>
-    <script src="viewer.js"></script>
+
+    <!-- <script src="filetree.js"></script> -->
+    <!-- <script src="editor.js"></script> -->
+    <!-- <script src="viewer.js"></script> -->
     <!-- <script>require('./renderer.js');</script> -->
-    <script src="compiler.js"></script>
+    <!-- <script src="compiler.js"></script> -->
+    <script src="../public/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="renderer.js"></script>
   </body>
 </html>
