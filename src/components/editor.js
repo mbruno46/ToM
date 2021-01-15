@@ -3,8 +3,9 @@ const fs = require('electron').remote.require('fs');
 var editor = ace.edit("editor-inner");
 
 function setupEditor() {
-  editor.setTheme("ace/theme/monokai");
-  editor.session.setMode("ace/mode/javascript");
+  editor.setTheme("ace/theme/dracula");
+  editor.session.setMode("ace/mode/latex");
+  
 };
 
 function loadFile(fname) {
