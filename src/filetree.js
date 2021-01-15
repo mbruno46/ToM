@@ -1,5 +1,9 @@
-const fs = require('electron').remote.require('fs');
+const {remote} = require('electron');
 const pathlib = require('path');
+const fs = remote.require('fs');
+const { Menu, MenuItem } = require('electron').remote;
+
+var project = null;
 
 class FileTree {
   constructor(path, name = null){
@@ -56,7 +60,10 @@ function fillBrowser(ft, ul) {
     li.appendChild(subul);
   }
   else {
-    span.setAttribute("class", "file")
+    span.setAttribute("class", "file");
+    span.setAttribute("path", ft.path);
+    span.setAttribute('id',ft.name);
+
     span.addEventListener("click", function(ev) {
       // ev.preventDefault();
       var ext = ft.path.substring(ft.path.lastIndexOf('.')+1);
@@ -72,7 +79,31 @@ function fillBrowser(ft, ul) {
 
           codemirror.setValue(data);
       });
+
+      var filename = document.getElementById('file-name');
+      filename.innerHTML = ft.name;
+
+      // console.log(ev.target.getAttribute('path'))
     });
+
+    span.addEventListener("contextmenu", (ev) => {
+      ev.preventDefault();
+
+      const menu = new Menu();
+      var ext = ft.path.substring(ft.path.lastIndexOf('.')+1);
+      if (ext == "tex") {
+        menu.append(new MenuItem({label: 'Set Main',
+          click: function() {
+            alert(ft.path);
+          }
+        }));
+        menu.append(new MenuItem({type: 'separator'}));
+      }
+      menu.append(new MenuItem({label: 'Rename'}));
+      
+      menu.popup({ window: remote.getCurrentWindow() });
+    });
+
     li.appendChild(span);
   }
 
@@ -96,4 +127,6 @@ function fireBrowser(directory) {
   ft.build();
 
   fillBrowser(ft, ul);
+
+  project = directory;
 };
