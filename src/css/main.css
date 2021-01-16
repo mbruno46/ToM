@@ -157,7 +157,7 @@ li {
   color: var(--yellow);
   display: inline-block;
   margin-right: 6px;
-  width: 12px;
+  width: 1rem;
   text-align: center;
 }
 
@@ -190,6 +190,14 @@ li {
   color: var(--green);
   display: inline-block;
   margin-right: 6px;
+}
+
+.main::after {
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f031";
+  color: var(--red);
+  display: inline-block;
+  margin-left: 6px;
 }
 
 .selected {

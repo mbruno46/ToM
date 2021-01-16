@@ -1,22 +1,87 @@
-const { Menu, MenuItem } = require('electron').remote;
-// const {FileTree} = require('./components/filetree.js');
 const {FileTree} = require('./filetree.js');
 const {loadFile} = require('./editor.js');
+const {FileMenu} = require('./menu.js');
 
-var project = null;
+var exts = ["tex", "bib", "pdf"];
 
-function fillBrowser(ft, ul) {
+function keepFile(ext) {
+  var i;
+  for (i=0;i<exts.length;i++) {
+    if (ext == exts[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+function createFolder(name, path) {
   var li = document.createElement("li");
   var span = document.createElement("span");
-  span.textContent = ft.name;
+  span.textContent = name;
 
+  span.setAttribute("class","arrow");
+  span.setAttribute("path", path);
+
+  span.addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("arrow-down");
+  });
+  li.appendChild(span);
+  return li;
+}
+
+
+function createFile(name, path, ext) {
+  var li = document.createElement("li");
+  var span = document.createElement("span");
+  span.textContent = name;
+
+  span.classList.add("file");
+  if (ext=="pdf") {
+    span.classList.add("image");
+  }
+  else {
+    span.classList.add("text");
+    span.addEventListener("click", (ev) => {
+      loadFile(span.getAttribute("path"));
+      deselectAllFiles();
+      span.parentElement.classList.add("selected");
+    });
+    span.addEventListener("contextmenu", (ev) => {
+      ev.preventDefault();
+      const menu = FileMenu(ev.target, ext);
+      menu.popup({ window: remote.getCurrentWindow() });
+    })
+  }
+  span.setAttribute("path", path);
+
+  li.appendChild(span);
+  return li;
+}
+
+
+function deselectAllFiles() {
+  const text_files = document.getElementsByClassName("text");
+  var j;
+  for (j=0;j<text_files.length;j++) {
+    text_files[j].parentElement.classList.remove("selected");
+  }
+}
+
+
+function unsetBrowserMain() {
+  const text_files = document.getElementsByClassName("text");
+  var j;
+  for (j=0;j<text_files.length;j++) {
+    text_files[j].classList.remove("main");
+  }
+}
+
+
+function fillBrowser(ft, ul) {
   if (ft.items.length > 0) {
-    span.setAttribute("class","arrow");
-    span.addEventListener("click", function() {
-      this.parentElement.querySelector(".nested").classList.toggle("active");
-      this.classList.toggle("arrow-down");
-    });    
-    li.appendChild(span)
+    var li = createFolder(ft.name);
 
     var subul = document.createElement("ul");
     subul.setAttribute("class", "nested");
@@ -29,43 +94,11 @@ function fillBrowser(ft, ul) {
     li.appendChild(subul);
   }
   else {
-    span.setAttribute("class", "file");
-    span.setAttribute("path", ft.path);
-
-    span.addEventListener("click", function(ev) {
-      // ev.preventDefault();
-      var ext = ft.path.substring(ft.path.lastIndexOf('.')+1);
-      if (ext != "tex" && ext != "bib") {
-        return;
-      }
-
-      loadFile(ft.path);
-
-      var filename = document.getElementById('file-name');
-      filename.innerHTML = ft.name;
-
-      // console.log(ev.target.getAttribute('path'))
-    });
-
-    span.addEventListener("contextmenu", (ev) => {
-      ev.preventDefault();
-
-      const menu = new Menu();
-      var ext = ft.path.substring(ft.path.lastIndexOf('.')+1);
-      if (ext == "tex") {
-        menu.append(new MenuItem({label: 'Set Main',
-          click: function() {
-            alert(ft.path);
-          }
-        }));
-        menu.append(new MenuItem({type: 'separator'}));
-      }
-      menu.append(new MenuItem({label: 'Rename'}));
-
-      menu.popup({ window: remote.getCurrentWindow() });
-    });
-
-    li.appendChild(span);
+    var ext = ft.name.substring(ft.name.lastIndexOf('.')+1);
+    if (!keepFile(ext)) {
+      return;
+    }
+    var li = createFile(ft.name, ft.path, ext);
   }
 
   ul.appendChild(li);
@@ -89,8 +122,9 @@ function fireBrowser(directory) {
 
   fillBrowser(ft, ul);
 
-  project = directory;
+  ul.setAttribute("project-path",directory);
 };
 
-exports.fireBrowser = fireBrowser;
-exports.project = project;
+
+exports.fireBrowser = fireBrowser
+exports.unsetBrowserMain = unsetBrowserMain

@@ -7,14 +7,14 @@ const {fireBrowser} = require('./components/browser.js');
 //fireBrowser(app.getAppPath());
 fireBrowser("/Users/mbruno/Physics/talks/valencia_19");
 
-const {setViewerPDF, refreshViewer, zoom} = require('./components/viewer.js');
+const {zoom} = require('./components/viewer.js');
 
-setViewerPDF("/Users/mbruno/Physics/talks/soton_20/soton20-bruno.pdf");
-refreshViewer();
+//setViewerPDF("/Users/mbruno/Physics/talks/soton_20/soton20-bruno.pdf");
+//refreshViewer();
 
 const {compile} = require('./components/compiler.js');
 
-const {setupEditor} = require('./components/editor.js');
+const {setupEditor, loadFile} = require('./components/editor.js');
 setupEditor();
 
 const open = document.getElementById('open');
