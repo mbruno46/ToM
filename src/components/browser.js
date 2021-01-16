@@ -11,11 +11,11 @@ function fillBrowser(ft, ul) {
   span.textContent = ft.name;
 
   if (ft.items.length > 0) {
-    span.setAttribute("class", "arrow");
+    span.setAttribute("class","arrow");
     span.addEventListener("click", function() {
       this.parentElement.querySelector(".nested").classList.toggle("active");
       this.classList.toggle("arrow-down");
-    });
+    });    
     li.appendChild(span)
 
     var subul = document.createElement("ul");

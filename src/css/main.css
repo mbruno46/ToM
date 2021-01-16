@@ -67,6 +67,7 @@ body {
   background-color: var(--bg);
   color: var(--fg);
   overflow-y: scroll;
+  font-size: 14px;
 }
 
 .editor-inner {
@@ -125,7 +126,7 @@ body {
 /* file tree instructions */
 /* Remove default bullets */
 ul, #filetree {
-  padding-left: 1.5rem;
+  padding-left: 1rem;
   list-style-type: none;
 }
 
@@ -152,15 +153,17 @@ li {
 .arrow::before {
   /* content: "\25B6"; */
   font-family: 'mfg_labs_iconsetregular';
-  content: "\f006  \f068";
+  content: "\f006";
   color: var(--yellow);
   display: inline-block;
   margin-right: 6px;
+  width: 12px;
+  text-align: center;
 }
 
 .arrow-down::before {
-  content: "\f004  \f068";
-  /* transform: rotate(90deg); */
+  content: "\f004";
+  /* \2002\f086 */
 }
 
 /* Hide the nested list */
@@ -173,11 +176,26 @@ li {
   display: block;
 }
 
+.folder::before {
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f068";
+  color: var(--yellow);
+  display: inline-block;
+  margin-right: 6px;
+}
+
 .file::before {
   font-family: 'mfg_labs_iconsetregular';
   content: "\f04a";
   color: var(--green);
   display: inline-block;
   margin-right: 6px;
-  text-indent: 6px;
+}
+
+.selected {
+  background-color: var(--line);
+}
+
+.deselected {
+  background-color: var(--bg);
 }
