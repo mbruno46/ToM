@@ -29,6 +29,20 @@ open.onclick = e => {
   });
 };
 
+const fold_browser = document.getElementById('fold-browser');
+const unfold_browser = document.getElementById('unfold-browser');
+const browser = document.getElementById('browser');
+const container = document.getElementById('container');
+fold_browser.onclick = e => {
+  browser.classList.add("disappear");
+  container.classList.add("width-100");
+};
+
+unfold_browser.onclick = e => {
+  browser.classList.remove("disappear");
+  container.classList.remove("width-100");  
+};
+
 const zoom_in = document.getElementById('zoom_in');
 zoom_in.onclick = ev => {
   zoom(+1);

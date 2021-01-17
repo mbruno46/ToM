@@ -1,0 +1,95 @@
+.browser-inner {
+  flex-grow: 1;
+  background-color: var(--bg);
+  color: var(--fg);
+  overflow-y: scroll;
+  font-size: 14px;
+}
+
+.browser-top-toolbar {width: 100%}
+.browser-bottom-toolbar {width: 100%}
+
+/* file tree instructions */
+/* Remove default bullets */
+ul, #filetree {
+  padding-left: 1rem;
+  list-style-type: none;
+}
+
+li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px;
+}
+
+/* Remove margins and padding from the parent ul */
+#filetree {
+  margin: 0;
+  padding: 0.5rem;
+  width: 90%;
+}
+
+.arrow, .file {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* create arrow */
+.arrow::before {
+  /* content: "\25B6"; */
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f006";
+  color: var(--yellow);
+  display: inline-block;
+  margin-right: 6px;
+  width: 1rem;
+  text-align: center;
+}
+
+.arrow-down::before {
+  content: "\f004";
+  /* \2002\f086 */
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the arrow (with JavaScript) */
+.active {
+  display: block;
+}
+
+.folder::before {
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f068";
+  color: var(--yellow);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.file::before {
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f04a";
+  color: var(--green);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.main::after {
+  font-family: 'mfg_labs_iconsetregular';
+  content: "\f031";
+  color: var(--red);
+  display: inline-block;
+  margin-left: 6px;
+}
+
+.selected {
+  background-color: var(--line);
+}
+
+.deselected {
+  background-color: var(--bg);
+}

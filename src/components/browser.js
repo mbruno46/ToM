@@ -1,6 +1,7 @@
 const {FileTree} = require('./filetree.js');
 const {loadFile} = require('./editor.js');
 const {FileMenu} = require('./menu.js');
+const {firePreview} = require('./preview.js');
 
 var exts = ["tex", "bib", "pdf"];
 
@@ -40,6 +41,9 @@ function createFile(name, path, ext) {
   span.classList.add("file");
   if (ext=="pdf") {
     span.classList.add("image");
+    span.addEventListener("click", (ev) => {
+      firePreview(span.getAttribute("path"));
+    });    
   }
   else {
     span.classList.add("text");

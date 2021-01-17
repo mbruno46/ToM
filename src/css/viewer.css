@@ -1,0 +1,28 @@
+.viewer {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  border-left: 1px solid var(--comment);
+}
+
+.viewer-pdf {
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+  display: flex;
+  flex-flow: column;
+}
+
+.page-div {
+  align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.page-canvas{
+  width: 90%;
+  padding-left: 5%;
+  padding-right: 5%;
+}

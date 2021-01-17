@@ -1,0 +1,19 @@
+.editor {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  border-right: 4px solid var(--bg);
+}
+
+.editor-inner {
+  flex-grow: 1;
+  width: 100%;
+}
+
+.file-name {
+  text-align: center;
+  width: 100%;
+  line-height: 50px;
+  vertical-align: middle;
+}
