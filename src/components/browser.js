@@ -3,6 +3,7 @@ const {loadFile} = require('./editor.js');
 const {FileMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
 
+var padding_step = 0.8;
 var exts = ["tex", "bib", "pdf"];
 
 function keepFile(ext) {
@@ -16,8 +17,9 @@ function keepFile(ext) {
 }
 
 
-function createFolder(name, path) {
+function createFolder(name, path, padding_) {
   var li = document.createElement("li");
+  li.style.padding = '4px 0 4px ' + padding_ + 'rem';
   var span = document.createElement("span");
   span.textContent = name;
 
@@ -33,8 +35,10 @@ function createFolder(name, path) {
 }
 
 
-function createFile(name, path, ext) {
+function createFile(name, path, ext, padding_) {
   var li = document.createElement("li");
+  li.style.padding = '4px 0 4px ' + padding_ + 'rem';
+
   var span = document.createElement("span");
   span.textContent = name;
 
@@ -43,7 +47,7 @@ function createFile(name, path, ext) {
     span.classList.add("image");
     span.addEventListener("click", (ev) => {
       firePreview(span.getAttribute("path"));
-    });    
+    });
   }
   else {
     span.classList.add("text");
@@ -83,16 +87,16 @@ function unsetBrowserMain() {
 }
 
 
-function fillBrowser(ft, ul) {
+function fillBrowser(ft, ul, padding_) {
   if (ft.items.length > 0) {
-    var li = createFolder(ft.name);
+    var li = createFolder(ft.name, ft.path, padding_);
 
     var subul = document.createElement("ul");
     subul.setAttribute("class", "nested");
 
     var i;
     for (i=0; i<ft.items.length; i++) {
-      fillBrowser(ft.items[i], subul);
+      fillBrowser(ft.items[i], subul, padding_ + padding_step);
     };
 
     li.appendChild(subul);
@@ -102,7 +106,7 @@ function fillBrowser(ft, ul) {
     if (!keepFile(ext)) {
       return;
     }
-    var li = createFile(ft.name, ft.path, ext);
+    var li = createFile(ft.name, ft.path, ext, padding_);
   }
 
   ul.appendChild(li);
@@ -124,7 +128,7 @@ function fireBrowser(directory) {
   var ft = new FileTree(directory, name);
   ft.build();
 
-  fillBrowser(ft, ul);
+  fillBrowser(ft, ul, padding_step);
 
   ul.setAttribute("project-path",directory);
 };

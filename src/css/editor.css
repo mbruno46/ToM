@@ -11,9 +11,24 @@
   width: 100%;
 }
 
-.file-name {
+.tab-head {
+  background-color: var(--bg);
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+  width: max-content;
   text-align: center;
-  width: 100%;
-  line-height: 50px;
+  padding: 8px;
+  display: inline-block;
+  align-self: flex-end;
+}
+
+.editor-tab-text {
+  padding: 12px;
   vertical-align: middle;
+  display: inline-block;
+}
+
+.editor-tab-btn {
+  vertical-align: middle;
+  display: inline-block;
 }

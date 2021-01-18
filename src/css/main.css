@@ -14,9 +14,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--comment);
+  background-color: var(--scrollbar);
   border-radius: 10px;
-
 }
 
 ::-webkit-scrollbar {
@@ -57,17 +56,16 @@ body {
 
 .disappear {display: none;}
 .width-100 {width: 100%;}
-/* .width-80 {width: 80%;} */
 
 .toolbar {
   width: 100%;
   min-height: 64px;
-  background-color: var(--comment);
+  background-color: var(--bg);
 }
 
 /* Style buttons */
 .btn {
-  background-color: var(--comment);
+  background-color: var(--bg);
   border: 0px;
   /* border: var(--line) solid 2px; */ */
   border-radius: 4px;
@@ -82,5 +80,5 @@ body {
 
 /* Darker background on mouse-over */
 .btn:hover {
-  background-color: var(--bg);
+  background-color: var(--comment);
 }

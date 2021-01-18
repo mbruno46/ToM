@@ -1,0 +1,12 @@
+/* color scheme Spacegray Oceanic Dark
+https://github.com/kkga/spacegray
+*/
+
+:root {
+  --bg: rgb(28,31,38);
+  --bg1: rgb(43, 48, 59);
+  --fg: rgb(101, 115, 127);
+  --selected: rgb(223, 225, 232);
+  --line: rgb(51, 61, 70);
+  --scrollbar: rgb(52, 61, 70);
+}

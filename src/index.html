@@ -5,10 +5,13 @@
     <title>jura</title>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"> -->
     <link rel="stylesheet" href="css/main.css">
+
     <link rel="stylesheet" href="css/browser.css">
     <link rel="stylesheet" href="css/editor.css">
     <link rel="stylesheet" href="css/viewer.css">
-    <link rel="stylesheet" href="css/dracula.css">
+
+    <!-- <link rel="stylesheet" href="css/dracula.css"> -->
+    <link rel="stylesheet" href="css/dark.css">
 
     <!-- icons -->
     <link rel="stylesheet" href="css/mfglabs_iconset.css">
@@ -42,30 +45,41 @@
       <div id="container" class="container width-80">
 
         <div class="editor">
-          <div class="toolbar">
+          <div style="width: 100%">
             <button id="unfold-browser" class="btn float-left">
               <i class="icon-step_forward"></i>
             </button>
-            <div id="file-name" class="file-name">empty</div>
           </div>
+          <div id="editor-tab" class="tab-head">
+            <button id="save" class="btn editor-tab-btn">
+              <i class="icon-plus"></i>
+            </button>
+            <span class="editor-tab-text" style="padding: 12px; vertical-align:middle;
+">prova.tex</span>
+          </div>
+
           <div id="editor-inner" class="editor-inner"></div>
         </div>
 
         <div id="viewer" class="viewer">
-          <div class="toolbar">
-            <button id="compile" class="btn">
-              <i class="icon-refresh"></i>
-            </button>
-            <button id="zoom_in" class="btn">
-              <i class="icon-magnifying_plus"></i>
-            </button>
-            <button id="zoom_out" class="btn">
-              <i class="icon-magnifying_minus"></i>
-            </button>
-            <button id="settings" class="btn">
-              <i class="icon-settings"></i>
-            </button>
+          <div class="viewer-top-div">
+            <div id="editor-tab" class="tab-head">
+              <button id="compile" class="btn">
+                <i class="icon-refresh"></i>
+              </button>
+              <button id="zoom_in" class="btn">
+                <i class="icon-magnifying_plus"></i>
+              </button>
+              <button id="zoom_out" class="btn">
+                <i class="icon-magnifying_minus"></i>
+              </button>
+              <button id="settings" class="btn">
+                <i class="icon-settings"></i>
+              </button>
+            </div>
           </div>
+          <!-- <div class="toolbar">
+          </div> -->
           <div id="viewer-pdf" class="viewer-pdf"></div>
         </div>
       </div>

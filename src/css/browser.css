@@ -1,33 +1,32 @@
-.browser-inner {
-  flex-grow: 1;
-  background-color: var(--bg);
-  color: var(--fg);
-  overflow-y: scroll;
-  font-size: 14px;
-}
-
 .browser-top-toolbar {width: 100%}
 .browser-bottom-toolbar {width: 100%}
 
+.browser-inner {
+  flex-grow: 1;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  font-size: 0.8rem;
+}
+
 /* file tree instructions */
 /* Remove default bullets */
-ul, #filetree {
-  padding-left: 1rem;
+ul {
   list-style-type: none;
+  padding: 0;
+  display: inline-flex; /* adapts width to fit its content */
 }
 
 li {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  width: 100%;
   white-space: nowrap;
-  padding: 4px;
 }
 
 /* Remove margins and padding from the parent ul */
 #filetree {
   margin: 0;
-  padding: 0.5rem;
-  width: 90%;
+  padding: 0.5rem 0.5rem 0.5rem 0;
 }
 
 .arrow, .file {
@@ -88,8 +87,10 @@ li {
 
 .selected {
   background-color: var(--line);
+  color: var(--selected);
 }
 
 .deselected {
   background-color: var(--bg);
+  color: var(--fg);
 }
