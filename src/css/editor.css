@@ -6,9 +6,10 @@
   border-right: 4px solid var(--bg);
 }
 
-.editor-inner {
-  flex-grow: 1;
+.code-editor {
   width: 100%;
+  background-color: var(--bg1);
+  color: var(--selected);
 }
 
 .tab-head {

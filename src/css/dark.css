@@ -8,5 +8,8 @@ https://github.com/kkga/spacegray
   --fg: rgb(101, 115, 127);
   --selected: rgb(223, 225, 232);
   --line: rgb(51, 61, 70);
-  --scrollbar: rgb(52, 61, 70);
+  --green: #a3be8c;
+  --yellow: #ebcb8b;
+  --red: #bf616a;
+  --pink: #b48ead;
 }

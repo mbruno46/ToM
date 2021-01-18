@@ -1,11 +1,20 @@
 const fs = require('electron').remote.require('fs');
+const {SimpleCode} = require('./simplecode.js');
 
-var editor = ace.edit("editor-inner");
+// var editor = ace.edit("editor-inner");
+//
+// function setupEditor() {
+//   editor.setTheme("ace/theme/dracula");
+//   editor.session.setMode("ace/mode/latex");
+//
+// };
+
+// var editor = document.getElementById('code-editor');
+
+let sc = SimpleCode(document.getElementById('code-editor'));
 
 function setupEditor() {
-  editor.setTheme("ace/theme/dracula");
-  editor.session.setMode("ace/mode/latex");
-  
+  return;
 };
 
 function loadFile(fname) {
@@ -15,7 +24,7 @@ function loadFile(fname) {
           return;
       }
 
-      editor.setValue(data);
+      sc.setValue(data);
   });
 }
 
