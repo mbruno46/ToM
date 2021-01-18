@@ -5,7 +5,7 @@ const {fireBrowser} = require('./components/browser.js');
 
 // fires up browser with current working directory
 //fireBrowser(app.getAppPath());
-fireBrowser("/Users/mbruno/Physics/talks/valencia_19");
+fireBrowser("./dummy");
 
 const {zoom} = require('./components/viewer.js');
 
@@ -40,7 +40,7 @@ fold_browser.onclick = e => {
 
 unfold_browser.onclick = e => {
   browser.classList.remove("disappear");
-  container.classList.remove("width-100");  
+  container.classList.remove("width-100");
 };
 
 const zoom_in = document.getElementById('zoom_in');

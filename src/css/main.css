@@ -13,14 +13,22 @@ body {
   /* display: flex; */
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar);
-  border-radius: 10px;
+::-webkit-scrollbar {
+    width: 12px;
 }
 
-::-webkit-scrollbar {
-    width: 6px;
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar);
+  border: 4px solid transparent;
+  border-radius: 8px;
+  background-clip: content-box;
 }
+
+::-webkit-scrollbar-button, ::-webkit-scrollbar-corner {
+  display: none;
+}
+
+
 
 .float-right {float: right;}
 .float-left {float: left;}

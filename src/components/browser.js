@@ -19,7 +19,11 @@ function keepFile(ext) {
 
 function createFolder(name, path, padding_) {
   var li = document.createElement("li");
-  li.style.padding = '4px 0 4px ' + padding_ + 'rem';
+  // li.style.padding = '4px 0 4px ' + padding_ + 'rem';
+  var span_pad = document.createElement('span');
+  span_pad.style.padding = '0 0 0 ' + padding_ + 'rem';
+  li.appendChild(span_pad);
+
   var span = document.createElement("span");
   span.textContent = name;
 
@@ -37,7 +41,10 @@ function createFolder(name, path, padding_) {
 
 function createFile(name, path, ext, padding_) {
   var li = document.createElement("li");
-  li.style.padding = '4px 0 4px ' + padding_ + 'rem';
+  // li.style.padding = '4px 0 4px ' + padding_ + 'rem';
+  var span_pad = document.createElement('span');
+  span_pad.style.padding = '0 0 0 ' + padding_ + 'rem';
+  li.appendChild(span_pad);
 
   var span = document.createElement("span");
   span.textContent = name;
