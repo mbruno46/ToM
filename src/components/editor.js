@@ -28,5 +28,18 @@ function loadFile(fname) {
   });
 }
 
+function saveCurrentFile() {
+  let data = sc.getValue();
+  let fname = document.getElementById('editor-filename').getAttribute("path");
+  if (fname == null) {return;}
+  
+  fs.writeFile(fname, data, 'utf-8', (err) => {
+    if (err) {
+      alert(`The file could not be saved\n${err}`);
+    }
+  });
+}
+
 exports.loadFile = loadFile;
 exports.setupEditor = setupEditor;
+exports.saveCurrentFile = saveCurrentFile;

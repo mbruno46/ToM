@@ -39,6 +39,7 @@ function SimpleCode(editor) {
   const options = Object.assign({ tab: 4, indentOn: /{$/, spellcheck: false, addClosing: true });
 
   let ln = init(editor);
+  let changed = false;
 
   // short-cut
   const on = (type, fn) => {
@@ -63,13 +64,6 @@ function SimpleCode(editor) {
         insert(' '.repeat(options.tab));
       }
     }
-  });
-
-  on("keypress", event => {
-    if (event.defaultPrevented)
-      return;
-    // keypress ignores CTRL, etc.. so highlight
-    // makes sense here
   });
 
   on("keyup", event => {
@@ -157,6 +151,9 @@ function SimpleCode(editor) {
       editor.textContent = text;
       highlight();
       ln.refreshLineNumbers(getNumberOfLines());
+    },
+    getValue() {
+      return editor.textContent;
     }
   }
 }

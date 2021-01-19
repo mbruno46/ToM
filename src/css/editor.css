@@ -45,12 +45,7 @@
   text-align: center;
 }
 
-.editor-tab-text {
-  vertical-align: middle;
-  display: inline-block;
-}
-
-.editor-tab-btn {
+.editor-filename {
   vertical-align: middle;
   display: inline-block;
 }

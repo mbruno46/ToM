@@ -14,7 +14,7 @@ const {zoom} = require('./components/viewer.js');
 
 const {compile} = require('./components/compiler.js');
 
-const {setupEditor, loadFile} = require('./components/editor.js');
+const {setupEditor, loadFile, saveCurrentFile} = require('./components/editor.js');
 setupEditor();
 
 const open = document.getElementById('open');
@@ -55,5 +55,28 @@ zoom_out.onclick = ev => {
 
 const compile_btn = document.getElementById('compile');
 compile_btn.onclick = ev => {
+  save();
   compile();
+}
+
+function save() {
+  saveCurrentFile();
+  const fn = document.getElementById('editor-filename');
+  fn.textContent = fn.textContent.replace(" *","");
+}
+
+const save_btn = document.getElementById('save');
+save_btn.onclick = ev => {
+  save
+}
+
+const editor = document.getElementById('code-editor');
+editor.onkeypress = ev => {
+  if (ev.defaultPrevented)
+    return;
+  // keypress ignores CTRL, etc.. so chenged makes sense here
+  const fn = document.getElementById('editor-filename');
+  if (fn.textContent.split('*').length == 1) {
+    fn.textContent = fn.textContent + ' *';
+  }
 }

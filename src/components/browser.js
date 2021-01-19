@@ -65,6 +65,10 @@ function createFile(name, path, ext, padding_) {
         current[0].classList.toggle("file-selected");
       }
       span.parentElement.classList.toggle("file-selected");
+
+      const fn = document.getElementById('editor-filename');
+      fn.textContent = span.textContent;
+      fn.setAttribute("path",span.getAttribute("path"));      
     });
     span.addEventListener("contextmenu", (ev) => {
       ev.preventDefault();

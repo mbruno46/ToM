@@ -26,9 +26,9 @@ function compile() {
     if (err != null) {
       alert(`exec error: ${err}`);
     }
+    refreshViewer();
   });
 
-  refreshViewer();
 };
 
 exports.compile = compile;
