@@ -4,7 +4,8 @@ https://github.com/kkga/spacegray
 
 :root {
   --bg: rgb(28,31,38);
-  --bg-transparent: rgb(28,31,38,0.5);
+  --bg0: rgb(35, 40, 48);
+  /* --bg-transparent: rgb(28,31,38,0.5); */
   --bg1: rgb(43, 48, 59);
   --fg: rgb(101, 115, 127);
   --selected: rgb(223, 225, 232);

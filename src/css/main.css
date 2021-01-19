@@ -14,11 +14,12 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+  height: 12px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--line);
+  background-color: var(--fg);
   border: 4px solid transparent;
   border-radius: 8px;
   background-clip: content-box;
@@ -35,8 +36,9 @@ body {
 
 .footer {
   width: 100%;
-  height: 3rem;
-  background-color: red;
+  height: 2rem;
+  padding: 0.5rem;
+  background-color: var(--bg);
 }
 
 .row::after {
@@ -59,7 +61,7 @@ body {
   height: calc(100vh - 3rem);
   display: flex;
   flex-flow: column;
-  border-right: 1px solid var(--comment);
+  border-right: 1px solid var(--line);
 }
 
 .disappear {display: none;}
@@ -77,16 +79,21 @@ body {
   border: 0px;
   /* border: var(--line) solid 2px; */ */
   border-radius: 4px;
-  color: var(--cyan);
+  color: var(--fg);
   font-size: 20px;
   margin: auto;
   width: 38px;
   height: 38px;
   cursor: pointer; /* Mouse pointer on hover */
   display: inline-block;
+  outline: none;
 }
 
 /* Darker background on mouse-over */
 .btn:hover {
-  background-color: var(--comment);
+  background-color: var(--line);
+}
+
+.btn:active {
+  color: var(--selected);
 }

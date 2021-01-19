@@ -60,8 +60,11 @@ function createFile(name, path, ext, padding_) {
     span.classList.add("text");
     span.addEventListener("click", (ev) => {
       loadFile(span.getAttribute("path"));
-      deselectAllFiles();
-      span.parentElement.classList.add("selected");
+      const current = document.getElementsByClassName("file-selected");
+      if (current && current[0]) {
+        current[0].classList.toggle("file-selected");
+      }
+      span.parentElement.classList.toggle("file-selected");
     });
     span.addEventListener("contextmenu", (ev) => {
       ev.preventDefault();
@@ -73,24 +76,6 @@ function createFile(name, path, ext, padding_) {
 
   li.appendChild(span);
   return li;
-}
-
-
-function deselectAllFiles() {
-  const text_files = document.getElementsByClassName("text");
-  var j;
-  for (j=0;j<text_files.length;j++) {
-    text_files[j].parentElement.classList.remove("selected");
-  }
-}
-
-
-function unsetBrowserMain() {
-  const text_files = document.getElementsByClassName("text");
-  var j;
-  for (j=0;j<text_files.length;j++) {
-    text_files[j].classList.remove("main");
-  }
 }
 
 
@@ -142,4 +127,3 @@ function fireBrowser(directory) {
 
 
 exports.fireBrowser = fireBrowser
-exports.unsetBrowserMain = unsetBrowserMain

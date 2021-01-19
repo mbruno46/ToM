@@ -60,7 +60,7 @@ function refreshViewer() {
   pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
     pdf = pdfDoc_;
     var i;
-    for (i=1; i< pdf.numPages; i++) {
+    for (i=1; i< pdf.numPages+1; i++) {
       loadPage(i);
     };
   }, function (reason) {

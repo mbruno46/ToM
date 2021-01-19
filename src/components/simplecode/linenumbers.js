@@ -1,7 +1,7 @@
 function LineNumbers(css) {
   let line_number_selected = 0;
 
-  const gutter = document.createElement('div');
+  const gutter = document.getElementById('gutter');
   gutter.classList.add('gutter');
 
   // Copy editor styles
@@ -10,8 +10,8 @@ function LineNumbers(css) {
   gutter.style.lineHeight = css.lineHeight
   // gutter.style.paddingTop = css.paddingTop
   // gutter.style.paddingLeft = css.paddingLeft
-  gutter.style.borderTopLeftRadius = css.borderTopLeftRadius
-  gutter.style.borderBottomLeftRadius = css.borderBottomLeftRadius
+  gutter.style.borderTopLeftRadius = css.borderTopRightRadius
+  gutter.style.borderBottomLeftRadius = css.borderBottomRightRadius
 
 
   function addLine() {

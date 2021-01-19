@@ -4,12 +4,13 @@
   display: flex;
   flex-flow: column;
   border-left: 1px solid var(--comment);
+  background-color: var(--bg0);
 }
 
 .viewer-top-div {
   width: 100%;
   /* height: 72px; */
-  background-color: var(--line);
+  background-color: var(--bg);
   text-align: center;
   /* display: flex; */
   /* flex-flow: row; */
@@ -18,6 +19,7 @@
 
 .viewer-pdf {
   flex-grow: 1;
+  background-color: var(--bg0);
   height: 100%;
   width: 100%;
   overflow: scroll;

@@ -24,38 +24,15 @@ function init(editor) {
 
   const css = getComputedStyle(editor);
 
-  const wrap = document.createElement("div")
-  // wrap.className = opts.wrapClass
-  // wrap.style.position = "relative";
-  wrap.style.display = "flex";
-  wrap.style.width = "100%";
-  wrap.style.height = "100%";
-  wrap.style.overflowY = "scroll";
-
-  let ln = LineNumbers(css);
-  wrap.appendChild(ln.gutter);
-
   let isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
   editor.setAttribute("contentEditable", isFirefox ? "true" : "plaintext-only");
   // editor.setAttribute("spellcheck", options.spellcheck ? "true" : "false");
-  editor.style.outline = "none";
-  editor.style.overflowWrap = "break-word";
-  // editor.style.overflowY = "auto";
-  editor.style.whiteSpace = "pre-wrap"; //preserve \t when innerHTML
-  editor.style.whiteSpace = "pre-line"; // preserve \n new line
 
-  editor.style.minHeight = '100%';
-  editor.style.height = "max-content";
   editor.textContent = "\n";
-
   editor.style.borderTopLeftRadius = 0
   editor.style.borderBottomLeftRadius = 0
 
-  // Swap editor with a wrap
-  editor.parentNode.insertBefore(wrap, editor);
-  wrap.appendChild(editor);
-
-  return ln;
+  return LineNumbers(css);
 }
 
 function SimpleCode(editor) {

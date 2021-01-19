@@ -1,7 +1,10 @@
-.browser-top-toolbar {width: 100%}
-.browser-bottom-toolbar {width: 100%}
+.browser-top-toolbar, .browser-bottom-toolbar {
+  background-color: var(--bg);
+  width: 100%;
+}
 
 .browser-inner {
+  background-color: var(--bg0);
   flex-grow: 1;
   overflow-y: scroll;
   overflow-x: scroll;
@@ -72,19 +75,14 @@ li {
 
 .main::after {
   font-family: 'mfg_labs_iconsetregular';
-  font-size: 1rem;  
+  font-size: 1rem;
   content: "\f031";
   color: var(--red);
   display: inline-block;
   margin-left: 6px;
 }
 
-.selected {
+.file-selected {
   background-color: var(--line);
   color: var(--selected);
-}
-
-.deselected {
-  background-color: var(--bg);
-  color: var(--fg);
 }

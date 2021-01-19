@@ -26,46 +26,46 @@
           <button id="open" class="btn">
             <i class="icon-file_open"></i>
           </button>
-          <button id="fold-browser" class="btn float-right">
-            <i class="icon-step_backward"></i>
-          </button>
-
-        </div>
-        <div class="browser-inner">
-          <ul id="filetree"></ul>
-        </div>
-        <div class="browser-bottom-toolbar">
           <button id="new" class="btn">
             <i class="icon-plus"></i>
           </button>
           <button id="delete" class="btn">
             <i class="icon-minus"></i>
           </button>
+          <button id="fold-browser" class="btn float-right">
+            <i class="icon-chevron_left"></i>
+          </button>
+        </div>
+
+        <div class="browser-inner">
+          <ul id="filetree"></ul>
         </div>
       </div>
 
       <div id="container" class="container width-80">
 
         <div class="editor">
-          <div style="width: 100%">
+          <div class="editor-top-div">
             <button id="unfold-browser" class="btn float-left">
-              <i class="icon-step_forward"></i>
+              <i class="icon-chevron_right"></i>
             </button>
-          </div>
-          <div id="editor-tab" class="tab-head">
             <button id="save" class="btn editor-tab-btn">
               <i class="icon-plus"></i>
             </button>
-            <span class="editor-tab-text" style="padding: 12px; vertical-align:middle;
-">prova.tex</span>
+            <span class="editor-tab-text">prova.tex</span>
           </div>
 
-          <div id="code-editor" class="code-editor"></div>
+          <div id="wrap" class="wrap">
+            <div id="gutter"></div>
+            <!-- <div class="code-editor-overflow-x"> -->
+              <div id="code-editor" class="code-editor"></div>
+            <!-- </div> -->
+          </div>
         </div>
 
         <div id="viewer" class="viewer">
           <div class="viewer-top-div">
-            <div id="editor-tab" class="tab-head">
+            <!-- <div id="editor-tab" class="tab-head"> -->
               <button id="compile" class="btn">
                 <i class="icon-refresh"></i>
               </button>
@@ -78,7 +78,7 @@
               <button id="settings" class="btn">
                 <i class="icon-settings"></i>
               </button>
-            </div>
+            <!-- </div> -->
           </div>
           <!-- <div class="toolbar">
           </div> -->

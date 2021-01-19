@@ -16,8 +16,10 @@ function compile() {
     return;
   }
 
-  var project = document.getElementById('filetree').getAttribute("project-path");
-  cmd = 'cd ' + project +'; latexmk -pdf valencia_19.tex';
+  // var project = document.getElementById('filetree').getAttribute("project-path");
+  var workdir = maintex.substring(0,maintex.lastIndexOf('/'));
+  cmd = 'cd ' + workdir +'; latexmk -pdf -f -g ' + maintex;
+
   var run = exec(cmd, (err, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);

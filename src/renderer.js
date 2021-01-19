@@ -5,7 +5,7 @@ const {fireBrowser} = require('./components/browser.js');
 
 // fires up browser with current working directory
 //fireBrowser(app.getAppPath());
-fireBrowser("./dummy");
+fireBrowser("/Users/mbruno/Physics/jura/dummy");
 
 const {zoom} = require('./components/viewer.js');
 

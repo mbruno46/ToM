@@ -8,7 +8,10 @@ function FileMenu(target, ext) {
     menu.append(new MenuItem({label: 'Set Main',
       click: () => {
         setMain(target.getAttribute("path"));
-        //unsetBrowserMain();
+        const current = document.getElementsByClassName("main");
+        if (current && current[0]) {
+          current[0].classList.toggle("main");
+        }
         target.classList.add("main");
       }
     }));
