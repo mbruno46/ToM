@@ -48,6 +48,9 @@ function init(editor) {
   editor.style.height = "max-content";
   editor.textContent = "\n";
 
+  editor.style.borderTopLeftRadius = 0
+  editor.style.borderBottomLeftRadius = 0
+
   // Swap editor with a wrap
   editor.parentNode.insertBefore(wrap, editor);
   wrap.appendChild(editor);
@@ -137,8 +140,7 @@ function SimpleCode(editor) {
     if (padding == 0) {return;}
 
     const len = Math.min(options.tab, padding);
-    let idx = editor.textContent.indexOf(before);
-
+    let idx = pos - before.length;
     editor.textContent = editor.textContent.substring(0, idx) +
       editor.textContent.substring(idx + len);
     setCursor(editor, pos-len);

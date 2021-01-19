@@ -3,14 +3,19 @@
   height: 100%;
   display: flex;
   flex-flow: column;
-  border-right: 4px solid var(--bg);
+  border-right: 4px solid white;
 }
 
 .code-editor {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  letter-spacing: normal;
+  line-height: 24px;  
   width: 100%;
   background-color: var(--bg1);
   color: var(--selected);
   padding-left: 0.5rem;
+  border-radius: 12px;
 }
 
 .tab-head {
