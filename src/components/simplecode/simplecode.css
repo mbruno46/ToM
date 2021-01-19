@@ -1,0 +1,23 @@
+
+.gutter {
+  min-width: 2rem;
+  min-height: 100%;
+  height: max-content;
+  background-color: var(--bg1);
+  opacity: 0.5;
+  margin: 0;
+  display: flex;
+  flex-flow: column;
+
+}
+
+.line-number {
+  padding: 0 0.5rem 0 0.5rem;
+  width: 100%;
+  color: var(--fg);
+  text-align: right;
+}
+
+.line-number-selected {
+  background-color: var(--line);
+}

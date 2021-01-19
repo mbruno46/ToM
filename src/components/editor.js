@@ -1,5 +1,5 @@
 const fs = require('electron').remote.require('fs');
-const {SimpleCode} = require('./simplecode.js');
+const {SimpleCode} = require('./simplecode/simplecode.js');
 
 // var editor = ace.edit("editor-inner");
 //
