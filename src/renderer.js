@@ -65,11 +65,6 @@ function save() {
   fn.textContent = fn.textContent.replace(" *","");
 }
 
-const save_btn = document.getElementById('save');
-save_btn.onclick = ev => {
-  save
-}
-
 const editor = document.getElementById('code-editor');
 editor.onkeypress = ev => {
   if (ev.defaultPrevented)

@@ -10,15 +10,23 @@ function lineBeforeCursor(editor) {
   return line.substring(line.lastIndexOf('\n')+1);
 }
 
+// get absolute position in text of selected area by cursor
 function getCursor(editor) {
   if (editor.textContent == "") {
     return 0;
   }
   let r0 = document.getSelection().getRangeAt(0);
   let r = r0.cloneRange();
+
   r.selectNodeContents(editor);
   r.setEnd(r0.endContainer, r0.endOffset);
-  return r.toString().length;
+  let end = r.toString().length;
+
+  r.selectNodeContents(editor);
+  r.setEnd(r0.startContainer, r0.startOffset);
+  let start = r.toString().length;
+
+  return [start, end];
 }
 
 function setCursor(editor, pos) {
@@ -55,8 +63,14 @@ function setCursor(editor, pos) {
   }
 
   const s = document.getSelection();
-  let cursor = findNodeFromPos(editor, pos);
-  s.setBaseAndExtent(cursor[0], cursor[1], cursor[0], cursor[1]);
+  let cursor = findNodeFromPos(editor, pos[0]);
+  if (pos[1] == pos[0]) {
+    s.setBaseAndExtent(cursor[0], cursor[1], cursor[0], cursor[1]);
+  }
+  else {
+    let cursor2 = findNodeFromPos(editor, pos[1]);
+    s.setBaseAndExtent(cursor[0], cursor[1], cursor2[0], cursor2[1]);
+  }
 }
 
 exports.lineBeforeCursor = lineBeforeCursor;

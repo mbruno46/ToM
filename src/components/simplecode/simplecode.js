@@ -70,6 +70,13 @@ function SimpleCode(editor) {
         insert(' '.repeat(options.tab));
       }
     }
+    if (event.key == "/") {
+      // Ctrl+C or Cmd+C pressed?
+      if ((event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        commentCursorLine();
+      }
+    }
   });
 
   on("keyup", event => {
@@ -117,20 +124,21 @@ function SimpleCode(editor) {
     if (padding == 0) {return;}
 
     const len = Math.min(options.tab, padding);
-    let idx = pos - before.length;
+    let idx = pos[1] - before.length;
     editor.textContent = editor.textContent.substring(0, idx) +
       editor.textContent.substring(idx + len);
-    setCursor(editor, pos-len);
+    setCursor(editor, [pos[0]-len,pos[1]-len]);
   }
 
-  function commentLine() {
+  function commentCursorLine() {
     let before = lineBeforeCursor(editor);
     let pos = getCursor(editor);
-    let idx = pos - before.length;
+    let idx = pos[1] - before.length;
+    console.log('here ',pos, before.length);
 
-    setCursor(editor, idx);
+    setCursor(editor, [idx, idx]);
     insert('% ');
-    setCursor(editor, pos);
+    setCursor(editor, [pos[0]+2, pos[1]+2]);
   }
 
   function insert(text) {
