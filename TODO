@@ -1,0 +1,30 @@
+Bugs
+- refreshViewer creates new pages, but does not delete old ones if document shrinks
+
+Features
+- add key combo Cmd+S and Cmd+R or T? for save and compile (and corresponding entries in edit menu)
+- add key combo Cmd+/ for comment (and corresponding entry in edit menu)
+- add support for create/delete file
+- add support for rename
+- set main automatic if single tex file
+- auto detect \documentclass for setmain (modulo comments)
+
+- redo main menu on macbook bar
+  - add edit features mentioned above
+
+- add storing system to json files
+
+- preferences:
+  - latex engine
+  - editor font size
+
+- on exit: store last project, last main, last editor file + widths
+
+- status bar:
+  - compilation success/error msg
+  - button for opening log of compilation
+
+
+Autocompletion
+- make it modular, use Json file to store trigger and choices
+- start simple, if text before cursor =\begin{e then popup choices with equation

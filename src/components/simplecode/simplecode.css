@@ -1,3 +1,19 @@
+.hlight-comment {
+  color: var(--cyan);
+}
+.hlight-command {
+  color: var(--green);
+}
+.hlight-curly-bracket {
+  color: var(--pink);
+}
+.hlight-square-bracket {
+  color: var(--red);
+}
+
+.hlight-comment * {
+  color: inherit;
+}
 
 .gutter {
   min-width: 2rem;

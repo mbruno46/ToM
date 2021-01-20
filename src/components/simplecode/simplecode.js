@@ -12,10 +12,16 @@ function loadCSS() {
 }
 
 function highlighter(text) {
-  text = text
-    .replace(/(\\\w+)/g,'<font style="color: var(--green)">$1</font>')
-    .replace(/\{(\w+?)\}/g,'{<font style="color: var(--pink)">$1</font>}')
-    .replace(/\[(\w+?)\]/g,'[<font style="color: var(--red)">$1</font>]')
+  // https://regex101.com/r/uF4oY4/1
+  var replacements = new Map([
+    [/(%.*)/g, '<span class="hlight-comment">$1</span>'],
+    [/(\\\w+)/g,'<span class="hlight-command">$1</span>'],
+    [/\{(\w+?)\}/g, '{<span class="hlight-curly-bracket">$1</span>}'],
+    [/\[(\w+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
+    ])
+  replacements.forEach(function(value, key) {
+    text = text.replace(key, value);
+  });
   return text;
 }
 
@@ -115,6 +121,16 @@ function SimpleCode(editor) {
     editor.textContent = editor.textContent.substring(0, idx) +
       editor.textContent.substring(idx + len);
     setCursor(editor, pos-len);
+  }
+
+  function commentLine() {
+    let before = lineBeforeCursor(editor);
+    let pos = getCursor(editor);
+    let idx = pos - before.length;
+
+    setCursor(editor, idx);
+    insert('% ');
+    setCursor(editor, pos);
   }
 
   function insert(text) {
