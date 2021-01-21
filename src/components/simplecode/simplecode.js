@@ -55,7 +55,7 @@ function SimpleCode(editor) {
   on("keydown", event => {
     // enter button, we prevent default behavior, since we insert
     // line break manually
-    if (event.keyCode == 13) {
+    if (event.key == "Enter") {
       event.returnValue = newLine();
     }
     // tab key
@@ -77,14 +77,20 @@ function SimpleCode(editor) {
         addrmTextBeginningSelection("% ", /(^\s*)%\s?/, 'auto');
       }
     }
-    highlight();
   });
+
+  on("keypress", event => {
+    event.preventDefault();
+    insert(event.key);
+  })
 
   on("keyup", event => {
     if (event.defaultPrevented)
       return;
     if (event.isComposing)
       return;
+    if (editor.textContent == "")
+      editor.textContent += '\n';
     highlight();
     ln.refreshLineNumbers(getNumberOfLines());
   })
@@ -94,16 +100,16 @@ function SimpleCode(editor) {
     let pos = c.getSelection();
 
     let tmp = editor.textContent.substring(c.line_pos[0]).match(/(^ *)(\\begin\{\w+\})?/);
-    console.log(tmp);
     var padding = tmp[1].length;
     if (tmp[2]) {padding += options.tab;}
 
+    insert('\n');
     if (padding > 0) {
-      insert('\n' + ' '.repeat(padding));
-      return false;
+      insert(' '.repeat(padding));
     }
-    else
-      return true;
+    return false;
+    // else
+      // return true;
     // var line = getCurrentLine();
     // if (line.indexOf('\\begin') > -1) {
     //   let latex = line.replace(/\\begin\{(\w+?)(\b)\}/g,'$1');
@@ -174,11 +180,7 @@ function SimpleCode(editor) {
 
   function getNumberOfLines() {
     const text = editor.textContent;
-    let h = text.replace(/\n$/, "\n").split("\n");
-    if (h[h.length-1] == "" && h[h.length-2] == "") {
-      return h.length-1;
-    }
-    return h.length;
+    return text.split("\n").length-1;
   }
 
   return {
