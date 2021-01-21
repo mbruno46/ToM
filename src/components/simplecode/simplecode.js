@@ -59,24 +59,25 @@ function SimpleCode(editor) {
       newLine(event);
     }
     // tab key
-    if (event.keyCode == 9) {
+    if (event.key == "Tab") {
       event.preventDefault();
+      regex = new RegExp(`^\\s{0,${options.tab}}()`);
       if (event.shiftKey) {
         event.preventDefault();
-        dedent();
-        highlight();
+        addrmTextBeginningSelection(" ".repeat(options.tab), regex, 'rm');
       }
       else {
-        insert(' '.repeat(options.tab));
+        addrmTextBeginningSelection(" ".repeat(options.tab), regex, 'add');
       }
     }
     if (event.key == "/") {
       // Ctrl+C or Cmd+C pressed?
       if ((event.ctrlKey || event.metaKey)) {
         event.preventDefault();
-        commentCursorLine();
+        addrmTextBeginningSelection("% ", /(^\s*)%\s?/, 'auto');
       }
     }
+    highlight();
   });
 
   on("keyup", event => {
@@ -108,46 +109,38 @@ function SimpleCode(editor) {
     // }
   }
 
-  function dedent() {
-    let before = lineBeforeCursor(editor);
-    if (before.length == 0) {return;}
 
-    let pos = getCursor(editor);
-    var padding;
-    if (before.trim().length == 0) {
-      padding = before.length;
-    }
-    else {
-      padding = before.indexOf(before.trim());
-    }
-
-    if (padding == 0) {return;}
-
-    const len = Math.min(options.tab, padding);
-    let idx = pos[1] - before.length;
-    editor.textContent = editor.textContent.substring(0, idx) +
-      editor.textContent.substring(idx + len);
-    setCursor(editor, [pos[0]-len,pos[1]-len]);
-  }
-
-  function commentCursorLine() {
+  function addrmTextBeginningSelection(text, regex, addrm) {
     let c = Cursor(editor);
     let pos = c.getSelection();
 
     var i;
+    var rm = 0;
+    if (addrm == 'auto') {
+      for (i=0;i<c.line_pos.length;i++) {
+        if (editor.textContent.substring(c.line_pos[i]).match(regex) != null) {
+          rm += 1;
+        }
+      }
+    }
+    if (addrm == 'rm') {
+      rm = c.line_pos.length;
+    }
+
     var shift = 0;
     for (i=0;i<c.line_pos.length;i++) {
-      if (editor.textContent.substring(c.line_pos[i] + shift).match(/^\s*%/) == null) {
+      if (rm != c.line_pos.length) {
         c.setCaret(c.line_pos[i] + shift);
-        insert('% ');
-        shift += 2;
-        pos[1] += 2;
-        if (i==0) {pos[0]+=2;}
+        insert(text);
+        shift += text.length;
+        // pos[1] += text.length;
+        if (i==0) {pos[0]+=text.length;}
+        if (i==c.line_pos.length-1) {pos[1] += shift;}
       }
       else {
         let ln = editor.textContent.length;
         editor.textContent = editor.textContent.substring(0,c.line_pos[i] + shift) +
-          editor.textContent.substring(c.line_pos[i]+shift).replace(/^\s*%\s?/,"");
+          editor.textContent.substring(c.line_pos[i]+shift).replace(regex,"$1");
         shift += (editor.textContent.length - ln);
         if (i==0) {pos[0] += shift;}
         if (i==c.line_pos.length-1) {pos[1] += shift;}
