@@ -1,5 +1,5 @@
 const {LineNumbers} = require('./linenumbers.js');
-const {lineBeforeCursor, getCursor, setCursor} = require('./cursor.js');
+const {Cursor, lineBeforeCursor, getCursor, setCursor} = require('./cursor.js');
 
 
 function loadCSS() {
@@ -131,14 +131,30 @@ function SimpleCode(editor) {
   }
 
   function commentCursorLine() {
-    let before = lineBeforeCursor(editor);
-    let pos = getCursor(editor);
-    let idx = pos[1] - before.length;
-    console.log('here ',pos, before.length);
+    let c = Cursor(editor);
+    let pos = c.getSelection();
 
-    setCursor(editor, [idx, idx]);
-    insert('% ');
-    setCursor(editor, [pos[0]+2, pos[1]+2]);
+    var i;
+    var shift = 0;
+    for (i=0;i<c.line_pos.length;i++) {
+      if (editor.textContent.substring(c.line_pos[i] + shift).match(/^\s*%/) == null) {
+        c.setCaret(c.line_pos[i] + shift);
+        insert('% ');
+        shift += 2;
+        pos[1] += 2;
+        if (i==0) {pos[0]+=2;}
+      }
+      else {
+        let ln = editor.textContent.length;
+        editor.textContent = editor.textContent.substring(0,c.line_pos[i] + shift) +
+          editor.textContent.substring(c.line_pos[i]+shift).replace(/^\s*%\s?/,"");
+        shift += (editor.textContent.length - ln);
+        if (i==0) {pos[0] += shift;}
+        if (i==c.line_pos.length-1) {pos[1] += shift;}
+      }
+    };
+
+    c.setSelection(pos);
   }
 
   function insert(text) {
