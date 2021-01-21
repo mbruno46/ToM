@@ -56,7 +56,7 @@ function SimpleCode(editor) {
     // enter button, we prevent default behavior, since we insert
     // line break manually
     if (event.keyCode == 13) {
-      newLine(event);
+      event.returnValue = newLine();
     }
     // tab key
     if (event.key == "Tab") {
@@ -89,19 +89,21 @@ function SimpleCode(editor) {
     ln.refreshLineNumbers(getNumberOfLines());
   })
 
-  function newLine(event) {
-    let before = lineBeforeCursor(editor);
+  function newLine() {
+    let c = Cursor(editor);
+    let pos = c.getSelection();
 
-    var padding = before.indexOf(before.trim());
-    if (before.indexOf('\\begin') > -1) {
-      padding += options.tab;
-    }
+    let tmp = editor.textContent.substring(c.line_pos[0]).match(/(^ *)(\\begin\{\w+\})?/);
+    console.log(tmp);
+    var padding = tmp[1].length;
+    if (tmp[2]) {padding += options.tab;}
 
     if (padding > 0) {
-      event.preventDefault();
       insert('\n' + ' '.repeat(padding));
+      return false;
     }
-    return;
+    else
+      return true;
     // var line = getCurrentLine();
     // if (line.indexOf('\\begin') > -1) {
     //   let latex = line.replace(/\\begin\{(\w+?)(\b)\}/g,'$1');
