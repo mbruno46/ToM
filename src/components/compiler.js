@@ -1,11 +1,7 @@
 const { exec } = require('child_process');
-const {fireBrowser} = require('./browser.js');
+// const {fireBrowser} = require('./browser.js');
+const b =  require('./browser.js'); // for some reason this works and above does not
 const { setViewerPDF, refreshViewer } = require('./viewer.js');
-
-console.log(require('./browser.js'));
-console.log(fireBrowser);
-console.log(require('./viewer.js'))
-console.log(setViewerPDF);
 
 var maintex = null;
 
@@ -32,10 +28,9 @@ function compile() {
       alert(`exec error: ${err}`);
     }
     refreshViewer();
+    // refresh browser in case pdf file was created for first time
+    b.fireBrowser();
   });
-
-  // refresh browser in case pdf file was created for first time
-  fireBrowser();
 
 };
 
