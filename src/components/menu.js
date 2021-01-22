@@ -1,6 +1,6 @@
 const { Menu, MenuItem } = require('electron').remote;
 const { setMain } = require('./compiler.js');
-const { unsetBrowserMain } = require('./browser.js');
+const fs = require('fs');
 
 function FileMenu(target, ext) {
   const menu = new Menu();
@@ -18,6 +18,23 @@ function FileMenu(target, ext) {
     menu.append(new MenuItem({type: 'separator'}));
   }
   menu.append(new MenuItem({label: 'Rename'}));
+  menu.append(new MenuItem({label: 'Delete',
+    click: () => {
+      let r = dialog.showMessageBox(null, {
+        buttons: ["Yes", "No"],
+        defaultId: 0,
+        title: "Delete file",
+        message: `Do you want to delete the file ${target.textContent}?`
+      });
+      r.then((choice) => {
+        if (choice.response==0) {
+          fs.unlinkSync(target.getAttribute("path"));
+          let p = target.parentElement;
+          p.removeChild(target);
+          p.parentElement.removeChild(p);
+        }
+      });
+    }}));
 
   return menu;
 }

@@ -1,6 +1,11 @@
 const { exec } = require('child_process');
-const { getProject } = require('./browser.js');
+const {fireBrowser} = require('./browser.js');
 const { setViewerPDF, refreshViewer } = require('./viewer.js');
+
+console.log(require('./browser.js'));
+console.log(fireBrowser);
+console.log(require('./viewer.js'))
+console.log(setViewerPDF);
 
 var maintex = null;
 
@@ -29,7 +34,11 @@ function compile() {
     refreshViewer();
   });
 
+  // refresh browser in case pdf file was created for first time
+  fireBrowser();
+
 };
+
 
 exports.compile = compile;
 exports.setMain = setMain;

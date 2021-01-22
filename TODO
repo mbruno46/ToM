@@ -1,8 +1,12 @@
 Bugs
+ - fireBrowser cannot be called in other modules?
+ - remove x scrollbar from editor when lines are short
 
 Features
-- scrollable width
+- highlight brackets that close each other..
+- find/replace
 - add key combo Cmd+R or T? for compile (and corresponding entries in edit menu)
+  - make saving optional for compilation refresh button
 - add key combo Cmd+/ for comment (and corresponding entry in edit menu)
 - add support for create/delete file
 - add support for rename

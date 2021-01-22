@@ -1,5 +1,5 @@
 const {FileTree} = require('./filetree.js');
-const {loadFile} = require('./editor.js');
+const {loadFile, saveCurrentFile} = require('./editor.js');
 const {FileMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
 
@@ -38,6 +38,13 @@ function createFolder(name, path, padding_) {
   return li;
 }
 
+const opts_dialog = {
+  type: 'question',
+  buttons: ["Yes", "No"],
+  defaultId: 0,
+  title: "Discad changes",
+  message: "Last unsaved changes will be discarded. Continue?"
+}
 
 function createFile(name, path, ext, padding_) {
   var li = document.createElement("li");
@@ -59,23 +66,35 @@ function createFile(name, path, ext, padding_) {
   else {
     span.classList.add("text");
     span.addEventListener("click", (ev) => {
-      loadFile(span.getAttribute("path"));
-      const current = document.getElementsByClassName("file-selected");
-      if (current && current[0]) {
-        current[0].classList.toggle("file-selected");
-      }
-      span.parentElement.classList.toggle("file-selected");
-
       const fn = document.getElementById('editor-filename');
-      fn.textContent = span.textContent;
-      fn.setAttribute("path",span.getAttribute("path"));      
+      if (fn.textContent.match(/ \*$/)) {
+        let r = dialog.showMessageBox(null, opts_dialog);
+        r.then((choice) => {
+          if (choice.response==0) {load();}
+        });
+      };
+      load();
+
+      function load() {
+        loadFile(span.getAttribute("path"));
+        const current = document.getElementsByClassName("file-selected");
+        if (current && current[0]) {
+          current[0].classList.toggle("file-selected");
+        }
+        span.parentElement.classList.toggle("file-selected");
+
+        fn.textContent = span.textContent;
+        fn.setAttribute("path",span.getAttribute("path"));
+      };
     });
-    span.addEventListener("contextmenu", (ev) => {
-      ev.preventDefault();
-      const menu = FileMenu(ev.target, ext);
-      menu.popup({ window: remote.getCurrentWindow() });
-    })
   }
+
+  span.addEventListener("contextmenu", (ev) => {
+    ev.preventDefault();
+    const menu = FileMenu(ev.target, ext);
+    menu.popup({ window: remote.getCurrentWindow() });
+  });
+
   span.setAttribute("path", path);
 
   li.appendChild(span);
@@ -84,28 +103,47 @@ function createFile(name, path, ext, padding_) {
 
 
 function fillBrowser(ft, ul, padding_) {
-  if (ft.items.length > 0) {
-    var li = createFolder(ft.name, ft.path, padding_);
+  var exists = -1;
 
-    var subul = document.createElement("ul");
-    subul.setAttribute("class", "nested");
+  if (ul.hasChildNodes) {
+    var i;
+    for (i=0;i<ul.children.length;i++) {
+      let span = ul.children[i].children[1];
+      let name = span.textContent;
+      let path = span.getAttribute('path');
+      if (ft.name==name && ft.path==path) {
+        exists = i;
+      }
+    }
+  };
+
+  if (ft.items.length > 0) {
+    if (exists < 0) {
+      var li = createFolder(ft.name, ft.path, padding_);
+      var subul = document.createElement("ul");
+      subul.setAttribute("class", "nested");
+      li.appendChild(subul);
+      ul.appendChild(li);
+    }
+    else {
+      var subul = ul.children[exists].children[2];
+    }
 
     var i;
     for (i=0; i<ft.items.length; i++) {
       fillBrowser(ft.items[i], subul, padding_ + padding_step);
     };
-
-    li.appendChild(subul);
   }
   else {
     var ext = ft.name.substring(ft.name.lastIndexOf('.')+1);
     if (!keepFile(ext)) {
       return;
     }
-    var li = createFile(ft.name, ft.path, ext, padding_);
+    if (exists < 0) {
+      var li = createFile(ft.name, ft.path, ext, padding_);
+      ul.appendChild(li);
+    }
   }
-
-  ul.appendChild(li);
 };
 
 
@@ -116,9 +154,20 @@ function clearBrowser(ul) {
 };
 
 
-function fireBrowser(directory) {
+function fireBrowser(directory = null) {
   ul = document.getElementById('filetree');
-  clearBrowser(ul);
+  if (directory == null) {
+    if (ul.hasAttribute('project-path')) {
+      directory = ul.getAttribute("project-path");
+    }
+    else {
+      return;
+    }
+  }
+  else {
+    // new project or forced refresh (browser will appear nested)
+    clearBrowser(ul);
+  }
 
   var name = directory.substring(directory.lastIndexOf("/")+1);
   var ft = new FileTree(directory, name);
@@ -130,4 +179,4 @@ function fireBrowser(directory) {
 };
 
 
-exports.fireBrowser = fireBrowser
+exports.fireBrowser = fireBrowser;

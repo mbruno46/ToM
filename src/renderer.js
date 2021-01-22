@@ -1,11 +1,11 @@
 const {remote} = require('electron');
+const path = require('path');
 const {dialog} = remote;
 
 const {fireBrowser} = require('./components/browser.js');
 
 // fires up browser with current working directory
 //fireBrowser(app.getAppPath());
-fireBrowser("/Users/mbruno/Physics/jura/dummy");
 
 const {zoom} = require('./components/viewer.js');
 
@@ -18,6 +18,16 @@ const {setupEditor, loadFile, saveCurrentFile} = require('./components/editor.js
 setupEditor();
 
 const {EditMenu} = require('./components/menu.js');
+
+const {Store} = require('./components/store.js');
+const prefs = new Store(path.join(__dirname,'../config'),'custom');
+
+remote.getCurrentWindow().on('close', (e) => {
+  let p = document.getElementById('filetree').getAttribute("project-path");
+  prefs.set('last-project',p);
+  prefs.dump();
+});
+
 
 const open = document.getElementById('open');
 open.onclick = e => {
@@ -62,15 +72,10 @@ zoom_out.onclick = ev => {
 
 const compile_btn = document.getElementById('compile');
 compile_btn.onclick = ev => {
-  save();
+  saveCurrentFile();
   compile();
 }
 
-function save() {
-  saveCurrentFile();
-  const fn = document.getElementById('editor-filename');
-  fn.textContent = fn.textContent.replace(" *","");
-}
 
 const editor = document.getElementById('code-editor');
 editor.onkeydown = ev => {
@@ -82,12 +87,12 @@ editor.onkeydown = ev => {
   if (ev.key == "s")
     if ((ev.ctrlKey || ev.metaKey)) {
       ev.preventDefault();
-      save();
+      saveCurrentFile();
     }
   if (ev.key == "r")
     if ((ev.ctrlKey || ev.metaKey)) {
       ev.preventDefault();
-      save();
+      saveCurrentFile();
       compile();
     }
 }
@@ -111,11 +116,14 @@ for (i=0;i<viewer_menu_content.children.length;i++) {
 }
 
 window.onclick = function(e) {
-  if (!e.target.parentElement.matches('#viewer-menu-btn')) {
+  if (!e.target.parentElement.matches('#viewer-menu-content') &&
+    !e.target.parentElement.matches('#viewer-menu-btn') &&
+    !e.target.matches('#viewer-menu-btn')) {
     if (!viewer_menu_content.classList.contains('hide'))
-      viewer_menu_content.classList.toggle('hide');
+      viewer_menu_content.classList.add('hide');
   }
 }
+
 
 function refreshWidthViewer() {
   let fw = document.getElementById('container').offsetWidth;

@@ -38,8 +38,23 @@ function saveCurrentFile() {
       alert(`The file could not be saved\n${err}`);
     }
   });
+
+  const fn = document.getElementById('editor-filename');
+  fn.textContent = fn.textContent.replace(/ *$/,"");
+}
+
+function hasDocumentClass(file) {
+  fs.readFile(fname, 'utf-8', (err, data) => {
+      if(err){
+          alert("An error ocurred reading the file :" + err.message);
+          return;
+      }
+
+      if (data.match(/^\s*\\documentclass/gm)) {return true;}
+  });
 }
 
 exports.loadFile = loadFile;
 exports.setupEditor = setupEditor;
 exports.saveCurrentFile = saveCurrentFile;
+exports.hasDocumentClass = hasDocumentClass;

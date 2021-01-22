@@ -19,13 +19,13 @@
 }
 
 .page-div {
-  align: center;
+  text-align: center;
   padding-top: 8px;
   padding-bottom: 8px;
 }
 
 .page-canvas{
-  width: 90%;
-  padding-left: 5%;
-  padding-right: 5%;
+  width: 96%;
+  padding-left: 2%;
+  padding-right: 2%;
 }
