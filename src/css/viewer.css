@@ -7,16 +7,6 @@
   background-color: var(--bg0);
 }
 
-.viewer-top-div {
-  width: 100%;
-  /* height: 72px; */
-  background-color: var(--bg);
-  text-align: center;
-  /* display: flex; */
-  /* flex-flow: row; */
-  /* align-items: center; */
-}
-
 .viewer-pdf {
   flex-grow: 1;
   background-color: var(--bg0);

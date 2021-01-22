@@ -67,10 +67,11 @@ body {
 .disappear {display: none;}
 .width-100 {width: 100%;}
 
-.toolbar {
+.topbar {
   width: 100%;
-  min-height: 64px;
+  min-height: 38px;
   background-color: var(--bg);
+  text-align: center;
 }
 
 /* Style buttons */
@@ -96,4 +97,42 @@ body {
 
 .btn:active {
   color: var(--selected);
+}
+
+/* dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  /* display: flex; */
+  position: absolute;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  background-color: inherit;
+  z-index: 1;
+  top: 100%;
+  left: -122px;
+}
+
+.dropdown-content a {
+  float: none;
+  color: var(--fg);
+  font-size: 12px;
+  padding: 6px 8px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  background-color: var(--bg);
+  cursor: pointer; /* Mouse pointer on hover */
+}
+
+.dropdown-content a:hover {
+  background-color: var(--line);
+  color: var(--selected);
+}
+
+.hide {
+  display: none;
 }

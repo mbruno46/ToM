@@ -3,6 +3,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.w
 
 var pdf = null;
 var url = null;
+var numpages = 0;
 
 function createPage(num) {
   var viewer = document.getElementById('viewer-pdf');
@@ -51,6 +52,13 @@ function loadPage(num) {
 };
 
 
+function removePage(num) {
+  var canvas = document.getElementById(num);
+  var div = canvas.parentElement;
+  div.removeChild(canvas);
+  div.parentElement.removeChild(div);
+}
+
 function setViewerPDF(url_) {
   url = url_;
 };
@@ -63,6 +71,10 @@ function refreshViewer() {
     for (i=1; i< pdf.numPages+1; i++) {
       loadPage(i);
     };
+    for (i=pdf.numPages+1;i<numpages+1;i++) {
+      removePage(i);
+    }
+    numpages = pdf.numPages;
   }, function (reason) {
     // PDF loading error
     alert(reason);

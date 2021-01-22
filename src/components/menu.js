@@ -22,4 +22,18 @@ function FileMenu(target, ext) {
   return menu;
 }
 
+function EditMenu() {
+  var menu = Menu.buildFromTemplate([
+    {role: 'undo'},
+    {role: 'redo'},
+    {type: 'separator'},
+    {role: 'cut'},
+    {role: 'copy'},
+    {role: 'paste'},
+    {role: 'selectAll'},
+  ]);
+  return menu;
+};
+
 module.exports.FileMenu = FileMenu;
+exports.EditMenu = EditMenu;

@@ -1,10 +1,12 @@
-const { app, BrowserWindow, Menu} = require('electron');
+const { app, BrowserWindow, Menu, MenuItem} = require('electron');
 const path = require('path');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
 }
+
+const isMac = process.platform === 'darwin'
 
 const createWindow = () => {
   // Create the browser window.
@@ -15,7 +17,7 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
-    }
+    },
   });
 
   // and load the index.html of the app.
@@ -23,6 +25,45 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  var menu = Menu.buildFromTemplate([
+    ...(isMac ? [{
+      label: app.name,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }] : []),
+  ]);
+
+  menu.append(new MenuItem({
+    label: 'File',
+    submenu: [
+      isMac ? { role: 'close' } : { role: 'quit' }
+      ]
+  }));
+
+  menu.append(new MenuItem({
+    label: "Edit",
+    submenu: [
+      {role: 'undo'},
+      {role: 'redo'},
+      {type: 'separator'},
+      {role: 'cut'},
+      {role: 'copy'},
+      {role: 'paste'},
+      {role: 'selectAll'}
+    ],
+  }))
+
+  Menu.setApplicationMenu(menu);
 };
 
 // This method will be called when Electron has finished

@@ -45,8 +45,8 @@
       <div id="container" class="container width-80">
 
         <div class="editor">
-          <div class="editor-top-div">
-            <button id="unfold-browser" class="btn float-left">
+          <div class="topbar" style="border-right: 1px solid var(--bg1)">
+            <button id="unfold-browser" class="btn hide float-left">
               <i class="icon-chevron_right"></i>
             </button>
             <span id="editor-filename" class="editor-filename"></span>
@@ -54,14 +54,12 @@
 
           <div id="wrap" class="wrap">
             <div id="gutter"></div>
-            <!-- <div class="code-editor-overflow-x"> -->
-              <div id="code-editor" class="code-editor"></div>
-            <!-- </div> -->
+            <div id="code-editor" class="code-editor"></div>
           </div>
         </div>
 
         <div id="viewer" class="viewer">
-          <div class="viewer-top-div">
+          <div class="topbar">
             <!-- <div id="editor-tab" class="tab-head"> -->
               <button id="compile" class="btn">
                 <i class="icon-refresh"></i>
@@ -72,13 +70,18 @@
               <button id="zoom_out" class="btn">
                 <i class="icon-magnifying_minus"></i>
               </button>
-              <button id="settings" class="btn">
-                <i class="icon-settings"></i>
-              </button>
             <!-- </div> -->
+            <div class="dropdown float-right">
+              <button id="viewer-menu-btn" class="btn float-left">
+                <i class="icon-reorder"></i>
+              </button>
+              <div id="viewer-menu-content" class="dropdown-content float-right hide">
+                <a id="save_btn" style="border-bottom: 1px solid var(--fg)">Preferences</a>
+                <a>Documentation</a>
+              </div>
+            </div>
           </div>
-          <!-- <div class="toolbar">
-          </div> -->
+
           <div id="viewer-pdf" class="viewer-pdf"></div>
         </div>
       </div>

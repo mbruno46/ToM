@@ -16,8 +16,8 @@ function highlighter(text) {
   var replacements = new Map([
     [/(%.*)/g, '<span class="hlight-comment">$1</span>'],
     [/(\\\w+)/g,'<span class="hlight-command">$1</span>'],
-    [/\{(\w+?)\}/g, '{<span class="hlight-curly-bracket">$1</span>}'],
-    [/\[(\w+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
+    [/\{(.+?)\}/g, '{<span class="hlight-curly-bracket">$1</span>}'],
+    [/\[(.+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
     ])
   replacements.forEach(function(value, key) {
     text = text.replace(key, value);
@@ -152,6 +152,7 @@ function SimpleCode(editor) {
         shift += (editor.textContent.length - ln);
         if (i==0) {pos[0] += shift;}
         if (i==c.line_pos.length-1) {pos[1] += shift;}
+        highlight();
       }
     };
 
