@@ -22,14 +22,14 @@
   <body>
     <div class="row">
       <div id="browser" class="browser appear">
-        <div class="browser-top-toolbar">
-          <button id="open" class="btn">
+        <div class="topbar">
+          <button id="open" class="btn float-left">
             <i class="icon-file_open"></i>
           </button>
-          <button id="new" class="btn">
+          <button id="new" class="btn float-left">
             <i class="icon-plus"></i>
           </button>
-          <button id="delete" class="btn">
+          <button id="delete" class="btn float-left">
             <i class="icon-minus"></i>
           </button>
           <button id="fold-browser" class="btn float-right">
@@ -44,12 +44,13 @@
 
       <div id="container" class="container width-80">
 
-        <div class="editor">
-          <div class="topbar" style="border-right: 1px solid var(--bg1)">
+        <div id="editor" class="editor">
+          <div class="topbar">
             <button id="unfold-browser" class="btn hide float-left">
               <i class="icon-chevron_right"></i>
             </button>
             <span id="editor-filename" class="editor-filename"></span>
+            <div id="resizer" class="resizer float-right"></div>
           </div>
 
           <div id="wrap" class="wrap">

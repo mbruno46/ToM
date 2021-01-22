@@ -1,5 +1,5 @@
 const {LineNumbers} = require('./linenumbers.js');
-const {Cursor, lineBeforeCursor, getCursor, setCursor} = require('./cursor.js');
+const {Cursor} = require('./cursor.js');
 
 
 function loadCSS() {
@@ -171,12 +171,13 @@ function SimpleCode(editor) {
 
   function highlight() {
     editor.focus();
-    var pos = getCursor(editor);
+    let c = Cursor(editor);
+    let pos = c.getSelection();
 
     editor.innerHTML = highlighter(editor.textContent);
 
     editor.focus();
-    setCursor(editor, pos);
+    c.setSelection(pos);
   };
 
   function getNumberOfLines() {

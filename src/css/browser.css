@@ -1,8 +1,3 @@
-.browser-top-toolbar, .browser-bottom-toolbar {
-  background-color: var(--bg);
-  width: 100%;
-}
-
 .browser-inner {
   background-color: var(--bg0);
   flex-grow: 1;

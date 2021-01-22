@@ -40,12 +40,14 @@ fold_browser.onclick = e => {
   container.classList.add("width-100");
   unfold_browser.classList.toggle('hide');
   fold_browser.classList.toggle('hide');
+  refreshWidthViewer()
 };
 unfold_browser.onclick = e => {
   browser.classList.remove("disappear");
   container.classList.remove("width-100");
   unfold_browser.classList.toggle('hide');
   fold_browser.classList.toggle('hide');
+  refreshWidthViewer()
 };
 
 const zoom_in = document.getElementById('zoom_in');
@@ -113,4 +115,30 @@ window.onclick = function(e) {
     if (!viewer_menu_content.classList.contains('hide'))
       viewer_menu_content.classList.toggle('hide');
   }
+}
+
+function refreshWidthViewer() {
+  let fw = document.getElementById('container').offsetWidth;
+  document.getElementById('viewer').style.width = fw -
+    document.getElementById('editor').offsetWidth + 'px';
+}
+
+let size = [0, 0, 0];
+const resizer = document.getElementById('resizer');
+resizer.onmousedown = event => {
+  size[0] = document.getElementById('editor').offsetWidth;
+  size[1] = document.getElementById('viewer').offsetWidth;
+  size[2] = event.pageX;
+}
+document.onmousemove = event => {
+  var diff = event.pageX - size[2];
+  if (size[0]!=0 && size[1]!=0) {
+    document.getElementById('editor').style.width = size[0] + diff + 'px';
+    refreshWidthViewer();
+  }
+}
+document.onmouseup = event => {
+  size[0] = 0;
+  size[1] = 0;
+  size[2] = 0;
 }

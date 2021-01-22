@@ -31,8 +31,8 @@ function loadFile(fname) {
 function saveCurrentFile() {
   let data = sc.getValue();
   let fname = document.getElementById('editor-filename').getAttribute("path");
-  if (fname == null) {return;}
-  
+  if (fname == null) {alert('You must select a file first from the left browser');}
+
   fs.writeFile(fname, data, 'utf-8', (err) => {
     if (err) {
       alert(`The file could not be saved\n${err}`);

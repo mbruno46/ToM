@@ -52,7 +52,6 @@ body {
   width: 80%;
   display: flex;
   height: calc(100vh - 3rem);
-  border-left: 1px solid var(--bg);
 }
 
 .browser {
@@ -61,17 +60,28 @@ body {
   height: calc(100vh - 3rem);
   display: flex;
   flex-flow: column;
-  border-right: 1px solid var(--line);
 }
 
 .disappear {display: none;}
 .width-100 {width: 100%;}
+
+.resizer {
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  width: 4px;
+}
+
+.resizer:hover {
+  border: 2px solid var(--fg);
+}
 
 .topbar {
   width: 100%;
   min-height: 38px;
   background-color: var(--bg);
   text-align: center;
+  border-right: 1px solid var(--bg1);
 }
 
 /* Style buttons */
