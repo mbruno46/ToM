@@ -25,6 +25,7 @@ function highlighter(text) {
   return text;
 }
 
+
 function init(editor) {
   loadCSS();
 

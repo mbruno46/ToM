@@ -6,16 +6,6 @@ const {firePreview} = require('./preview.js');
 var padding_step = 0.8;
 var exts = ["tex", "bib", "pdf"];
 
-function keepFile(ext) {
-  var i;
-  for (i=0;i<exts.length;i++) {
-    if (ext == exts[i]) {
-      return true;
-    }
-  }
-  return false;
-}
-
 
 function createFolder(name, path, padding_) {
   var li = document.createElement("li");
@@ -46,7 +36,7 @@ const opts_dialog = {
   message: "Last unsaved changes will be discarded. Continue?"
 }
 
-function createFile(name, path, ext, padding_) {
+function createFile(name, path, padding_) {
   var li = document.createElement("li");
   // li.style.padding = '4px 0 4px ' + padding_ + 'rem';
   var span_pad = document.createElement('span');
@@ -57,6 +47,8 @@ function createFile(name, path, ext, padding_) {
   span.textContent = name;
 
   span.classList.add("file");
+  var ext = name.substring(name.lastIndexOf('.')+1);
+
   if (ext=="pdf") {
     span.classList.add("image");
     span.addEventListener("click", (ev) => {
@@ -102,8 +94,18 @@ function createFile(name, path, ext, padding_) {
 }
 
 
-function fillBrowser(ft, ul, padding_) {
-  var exists = -1;
+function appendAtIndex(parent, child, index) {
+  if (!index) index = 0
+  if (index >= parent.children.length) {
+    parent.appendChild(child)
+  } else {
+    parent.insertBefore(child, parent.children[index])
+  }
+}
+
+
+function fillBrowser(ft, ul, idx, padding_) {
+  var _idx = -1;
 
   if (ul.hasChildNodes) {
     var i;
@@ -112,36 +114,43 @@ function fillBrowser(ft, ul, padding_) {
       let name = span.textContent;
       let path = span.getAttribute('path');
       if (ft.name==name && ft.path==path) {
-        exists = i;
+        _idx = i;
       }
     }
   };
 
+  // some entries have been deleted before current one
+  if (_idx > idx) {
+    var i;
+    for (i=idx; i<(_idx-idx); i++) {
+      ul.removeChild(ul.children[i]);
+    }
+  }
+
   if (ft.items.length > 0) {
-    if (exists < 0) {
+    if (_idx < 0) {
       var li = createFolder(ft.name, ft.path, padding_);
       var subul = document.createElement("ul");
       subul.setAttribute("class", "nested");
       li.appendChild(subul);
-      ul.appendChild(li);
+      // ul.appendChild(li);
+      appendAtIndex(ul, li, idx);
     }
     else {
-      var subul = ul.children[exists].children[2];
+      // simple refresh
+      var subul = ul.children[idx].children[2];
     }
 
     var i;
     for (i=0; i<ft.items.length; i++) {
-      fillBrowser(ft.items[i], subul, padding_ + padding_step);
+      fillBrowser(ft.items[i], subul, i, padding_ + padding_step);
     };
   }
   else {
-    var ext = ft.name.substring(ft.name.lastIndexOf('.')+1);
-    if (!keepFile(ext)) {
-      return;
-    }
-    if (exists < 0) {
-      var li = createFile(ft.name, ft.path, ext, padding_);
-      ul.appendChild(li);
+    if (_idx < 0) {
+      var li = createFile(ft.name, ft.path, padding_);
+      // ul.appendChild(li);
+      appendAtIndex(ul, li, idx);
     }
   }
 };
@@ -170,10 +179,10 @@ function fireBrowser(directory = null) {
   }
 
   var name = directory.substring(directory.lastIndexOf("/")+1);
-  var ft = new FileTree(directory, name);
+  var ft = new FileTree(directory, exts, name);
   ft.build();
 
-  fillBrowser(ft, ul, padding_step);
+  fillBrowser(ft, ul, 0, padding_step);
 
   ul.setAttribute("project-path",directory);
 };

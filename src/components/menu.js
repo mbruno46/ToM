@@ -1,6 +1,7 @@
 const { Menu, MenuItem } = require('electron').remote;
 const { setMain } = require('./compiler.js');
 const fs = require('fs');
+const b =  require('./browser.js'); // for some reason this works and above does not
 
 function FileMenu(target, ext) {
   const menu = new Menu();
@@ -29,9 +30,7 @@ function FileMenu(target, ext) {
       r.then((choice) => {
         if (choice.response==0) {
           fs.unlinkSync(target.getAttribute("path"));
-          let p = target.parentElement;
-          p.removeChild(target);
-          p.parentElement.removeChild(p);
+          b.fireBrowser();
         }
       });
     }}));

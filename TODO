@@ -1,33 +1,43 @@
 Bugs
- - fireBrowser cannot be called in other modules?
+ - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
  - remove x scrollbar from editor when lines are short
+ - hit compile btn or Cmd+R make saving smart
+ - when browser is refreshed with new files add files in alph order
 
-Features
+Rethinking browser + filetree:
+ - FileTree should keep only relevant files, and discard hidden files .git ...
+ - browser then compares index of filetree.items with index of children such that 
+   alph order of filetree is preserved
+
+Pressing Features:
+
 - highlight brackets that close each other..
+
 - find/replace
-- add key combo Cmd+R or T? for compile (and corresponding entries in edit menu)
-  - make saving optional for compilation refresh button
-- add key combo Cmd+/ for comment (and corresponding entry in edit menu)
-- add support for create/delete file
+
+- add support for create file
 - add support for rename
+
 - set main automatic if single tex file
 - auto detect \documentclass for setmain (modulo comments)
 
-- redo main menu on macbook bar
-  - add edit features mentioned above
-
-- add storing system to json files
-
-- preferences:
+- user preferences:
   - latex engine
   - editor font size
 
 - on exit: store last project, last main, last editor file + widths
 
+More Features:
+
+- Edit menu: add save + compile + comment, Cmd+S and Cmd+R Cmd+/
+
+
 - status bar:
   - compilation success/error msg
   - button for opening log of compilation
 
+
+- Documentation
 
 Autocompletion
 - make it modular, use Json file to store trigger and choices
