@@ -1,5 +1,6 @@
 const {remote} = require('electron');
 const path = require('path');
+const fs = require('fs');
 const {dialog} = remote;
 
 const {fireBrowser} = require('./components/browser.js');
@@ -39,6 +40,30 @@ open.onclick = e => {
     dir = data.filePaths;
     fireBrowser(dir[0]);
   });
+};
+
+const new_btn = document.getElementById('new');
+new_btn.onclick = e => {
+  let project = document.getElementById('filetree').getAttribute("project-path");
+  if (project == null) {
+    alert('Load a project first!')
+    return;
+  }
+
+  let fn = dialog.showSaveDialogSync({title: 'Create new file',
+    defaultPath: project,
+    buttonLabel: "Create",
+    filters: {name: "TeX Files", extensions: ['tex', 'bib']},
+    showsTagField: false,
+  });
+
+  if (!fs.existsSync(path)) {
+    fs.closeSync(fs.openSync(fn, 'w'));
+    fireBrowser();
+  }
+  else {
+    alert(`File ${fn} already exists`);
+  }
 };
 
 const fold_browser = document.getElementById('fold-browser');

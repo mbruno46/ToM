@@ -11,7 +11,8 @@ function Cursor(editor) {
   var line_pos = [];
 
   if (editor.textContent == "") {
-    return {};
+    start =0;
+    end = 0;
   }
 
   let s = document.getSelection();

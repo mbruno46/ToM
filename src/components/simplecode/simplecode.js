@@ -263,6 +263,9 @@ function SimpleCode(editor) {
   }
 
   return {
+    reset() {
+      editor.textContent = "\n";
+    },
     setValue(text) {
       editor.textContent = text;
       highlight();

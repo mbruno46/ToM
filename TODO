@@ -1,14 +1,11 @@
 Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
  - remove x scrollbar from editor when lines are short
- - hit compile btn or Cmd+R make saving smart
-
 
 Pressing Features:
 
-- find/replace
+- replace, replaceAll
 
-- add support for create file
 - add support for rename
 
 - set main automatic if single tex file

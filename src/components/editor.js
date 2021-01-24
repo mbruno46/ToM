@@ -24,7 +24,12 @@ function loadFile(fname) {
           return;
       }
 
-      sc.setValue(data);
+      if (data != "") {
+        sc.setValue(data);
+      }
+      else {
+        sc.reset();
+      }
   });
 }
 
@@ -40,7 +45,7 @@ function saveCurrentFile() {
   });
 
   const fn = document.getElementById('editor-filename');
-  fn.textContent = fn.textContent.replace(/ *$/,"");
+  fn.textContent = fn.textContent.replace(/ \*$/,"");
 }
 
 function hasDocumentClass(file) {

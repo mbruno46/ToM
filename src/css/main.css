@@ -34,6 +34,14 @@ body {
 .float-right {float: right;}
 .float-left {float: left;}
 
+.footer {
+  width: 100%;
+  height: 3rem;
+  padding: 0.5rem;
+  background-color: var(--bg);
+  border-top: 1px solid var(--bg1);
+}
+
 .row::after {
   content: "";
   clear: both;
@@ -43,8 +51,8 @@ body {
 .container {
   float: left;
   width: 80%;
-  display: flex;
   height: calc(100vh - 3rem);
+  display: flex;
 }
 
 .browser {
@@ -140,19 +148,21 @@ body {
   display: none;
 }
 
-.find {
+.input-text {
   background-color: var(--bg1);
-  color: var(--selected);
+  color: var(--fg);
+  border: 1px solid var(--fg);
   font-size: 16px;
   resize: none;
-  outline: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
-.footer {
-  width: 100%;
-  height: 2rem;
-  padding: 0.5rem;
-  background-color: var(--bg);
+.input-text::-webkit-scrollbar {
+  width: 0 !important;
+  display: none;
 }
 
 .find-btn {
@@ -160,11 +170,16 @@ body {
   background-color: inherit;
   border-radius: 8px;
   color: var(--fg);
-  padding: 4px;
+  padding: 6px 12px;
   font-size: 16px;
   vertical-align: middle;
+  outline: none;
 }
 
 .find-btn:hover {
   background-color: var(--line);
+}
+
+.find-btn:active {
+  color: var(--selected);
 }
