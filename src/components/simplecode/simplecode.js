@@ -102,7 +102,7 @@ function init(editor) {
 
   let isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
   editor.setAttribute("contentEditable", isFirefox ? "true" : "plaintext-only");
-  // editor.setAttribute("spellcheck", options.spellcheck ? "true" : "false");
+  editor.setAttribute("spellcheck", "true");
 
   editor.textContent = "\n";
   editor.style.borderTopLeftRadius = 0
@@ -112,7 +112,7 @@ function init(editor) {
 }
 
 function SimpleCode(editor) {
-  const options = Object.assign({ tab: 4, indentOn: /{$/, spellcheck: false, addClosing: true });
+  const options = Object.assign({tab: 4});
 
   let ln = init(editor);
   let changed = false;
@@ -164,6 +164,10 @@ function SimpleCode(editor) {
       editor.textContent += '\n';
     highlight();
     ln.refreshLineNumbers(getNumberOfLines());
+  })
+
+  on("click", event => {
+    highlight();
   })
 
   function newLine() {
