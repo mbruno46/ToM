@@ -2,16 +2,9 @@ Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
  - remove x scrollbar from editor when lines are short
  - hit compile btn or Cmd+R make saving smart
- - when browser is refreshed with new files add files in alph order
 
-Rethinking browser + filetree:
- - FileTree should keep only relevant files, and discard hidden files .git ...
- - browser then compares index of filetree.items with index of children such that 
-   alph order of filetree is preserved
 
 Pressing Features:
-
-- highlight brackets that close each other..
 
 - find/replace
 
@@ -28,6 +21,8 @@ Pressing Features:
 - on exit: store last project, last main, last editor file + widths
 
 More Features:
+
+- Improve style of bracket hilightingh
 
 - Edit menu: add save + compile + comment, Cmd+S and Cmd+R Cmd+/
 

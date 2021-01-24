@@ -56,6 +56,13 @@ function Cursor(editor) {
       let cursor = findNodeFromPos(editor, pos);
       s.setBaseAndExtent(cursor[0], cursor[1], cursor[0], cursor[1]);
     },
+    getCursorHTML() {
+      var tmp = document.createTextNode('\u0001');
+      document.getSelection().getRangeAt(0).insertNode(tmp);
+      var pos = editor.innerHTML.indexOf('\u0001');
+      tmp.parentNode.removeChild(tmp);
+      return pos;
+    },
     line_pos
   }
 }

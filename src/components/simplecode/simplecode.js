@@ -11,17 +11,74 @@ function loadCSS() {
   document.getElementsByTagName( "head" )[0].appendChild( link );
 }
 
-function highlighter(text) {
+var replacements = null;
+
+function setup_highlighter() {
   // https://regex101.com/r/uF4oY4/1
-  var replacements = new Map([
+  kwrds = ['begin','end','title','author','date','section','subsection',
+    'usepackage','documentclass'];
+  re = ''
+  for (kwrd of kwrds) {
+    re += `(?:\\\\${kwrd})`
+    if (kwrd != kwrds[kwrds.length-1]) {
+      re += '|'
+    }
+  }
+  replacements = new Map([
     [/(%.*)/g, '<span class="hlight-comment">$1</span>'],
+    [new RegExp(`(${re})\{(.*?)\}`,'g'), '$1{<span class="hlight-curly-bracket">$2</span>}'],
+    // [/(\\\w+)\[(.+?)\]\{(.+?)\}/g, '$1[<span class="hlight-square-bracket">$2</span>]{<span class="hlight-curly-bracket">$3</span>}'],
+    // [/\[(.+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
     [/(\\\w+)/g,'<span class="hlight-command">$1</span>'],
-    [/\{(.+?)\}/g, '{<span class="hlight-curly-bracket">$1</span>}'],
-    [/\[(.+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
     ])
+}
+
+function highlight_brackets(text, pos) {
+  var b = null;
+  if (text[pos]=='\{') {
+    b = posClosingBracket(text, pos, +1, ['\{','\}']);
+  }
+  if (text[pos]=='\}') {
+    b = posClosingBracket(text, pos, -1, ['\{','\}']);
+  }
+
+  if (b != null) {
+    let i0 = Math.min(b, pos);
+    let i1 = Math.max(b, pos);
+    text = text.substring(0,i0) + `<span class="hlight-bracket">${text[i0]}</span>` +
+      text.substring(i0+1,i1) + `<span class="hlight-bracket">${text[i1]}</span>` +
+      text.substring(i1+1);
+  }
+
+  function posClosingBracket(text, start, dir, match) {
+    var i, n;
+    n = 0;
+    for (i=start; (dir>0) ? (i<text.length) : (i>0);i+=dir) {
+      if (text[i] == match[0]) {
+        n++;
+      }
+      if (text[i] == match[1]) {
+        n--;
+      }
+      if (n==0) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  return text;
+};
+
+function highlighter(text, pos) {
+  if (replacements == null) {
+    setup_highlighter();
+  }
+
   replacements.forEach(function(value, key) {
     text = text.replace(key, value);
   });
+
   return text;
 }
 
@@ -175,7 +232,13 @@ function SimpleCode(editor) {
     let c = Cursor(editor);
     let pos = c.getSelection();
 
-    editor.innerHTML = highlighter(editor.textContent);
+    editor.innerHTML = highlighter(editor.textContent, pos[1]);
+
+    editor.focus();
+    c.setSelection(pos);
+
+    let pos_html = c.getCursorHTML() - 1;
+    editor.innerHTML = highlight_brackets(editor.innerHTML, pos_html);
 
     editor.focus();
     c.setSelection(pos);

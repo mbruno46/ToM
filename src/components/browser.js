@@ -4,6 +4,7 @@ const {FileMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
 
 var padding_step = 0.8;
+// extensions of files handled by the program
 var exts = ["tex", "bib", "pdf"];
 
 

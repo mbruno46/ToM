@@ -1,3 +1,8 @@
+.hlight-bracket {
+  /* background-color: var(--yellow); */
+  border: 1px solid var(--yellow);
+}
+
 .hlight-comment {
   color: var(--cyan);
 }
