@@ -54,7 +54,15 @@ function hasDocumentClass(file) {
   });
 }
 
+function findNext(word) {
+  if (word=="") {
+    return;
+  }
+  sc.findNext(word);
+}
+
 exports.loadFile = loadFile;
 exports.setupEditor = setupEditor;
 exports.saveCurrentFile = saveCurrentFile;
 exports.hasDocumentClass = hasDocumentClass;
+exports.findNext = findNext;

@@ -14,7 +14,7 @@ const {zoom} = require('./components/viewer.js');
 
 const {compile} = require('./components/compiler.js');
 
-const {setupEditor, loadFile, saveCurrentFile} = require('./components/editor.js');
+const {setupEditor, loadFile, saveCurrentFile, findNext} = require('./components/editor.js');
 setupEditor();
 
 const {EditMenu} = require('./components/menu.js');
@@ -149,4 +149,10 @@ document.onmouseup = event => {
   size[0] = 0;
   size[1] = 0;
   size[2] = 0;
+}
+
+const find_btn = document.getElementById('find-btn');
+const find = document.getElementById('find');
+find_btn.onclick = ev => {
+  findNext(find.value);
 }

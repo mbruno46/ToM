@@ -1,6 +1,6 @@
 const {LineNumbers} = require('./linenumbers.js');
 const {Cursor} = require('./cursor.js');
-
+const {Find} = require('./find.js')
 
 function loadCSS() {
   var link = document.createElement( "link" );
@@ -116,6 +116,7 @@ function SimpleCode(editor) {
 
   let ln = init(editor);
   let changed = false;
+  let currentFind = null;
 
   // short-cut
   const on = (type, fn) => {
@@ -269,6 +270,16 @@ function SimpleCode(editor) {
     },
     getValue() {
       return editor.textContent;
+    },
+    findNext(word) {
+      if (currentFind==null || currentFind.getWord() != word) {
+        currentFind = Find(editor.textContent, word);
+      }
+      pos = currentFind.findNext();
+      let c = Cursor(editor);
+
+      editor.focus();
+      c.setSelection([pos,pos+word.length]);
     }
   }
 }
