@@ -41,6 +41,18 @@ function highlight_brackets(text, pos) {
   if (text[pos]=='\}') {
     b = posClosingBracket(text, pos, -1, ['\{','\}']);
   }
+  if (text[pos]=='\[') {
+    b = posClosingBracket(text, pos, +1, ['\[','\]']);
+  }
+  if (text[pos]=='\]') {
+    b = posClosingBracket(text, pos, -1, ['\[','\]']);
+  }
+  if (text[pos]=='\(') {
+    b = posClosingBracket(text, pos, +1, ['\(','\)']);
+  }
+  if (text[pos]=='\)') {
+    b = posClosingBracket(text, pos, -1, ['\(','\)']);
+  }
 
   if (b != null) {
     let i0 = Math.min(b, pos);
