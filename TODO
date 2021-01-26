@@ -6,14 +6,9 @@ Pressing Features:
 
 - replace, replaceAll
 
-- set main automatic if single tex file
-- auto detect \documentclass for setmain (modulo comments)
-
 - user preferences:
   - latex engine
   - editor font size
-
-- on exit: store last project, last main, last editor file + widths
 
 More Features:
 

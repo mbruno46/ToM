@@ -1,12 +1,13 @@
 const {FileTree} = require('./filetree.js');
-const {loadFile, saveCurrentFile} = require('./editor.js');
+const {loadFile, saveCurrentFile, hasDocumentClass} = require('./editor.js');
 const {FileMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
+const {setMain} = require('./compiler.js');
 
 var padding_step = 0.8;
 // extensions of files handled by the program
 var exts = ["tex", "bib", "pdf"];
-
+var has_document_class = null;
 
 function createFolder(name, path, padding_) {
   var li = document.createElement("li");
@@ -90,6 +91,15 @@ function createFile(name, path, padding_) {
 
   span.setAttribute("path", path);
 
+  if (hasDocumentClass(path)) {
+    if (has_document_class==null) {
+      has_document_class = span;
+    }
+    else {
+      has_document_class = 'cannot resolve';
+    }
+  }
+
   li.appendChild(span);
   return li;
 }
@@ -164,7 +174,7 @@ function clearBrowser(ul) {
 };
 
 
-function fireBrowser(directory = null) {
+function fireBrowser(directory = null, auto_setmain = false) {
   ul = document.getElementById('filetree');
   if (directory == null) {
     if (ul.hasAttribute('project-path')) {
@@ -183,9 +193,14 @@ function fireBrowser(directory = null) {
   var ft = new FileTree(directory, exts, name);
   ft.build();
 
-  fillBrowser(ft, ul, 0, padding_step);
+  fillBrowser(ft, ul, 0, padding_step, auto_setmain);
 
   ul.setAttribute("project-path",directory);
+
+  if (has_document_class != null && has_document_class != 'cannot resolve') {
+    if (auto_setmain)
+      setMain(has_document_class);
+  }
 };
 
 exports.fireBrowser = fireBrowser;

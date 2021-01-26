@@ -22,7 +22,14 @@ function loadFile(fname) {
 function saveCurrentFile() {
   let data = sc.getValue();
   let fname = document.getElementById('editor-filename').getAttribute("path");
-  if (fname == null) {alert('You must select a file first from the left browser');}
+  if (fname == null) {
+    if (data != "\n") {
+      alert('You must select a file first from the left browser');
+    }
+    else {
+      return;
+    }
+  }
 
   fs.writeFile(fname, data, 'utf-8', (err) => {
     if (err) {
@@ -34,15 +41,14 @@ function saveCurrentFile() {
   fn.textContent = fn.textContent.replace(/ \*$/,"");
 }
 
-function hasDocumentClass(file) {
-  fs.readFile(fname, 'utf-8', (err, data) => {
-      if(err){
-          alert("An error ocurred reading the file :" + err.message);
-          return;
-      }
-
-      if (data.match(/^\s*\\documentclass/gm)) {return true;}
-  });
+function hasDocumentClass(fname) {
+  data = fs.readFileSync(fname, 'utf-8');
+  if (data.match(/^\s*\\documentclass/)) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 function findNext(word) {

@@ -4,7 +4,7 @@ const pathlib = require('path');
 class Store {
   constructor(path, fname){
     this.path = pathlib.join(path, fname + '.json');
-    this.data = read();
+    this.data = read(this.path);
   };
 
   get(key) {
@@ -22,7 +22,7 @@ class Store {
   }
 
   reload() {
-    this.data = read();
+    this.data = read(this.path);
   }
 }
 
@@ -33,4 +33,4 @@ function read(path) {
   return JSON.parse(fs.readFileSync(path));
 }
 
-exports.Store = Store
+exports.Store = Store;

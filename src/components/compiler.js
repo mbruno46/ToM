@@ -5,13 +5,20 @@ const { setViewerPDF, refreshViewer } = require('./viewer.js');
 
 var maintex = null;
 
-function setMain(file) {
-  maintex = file;
-  let base = file.substring(0,file.lastIndexOf('.'));
+function setMain(target) {
+  maintex = target.getAttribute("path");
+  const current = document.getElementsByClassName("main");
+  if (current && current[0]) {
+    current[0].classList.toggle("main");
+  }
+  target.classList.add("main");
+
+  let base = maintex.substring(0,maintex.lastIndexOf('.'));
   setViewerPDF(base + '.pdf');
+  compile();
 }
 
-function compile() {
+function compile(fire_browser = false) {
   if (maintex == null) {
     alert('Main Tex file not set. Please use Set Main by clicking on the desired file');
     return;

@@ -1,4 +1,4 @@
-const {remote} = require('electron');
+const {remote, shell} = require('electron');
 const path = require('path');
 const fs = require('fs');
 const {dialog} = remote;
@@ -13,12 +13,17 @@ const {Store} = require('./components/store.js');
 
 // preference file
 const prefs = new Store(path.join(__dirname,'../config'),'custom');
+if (prefs.get('last-project') != null) {
+  fireBrowser(prefs.get('last-project'), true);
+
+}
 
 remote.getCurrentWindow().on('close', (e) => {
   let p = document.getElementById('filetree').getAttribute("project-path");
   prefs.set('last-project',p);
   prefs.dump();
 });
+
 
 
 const open = document.getElementById('open');
@@ -29,7 +34,7 @@ open.onclick = e => {
     properties: ['openDirectory']
   }).then((data) => {
     dir = data.filePaths;
-    fireBrowser(dir[0]);
+    fireBrowser(dir[0], true);
   });
 };
 
@@ -127,6 +132,9 @@ var i;
 for (i=0;i<viewer_menu_content.children.length;i++) {
   let a = viewer_menu_content.children[i];
   a.onclick = ev => {
+    if (a.hasAttribute('weblink')) {
+      shell.openExternal(a.getAttribute('weblink'));
+    }
     viewer_menu_content.classList.toggle('hide');
   }
 }

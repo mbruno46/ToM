@@ -11,7 +11,7 @@ const isMac = process.platform === 'darwin'
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1600,
+    width: 1200,
     height: 800,
     // useContentSize: true,
     webPreferences: {
