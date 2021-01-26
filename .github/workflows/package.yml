@@ -1,0 +1,7 @@
+name: Package
+
+on: [push]
+
+jobs:
+  package:
+    runs-on: macos-latest, ubuntu-latest
