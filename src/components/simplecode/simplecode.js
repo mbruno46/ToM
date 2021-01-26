@@ -26,7 +26,10 @@ function setup_highlighter() {
   }
   replacements = new Map([
     [/(%.*)/g, '<span class="hlight-comment">$1</span>'],
-    [new RegExp(`(${re})\{(.*?)\}`,'g'), '$1{<span class="hlight-curly-bracket">$2</span>}'],
+    [new RegExp(`(${re})\\[(.*?)\\]\{(.*?)\}`,'g'),
+      '$1[<span class="hlight-square-bracket">$2</span>]{<span class="hlight-curly-bracket">$3</span>}'],
+    [new RegExp(`(${re})\{(.*?)\}`,'g'),
+      '$1{<span class="hlight-curly-bracket">$2</span>}'],
     // [/(\\\w+)\[(.+?)\]\{(.+?)\}/g, '$1[<span class="hlight-square-bracket">$2</span>]{<span class="hlight-curly-bracket">$3</span>}'],
     // [/\[(.+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
     [/(\\\w+)/g,'<span class="hlight-command">$1</span>'],

@@ -49,7 +49,8 @@ const createWindow = () => {
     label: 'File',
     submenu: [
       isMac ? { role: 'close' } : { role: 'quit' }
-      ]
+    ],
+    visible: false,
   }));
 
   menu.append(new MenuItem({

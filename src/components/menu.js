@@ -94,10 +94,10 @@ function EditMenu() {
     {role: 'undo'},
     {role: 'redo'},
     {type: 'separator'},
-    {role: 'cut'},
-    {role: 'copy'},
-    {role: 'paste'},
-    {role: 'selectAll'},
+    {role: 'cut', accelerator: 'CmdOrCtrl+X'},
+    {role: 'copy', accelerator: 'CmdOrCtrl+C'},
+    {role: 'paste', accelerator: 'CmdOrCtrl+V'},
+    {role: 'selectAll', accelerator: 'CmdOrCtrl+A'}    
   ]);
   return menu;
 };
