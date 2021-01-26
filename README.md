@@ -6,6 +6,6 @@ An intuitive TeX editor with a modern interface for the everyday physicist.
 
 ### Authors
 
-Copyright (C) 2020, Mattia Bruno
+Copyright (C) 2021, Mattia Bruno
 
 ## Installation

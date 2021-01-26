@@ -5,16 +5,19 @@
   "description": "TeX on Me",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds"
   },
   "keywords": [],
   "author": "Mattia Bruno",
   "license": "MIT",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
-  },
+    "electron-squirrel-startup": "^1.0.0",
+    "pdfjs-dist": "^2.5.207"
+  },  
   "devDependencies": {
     "electron": "^11.2.0",
+    "electron-packager": "^15.2.0",
     "pdfjs-dist": "^2.5.207"
   }
 }

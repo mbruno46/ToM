@@ -13,7 +13,7 @@ const {Store} = require('./components/store.js');
 const {firePopup} = require('./components/popup.js');
 
 // preference file
-const prefs = new Store(path.join(__dirname,'../config'),'custom');
+const prefs = new Store(__dirname,'preferences');
 if (prefs.get('last-project') != null) {
   fireBrowser(prefs.get('last-project'), true);
 
@@ -70,7 +70,7 @@ new_btn.onclick = e => {
     else {
       alert(`File ${newpath} already exists`);
     }
-    p.parentElement.removeChild(p);    
+    p.parentElement.removeChild(p);
   }
 };
 
