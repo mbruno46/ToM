@@ -2,6 +2,7 @@ const fs = require('electron').remote.require('fs');
 const {SimpleCode} = require('./simplecode/simplecode.js');
 
 let sc = SimpleCode(document.getElementById('code-editor'));
+sc.reset();
 
 function loadFile(fname) {
   fs.readFile(fname, 'utf-8', (err, data) => {

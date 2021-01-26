@@ -39,5 +39,5 @@
 }
 
 .line-number-selected {
-  background-color: var(--line);
+  color: var(--selected);
 }

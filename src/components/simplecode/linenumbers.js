@@ -1,5 +1,5 @@
 function LineNumbers(css) {
-  let line_number_selected = 0;
+  let line_number_selected = [];
 
   const gutter = document.getElementById('gutter');
   gutter.classList.add('gutter');
@@ -28,13 +28,19 @@ function LineNumbers(css) {
 
   return {
     gutter,
-    selectLine(n) {
-      if (line_number_selected > 0) {
-        gutter.childNodes[line_number_selected].classList.remove('line-number-selected');
+    highlightLines(i0, i1) {
+      var i;
+      for (i=line_number_selected[0];i<i0;i++) {
+        gutter.children[i-1].classList.remove('line-number-selected');
       }
-      if (n<=gutter.childNodes.length) {
-        gutter.childNodes[n].classList.add('line-number-selected');
+      for (i=i0;i<=i1;i++) {
+        gutter.children[i-1].classList.add('line-number-selected');
       }
+      for (i=i1+1;i<=line_number_selected[1];i++) {
+        gutter.children[i-1].classList.remove('line-number-selected');
+      }
+      line_number_selected[0] = i0;
+      line_number_selected[1] = i1;
     },
     refreshLineNumbers(n) {
       let m = gutter.childNodes.length;

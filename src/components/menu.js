@@ -4,6 +4,7 @@ const fs = require('fs');
 const b =  require('./browser.js'); // for some reason this works
 const {firePopup} = require('./popup.js');
 
+
 function FileMenu(target, ext) {
   const menu = new Menu();
   if (ext == "tex") {
@@ -17,11 +18,6 @@ function FileMenu(target, ext) {
 
   menu.append(new MenuItem({label: 'Rename',
     click: () => {
-      var w = window.innerWidth;
-      var h = window.innerHeight;
-      xy = [(w-256-120 > 0) ? 120 : 0, 120];
-      opts = {width: 'max-content', height: 48};
-
       let project = document.getElementById('filetree').getAttribute("project-path");
       let base = project.substring(0,project.lastIndexOf('/'));
       project = project.substring(project.lastIndexOf('/'));
@@ -30,7 +26,8 @@ function FileMenu(target, ext) {
 
       args = {type: 'inputText', defaultText: default_path, oktext: 'Rename',
         rows: "1", cols: "40"};
-      let p = firePopup(xy, opts, args);
+      opts = {width: 'max-content', height: 48};
+      let p = firePopup([120, 120], opts, args);
       document.body.append(p);
 
       let inputText = document.getElementById('popup-inputText');
@@ -62,10 +59,35 @@ function FileMenu(target, ext) {
           b.fireBrowser();
         }
       });
-    }}));
+    }
+  }));
 
   return menu;
 }
+
+function FolderMenu(target) {
+  const menu = new Menu();
+
+  menu.append(new MenuItem({label: 'Delete',
+    click: () => {
+      let r = dialog.showMessageBox(null, {
+        buttons: ["Yes", "No"],
+        defaultId: 0,
+        title: "Delete Folder",
+        message: `Do you want to delete the directory ${target.textContent} and its content?`
+      });
+      r.then((choice) => {
+        if (choice.response==0) {
+          fs.rmdirSync(target.getAttribute("path"), { recursive: true });
+          b.fireBrowser();
+        }
+      });
+    }
+  }));
+
+  return menu;
+}
+
 
 function EditMenu() {
   var menu = Menu.buildFromTemplate([
@@ -81,4 +103,5 @@ function EditMenu() {
 };
 
 module.exports.FileMenu = FileMenu;
+exports.FolderMenu = FolderMenu;
 exports.EditMenu = EditMenu;

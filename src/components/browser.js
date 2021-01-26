@@ -1,6 +1,6 @@
 const {FileTree} = require('./filetree.js');
 const {loadFile, saveCurrentFile, hasDocumentClass} = require('./editor.js');
-const {FileMenu} = require('./menu.js');
+const {FileMenu, FolderMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
 const {setMain} = require('./compiler.js');
 
@@ -26,6 +26,12 @@ function createFolder(name, path, padding_) {
     this.parentElement.querySelector(".nested").classList.toggle("active");
     this.classList.toggle("arrow-down");
   });
+  span.addEventListener("contextmenu", (ev) => {
+    ev.preventDefault();
+    const menu = FolderMenu(ev.target);
+    menu.popup({ window: remote.getCurrentWindow() });
+  });
+
   li.appendChild(span);
   return li;
 }
@@ -133,7 +139,7 @@ function fillBrowser(ft, ul, idx, padding_) {
   // some entries have been deleted before current one
   if (_idx > idx) {
     var i;
-    for (i=idx; i<(_idx-idx); i++) {
+    for (i=idx; i<_idx; i++) {
       ul.removeChild(ul.children[i]);
     }
   }
@@ -156,6 +162,9 @@ function fillBrowser(ft, ul, idx, padding_) {
     for (i=0; i<ft.items.length; i++) {
       fillBrowser(ft.items[i], subul, i, padding_ + padding_step);
     };
+    for (i=ft.items.length;i<subul.children.length;i++) {
+      subul.removeChild(subul.children[i]);
+    }
   }
   else {
     if (_idx < 0) {

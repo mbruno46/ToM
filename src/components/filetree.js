@@ -23,21 +23,23 @@ class FileTree {
     var filelist = [];
 
     fs.readdirSync(path).forEach(file => {
-      var ext = file.substring(file.lastIndexOf('.')+1);
-      if (!exts.includes(ext)) {
-        return;
-      }
-
       var tempfile = new FileTree(pathlib.join(path, file), exts, file);
 
       var stat = fs.statSync(tempfile.path);
 
-      if (stat.isDirectory() && !UnixHidden(tempfile.path)){
-        var name = tempfile.path.substring(tempfile.path.lastIndexOf("/")+1);
-        tempfile.items = FileTree.readDir(tempfile.path, exts, name);
-      };
-
-      filelist.push(tempfile);
+      if (!UnixHidden(tempfile.path)) {
+        if (stat.isDirectory()) {
+          var name = tempfile.path.substring(tempfile.path.lastIndexOf("/")+1);
+          tempfile.items = FileTree.readDir(tempfile.path, exts, name);
+          filelist.push(tempfile);
+        }
+        else {
+          var ext = file.substring(file.lastIndexOf('.')+1);
+          if (exts.includes(ext)) {
+            filelist.push(tempfile);
+          }
+        }
+      }
     });
 
     return filelist;

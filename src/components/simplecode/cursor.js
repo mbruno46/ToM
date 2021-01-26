@@ -7,7 +7,7 @@ class Line {
 }
 
 function Cursor(editor) {
-  var start, end;
+  var start, end, dir;
   var line_pos = [];
 
   if (editor.textContent == "") {
@@ -16,6 +16,8 @@ function Cursor(editor) {
   }
 
   let s = document.getSelection();
+  dir = s.anchorOffset <= s.focusOffset ? "->" : "<-";
+
   let r0 = s.getRangeAt(0);
   let r = r0.cloneRange();
 
@@ -50,7 +52,12 @@ function Cursor(editor) {
       }
       else {
         let cursor2 = findNodeFromPos(editor, pos[1]);
-        s.setBaseAndExtent(cursor[0], cursor[1], cursor2[0], cursor2[1]);
+        if (dir=="->") {
+          s.setBaseAndExtent(cursor[0], cursor[1], cursor2[0], cursor2[1]);
+        }
+        else {
+          s.setBaseAndExtent(cursor2[0], cursor2[1], cursor[0], cursor[1]);
+        }
       }
     },
     setCaret(pos) {
@@ -64,7 +71,7 @@ function Cursor(editor) {
       tmp.parentNode.removeChild(tmp);
       return pos;
     },
-    line_pos 
+    line_pos
   }
 }
 

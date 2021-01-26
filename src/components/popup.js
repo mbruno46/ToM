@@ -1,4 +1,10 @@
 
+function space(n) {
+  let span = document.createElement('span');
+  span.style.paddingLeft = n + 'px';
+  return span;
+}
+
 function inputText(popup, args) {
   let text = document.createElement('textarea');
   text.classList.add('popup-textarea');
@@ -6,7 +12,7 @@ function inputText(popup, args) {
   text.value = args.defaultText;
   text.rows = args.rows;
   text.cols = args.cols;
-  
+
   let cancel_btn = document.createElement('button');
   cancel_btn.classList.add('popup-btn');
   cancel_btn.textContent = "Cancel";
@@ -20,7 +26,9 @@ function inputText(popup, args) {
   ok_btn.textContent = args.oktext;
 
   popup.append(text);
+  popup.append(space(8));
   popup.append(cancel_btn);
+  popup.append(space(8));
   popup.append(ok_btn);
 }
 

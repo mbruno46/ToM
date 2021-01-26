@@ -12,7 +12,9 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
+    minWidth: 800,
     height: 800,
+    minHeight: 400,
     // useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
@@ -61,6 +63,7 @@ const createWindow = () => {
       {role: 'paste'},
       {role: 'selectAll'}
     ],
+    visible: false,
   }))
 
   Menu.setApplicationMenu(menu);

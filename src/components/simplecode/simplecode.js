@@ -104,7 +104,6 @@ function init(editor) {
   editor.setAttribute("contentEditable", isFirefox ? "true" : "plaintext-only");
   editor.setAttribute("spellcheck", "true");
 
-  editor.textContent = "\n";
   editor.style.borderTopLeftRadius = 0
   editor.style.borderBottomLeftRadius = 0
 
@@ -148,6 +147,22 @@ function SimpleCode(editor) {
         addrmTextBeginningSelection("% ", /(^\s*)%\s?/, 'auto');
       }
     }
+    // cut,copy,paste
+    if (event.key == "x")
+      if ((event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        document.execCommand('cut');
+      }
+    if (event.key == "c")
+      if ((event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        document.execCommand('copy');
+      }
+    if (event.key == "v")
+      if ((event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        document.execCommand('paste');
+      }
   });
 
   on("keypress", event => {
@@ -162,8 +177,8 @@ function SimpleCode(editor) {
       return;
     if (editor.textContent == "")
       editor.textContent += '\n';
-    highlight();
     ln.refreshLineNumbers(getNumberOfLines());
+    highlight();
   })
 
   on("click", event => {
@@ -183,13 +198,6 @@ function SimpleCode(editor) {
       insert(' '.repeat(padding));
     }
     return false;
-    // else
-      // return true;
-    // var line = getCurrentLine();
-    // if (line.indexOf('\\begin') > -1) {
-    //   let latex = line.replace(/\\begin\{(\w+?)(\b)\}/g,'$1');
-    //   insert(`\n\n\\end{${latex}}`);
-    // }
   }
 
 
@@ -251,6 +259,10 @@ function SimpleCode(editor) {
 
     editor.innerHTML = highlighter(editor.textContent, pos[1]);
 
+    let i0 = editor.textContent.substring(0,pos[0]).split('\n').length;
+    let i1 = editor.textContent.substring(pos[0], pos[1]).split('\n').length - 1;
+    ln.highlightLines(i0, i0+i1);
+
     editor.focus();
     c.setSelection(pos);
 
@@ -266,14 +278,21 @@ function SimpleCode(editor) {
     return text.split("\n").length-1;
   }
 
+
   return {
     reset() {
       editor.textContent = "\n";
+      ln.refreshLineNumbers(getNumberOfLines());
+      highlight();
     },
     setValue(text) {
+      if (text == "") {
+        reset();
+        return;
+      }
       editor.textContent = text;
-      highlight();
       ln.refreshLineNumbers(getNumberOfLines());
+      highlight();
     },
     getValue() {
       return editor.textContent;

@@ -10,6 +10,7 @@ const {compile} = require('./components/compiler.js');
 const {loadFile, saveCurrentFile, findNext} = require('./components/editor.js');
 const {EditMenu} = require('./components/menu.js');
 const {Store} = require('./components/store.js');
+const {firePopup} = require('./components/popup.js');
 
 // preference file
 const prefs = new Store(path.join(__dirname,'../config'),'custom');
@@ -45,20 +46,31 @@ new_btn.onclick = e => {
     alert('Load a project first!')
     return;
   }
+  let base = project.substring(0,project.lastIndexOf('/'));
 
-  let fn = dialog.showSaveDialogSync({title: 'Create new file',
-    defaultPath: project,
-    buttonLabel: "Create",
-    filters: {name: "TeX Files", extensions: ['tex', 'bib']},
-    showsTagField: false,
-  });
+  args = {type: 'inputText',
+    defaultText: project.substring(project.lastIndexOf('/')), oktext: 'Create',
+    rows: "1", cols: "40"};
+  opts = {width: 'max-content', height: 48};
+  let p = firePopup([120, 120], opts, args);
+  document.body.append(p);
 
-  if (!fs.existsSync(path)) {
-    fs.closeSync(fs.openSync(fn, 'w'));
-    fireBrowser();
-  }
-  else {
-    alert(`File ${fn} already exists`);
+  let inputText = document.getElementById('popup-inputText');
+  let ok_btn = document.getElementById('popup-ok-btn');
+  ok_btn.onclick = event => {
+    let newpath = base + inputText.value;
+    if (!fs.existsSync(newpath)) {
+      let dir = newpath.substring(0,newpath.lastIndexOf('/'));
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+      }
+      fs.closeSync(fs.openSync(newpath, 'w'));
+      fireBrowser();
+    }
+    else {
+      alert(`File ${newpath} already exists`);
+    }
+    p.parentElement.removeChild(p);    
   }
 };
 
