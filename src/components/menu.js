@@ -1,7 +1,8 @@
 const { Menu, MenuItem } = require('electron').remote;
 const { setMain } = require('./compiler.js');
 const fs = require('fs');
-const b =  require('./browser.js'); // for some reason this works and above does not
+const b =  require('./browser.js'); // for some reason this works
+const {firePopup} = require('./popup.js');
 
 function FileMenu(target, ext) {
   const menu = new Menu();
@@ -18,7 +19,40 @@ function FileMenu(target, ext) {
     }));
     menu.append(new MenuItem({type: 'separator'}));
   }
-  menu.append(new MenuItem({label: 'Rename'}));
+
+  menu.append(new MenuItem({label: 'Rename',
+    click: () => {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      xy = [(w-256-120 > 0) ? 120 : 0, 120];
+      opts = {width: 'max-content', height: 48};
+
+      let project = document.getElementById('filetree').getAttribute("project-path");
+      let base = project.substring(0,project.lastIndexOf('/'));
+      project = project.substring(project.lastIndexOf('/'));
+      let default_path = target.getAttribute("path");
+      default_path = default_path.substring(default_path.lastIndexOf(project));
+
+      args = {type: 'inputText', defaultText: default_path, oktext: 'Rename',
+        rows: "1", cols: "40"};
+      let p = firePopup(xy, opts, args);
+      document.body.append(p);
+
+      let inputText = document.getElementById('popup-inputText');
+      let ok_btn = document.getElementById('popup-ok-btn');
+      ok_btn.onclick = event => {
+        let newpath = base + inputText.value;
+        fs.rename(target.getAttribute("path"), newpath,
+          function(err) {
+            if ( err ) console.log('ERROR: ' + err);
+          });
+        p.parentElement.removeChild(p);
+        target.setAttribute('path',newpath);
+        target.textContent = newpath.substring(newpath.lastIndexOf('/')+1);
+      }
+    }
+  }));
+
   menu.append(new MenuItem({label: 'Delete',
     click: () => {
       let r = dialog.showMessageBox(null, {

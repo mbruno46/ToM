@@ -151,13 +151,15 @@ body {
 .input-text {
   background-color: var(--bg1);
   color: var(--fg);
-  border: 1px solid var(--fg);
+  border: 1px solid var(--line);
+  font: inherit;
   font-size: 16px;
   resize: none;
   vertical-align: middle;
   white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
+  outline: none;
 }
 
 .input-text::-webkit-scrollbar {

@@ -3,24 +3,15 @@ const path = require('path');
 const fs = require('fs');
 const {dialog} = remote;
 
+// components
 const {fireBrowser} = require('./components/browser.js');
-
-// fires up browser with current working directory
-//fireBrowser(app.getAppPath());
-
 const {zoom} = require('./components/viewer.js');
-
-//setViewerPDF("/Users/mbruno/Physics/talks/soton_20/soton20-bruno.pdf");
-//refreshViewer();
-
 const {compile} = require('./components/compiler.js');
-
-const {setupEditor, loadFile, saveCurrentFile, findNext} = require('./components/editor.js');
-setupEditor();
-
+const {loadFile, saveCurrentFile, findNext} = require('./components/editor.js');
 const {EditMenu} = require('./components/menu.js');
-
 const {Store} = require('./components/store.js');
+
+// preference file
 const prefs = new Store(path.join(__dirname,'../config'),'custom');
 
 remote.getCurrentWindow().on('close', (e) => {

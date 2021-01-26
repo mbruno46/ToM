@@ -6,8 +6,6 @@ Pressing Features:
 
 - replace, replaceAll
 
-- add support for rename
-
 - set main automatic if single tex file
 - auto detect \documentclass for setmain (modulo comments)
 

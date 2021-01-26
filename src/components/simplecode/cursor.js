@@ -64,7 +64,7 @@ function Cursor(editor) {
       tmp.parentNode.removeChild(tmp);
       return pos;
     },
-    line_pos
+    line_pos 
   }
 }
 

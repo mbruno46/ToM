@@ -1,0 +1,44 @@
+
+.popup {
+  background-color: var(--bg0);
+  border: 2px solid var(--fg);
+  margin: 0;
+  padding: 8px;
+  z-index: 2;
+  position: absolute;
+}
+
+.popup-textarea {
+  background-color: var(--bg1);
+  color: var(--selected);
+  border: 1px solid var(--line);
+  resize: none;
+  outline: none;
+  vertical-align: middle;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.popup-textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.popup-btn {
+  border: 0px;
+  background-color: inherit;
+  border-radius: 4px;
+  color: var(--fg);
+  padding: 6px 12px;
+  font-size: 16px;
+  vertical-align: middle;
+  outline: none;
+}
+
+.popup-btn:hover {
+  background-color: var(--line);
+}
+
+.popup-btn:active {
+  color: var(--selected);
+}

@@ -188,5 +188,4 @@ function fireBrowser(directory = null) {
   ul.setAttribute("project-path",directory);
 };
 
-
 exports.fireBrowser = fireBrowser;
