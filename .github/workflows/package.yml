@@ -4,4 +4,33 @@ on: [push]
 
 jobs:
   package:
-    runs-on: macos-latest, ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [macos-latest]
+        
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout
+      
+      - name: Install Node.js, npm
+        uses: actions/setup-node@v1
+        with:
+          node-version: 11
+          
+      - name: Install dependences
+        run: |
+          npm install --save-dev pdfjs-dist electron-packager
+      
+      - name: Release
+        if: ${{ matrix.os }} == macos-latest
+        run: |
+          npm run pacakge-mac
+          cd release-builds
+          tar -cf ToM-darwin-x64.tar.gz ToM-darwin-x64
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tom-macos
+          path: release-builds/ToM-darwin-x64.tar.gz
