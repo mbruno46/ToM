@@ -12,6 +12,7 @@ class FileTree {
     this.path = path;
     this.name = name;
     this.exts = exts;
+    this.isdir = fs.statSync(path).isDirectory();
     this.items = [];
   };
 

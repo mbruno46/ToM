@@ -144,7 +144,7 @@ function fillBrowser(ft, ul, idx, padding_) {
     }
   }
 
-  if (ft.items.length > 0) {
+  if (ft.isdir) {
     if (_idx < 0) {
       var li = createFolder(ft.name, ft.path, padding_);
       var subul = document.createElement("ul");
