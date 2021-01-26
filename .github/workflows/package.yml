@@ -23,14 +23,14 @@ jobs:
         run: |
           npm install --save-dev pdfjs-dist electron-packager
       
-      - name: Release
+      - name: Release Macos
         if: ${{ matrix.os }} == macos-latest
         run: |
-          npm run pacakge-mac
+          npm run package-mac
           cd release-builds
           tar -cf ToM-darwin-x64.tar.gz ToM-darwin-x64
       
       - uses: actions/upload-artifact@v2
         with:
-          name: tom-macos
+          name: tom-release
           path: release-builds/ToM-darwin-x64.tar.gz
