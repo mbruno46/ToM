@@ -166,20 +166,17 @@ function SimpleCode(editor) {
         event.preventDefault();
         document.execCommand('paste');
       }
+    // ln.refreshLineNumbers(getNumberOfLines());
+    // highlight();
   });
 
-  on("keypress", event => {
-    event.preventDefault();
-    insert(event.key);
-  })
-
   on("keyup", event => {
+    if (editor.textContent == "")
+      editor.textContent += '\n';
     if (event.defaultPrevented)
       return;
     if (event.isComposing)
       return;
-    if (editor.textContent == "")
-      editor.textContent += '\n';
     ln.refreshLineNumbers(getNumberOfLines());
     highlight();
   })
@@ -200,6 +197,8 @@ function SimpleCode(editor) {
     if (padding > 0) {
       insert(' '.repeat(padding));
     }
+
+    c.setCaret(pos[0]+1+padding);
     return false;
   }
 
@@ -277,6 +276,14 @@ function SimpleCode(editor) {
   };
 
   function getNumberOfLines() {
+    // sanity check
+    let c = Cursor(editor);
+    let pos = c.getSelection();
+    if (editor.textContent[editor.textContent.length-1] != '\n') {
+      editor.textContent += '\n';
+    }
+    c.setSelection(pos);
+
     const text = editor.textContent;
     return text.split("\n").length-1;
   }
@@ -285,8 +292,8 @@ function SimpleCode(editor) {
   return {
     reset() {
       editor.textContent = "\n";
+      editor.focus();
       ln.refreshLineNumbers(getNumberOfLines());
-      highlight();
     },
     setValue(text) {
       if (text == "") {

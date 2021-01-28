@@ -3,6 +3,9 @@ const { exec } = require('child_process');
 const b =  require('./browser.js'); // for some reason this works and above does not
 const { setViewerPDF, refreshViewer } = require('./viewer.js');
 
+const fixPath = require('fix-path');
+fixPath();
+
 var maintex = null;
 
 function setMain(target) {

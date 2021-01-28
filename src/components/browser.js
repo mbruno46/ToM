@@ -72,8 +72,9 @@ function createFile(name, path, padding_) {
         r.then((choice) => {
           if (choice.response==0) {load();}
         });
-      };
-      load();
+      } else {
+        load();
+      }
 
       function load() {
         loadFile(span.getAttribute("path"));

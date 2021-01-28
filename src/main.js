@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, MenuItem} = require('electron');
 const path = require('path');
+const {Preferences} = require('./components/preferences.js');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -9,11 +10,13 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const isMac = process.platform === 'darwin'
 
 const createWindow = () => {
+  const prefs = new Preferences(__dirname,'user-preferences');
+  let size = prefs.get('size');
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
+    width: size[0],
     minWidth: 800,
-    height: 800,
+    height: size[1],
     minHeight: 400,
     // useContentSize: true,
     webPreferences: {
@@ -26,7 +29,13 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
+
+  mainWindow.on('close', function() {
+    mainWindow.webContents.send('save-user-preferences', {
+      size: mainWindow.getSize()
+    });
+  });
 
   var menu = Menu.buildFromTemplate([
     ...(isMac ? [{

@@ -13,8 +13,9 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "fix-path": "^3.0.0",
     "pdfjs-dist": "^2.5.207"
-  },  
+  },
   "devDependencies": {
     "electron": "^11.2.0",
     "electron-packager": "^15.2.0",

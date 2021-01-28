@@ -30,17 +30,16 @@ function LineNumbers(css) {
     gutter,
     highlightLines(i0, i1) {
       var i;
-      for (i=line_number_selected[0];i<i0;i++) {
-        gutter.children[i-1].classList.remove('line-number-selected');
+      for (i=0;i<gutter.children.length;i++) {
+        gutter.children[i].classList.remove('line-number-selected');
       }
-      for (i=i0;i<=i1;i++) {
-        gutter.children[i-1].classList.add('line-number-selected');
+      try {
+        for (i=i0;i<=i1;i++) {
+          gutter.children[i-1].classList.add('line-number-selected');
+        }
+      } catch {
+        console.log(i0,i1,gutter.children.length);
       }
-      for (i=i1+1;i<=line_number_selected[1];i++) {
-        gutter.children[i-1].classList.remove('line-number-selected');
-      }
-      line_number_selected[0] = i0;
-      line_number_selected[1] = i1;
     },
     refreshLineNumbers(n) {
       let m = gutter.childNodes.length;
@@ -52,6 +51,7 @@ function LineNumbers(css) {
         addLine();
         m++;
       }
+      return true;
     }
   };
 }

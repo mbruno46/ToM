@@ -1,4 +1,6 @@
 const {remote, shell} = require('electron');
+const { ipcRenderer } = require('electron')
+
 const path = require('path');
 const fs = require('fs');
 const {dialog} = remote;
@@ -9,22 +11,26 @@ const {zoom} = require('./components/viewer.js');
 const {compile} = require('./components/compiler.js');
 const {loadFile, saveCurrentFile, findNext} = require('./components/editor.js');
 const {EditMenu} = require('./components/menu.js');
-const {Store} = require('./components/store.js');
+const {Preferences} = remote.require('./components/preferences.js');
 const {firePopup} = require('./components/popup.js');
 
-// preference file
-const prefs = new Store(__dirname,'preferences');
+// preference file open on startup
+const prefs = new Preferences(__dirname,'user-preferences');
 if (prefs.get('last-project') != null) {
   fireBrowser(prefs.get('last-project'), true);
-
 }
 
-remote.getCurrentWindow().on('close', (e) => {
+// save prefs when closing app
+ipcRenderer.on('save-user-preferences', (event, arg) => {
+  // from main
+  prefs.set('size', arg.size);
+  // from renderer
   let p = document.getElementById('filetree').getAttribute("project-path");
   prefs.set('last-project',p);
   prefs.dump();
-});
 
+  event.returnValue = 'DONE';
+});
 
 
 const open = document.getElementById('open');
@@ -111,12 +117,14 @@ compile_btn.onclick = ev => {
 
 
 const editor = document.getElementById('code-editor');
-editor.onkeydown = ev => {
+editor.onkeypress = ev => {
   // keypress ignores CTRL, etc.. so chenged makes sense here
   const fn = document.getElementById('editor-filename');
   if (fn.textContent.split('*').length == 1) {
     fn.textContent = fn.textContent + ' *';
   }
+};
+editor.onkeydown = ev => {
   if (ev.key == "s")
     if ((ev.ctrlKey || ev.metaKey)) {
       ev.preventDefault();
@@ -134,6 +142,12 @@ editor.oncontextmenu = ev => {
   const menu = EditMenu();
   menu.popup({ window: remote.getCurrentWindow() });
 }
+editor.onscroll = ev => {
+  let gutter = document.getElementById('gutter');
+  gutter.scrollTop = editor.scrollTop;
+  gutter.scrollLeft = editor.scrollLeft;
+};
+
 
 const viewer_menu_btn = document.getElementById('viewer-menu-btn');
 const viewer_menu_content = document.getElementById('viewer-menu-content');
@@ -167,18 +181,21 @@ function refreshWidthViewer() {
     document.getElementById('editor').offsetWidth + 'px';
 }
 
-let size = [0, 0, 0];
+let size = [0, 0, 0, 0];
 const resizer = document.getElementById('resizer');
 resizer.onmousedown = event => {
   size[0] = document.getElementById('editor').offsetWidth;
   size[1] = document.getElementById('viewer').offsetWidth;
   size[2] = event.pageX;
+  size[3] = document.getElementById('container').offsetWidth;;
 }
 document.onmousemove = event => {
   var diff = event.pageX - size[2];
   if (size[0]!=0 && size[1]!=0) {
-    document.getElementById('editor').style.width = size[0] + diff + 'px';
-    refreshWidthViewer();
+    let w = (size[0] + diff)/size[3]*100;
+    document.getElementById('editor').style.width = w + '%';
+    document.getElementById('viewer').style.width = 100 - w + '%';
+    // refreshWidthViewer();
   }
 }
 document.onmouseup = event => {

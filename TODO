@@ -1,6 +1,6 @@
 Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
- - remove x scrollbar from editor when lines are short
+ - latexmk won't work if open from dashboard, but works if open from terminal
 
 Pressing Features:
 
