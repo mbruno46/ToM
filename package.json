@@ -1,7 +1,7 @@
 {
   "name": "tom",
   "productName": "ToM",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TeX on Me",
   "main": "src/main.js",
   "scripts": {
