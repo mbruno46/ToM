@@ -26,7 +26,7 @@ function FileMenu(target, ext) {
 
       args = {type: 'inputText', defaultText: default_path, oktext: 'Rename',
         rows: "1", cols: "40"};
-      opts = {width: 'max-content', height: 48};
+      opts = {width: 'max-content', height: '48 px'};
       let p = firePopup([120, 120], opts, args);
       document.body.append(p);
 
@@ -97,7 +97,7 @@ function EditMenu() {
     {role: 'cut', accelerator: 'CmdOrCtrl+X'},
     {role: 'copy', accelerator: 'CmdOrCtrl+C'},
     {role: 'paste', accelerator: 'CmdOrCtrl+V'},
-    {role: 'selectAll', accelerator: 'CmdOrCtrl+A'}    
+    {role: 'selectAll', accelerator: 'CmdOrCtrl+A'}
   ]);
   return menu;
 };

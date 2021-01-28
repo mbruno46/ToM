@@ -8,6 +8,20 @@
   position: absolute;
 }
 
+.popup-div {
+  background-color: var(--bg1);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  max-width: 100%;
+  max-height: 100%;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.hlight-log {
+  color: var(--selected);
+}
+
 .popup-textarea {
   background-color: var(--bg1);
   color: var(--selected);

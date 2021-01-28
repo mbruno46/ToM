@@ -57,7 +57,7 @@ new_btn.onclick = e => {
   args = {type: 'inputText',
     defaultText: project.substring(project.lastIndexOf('/')), oktext: 'Create',
     rows: "1", cols: "40"};
-  opts = {width: 'max-content', height: 48};
+  opts = {width: 'max-content', height: '48 px'};
   let p = firePopup([120, 120], opts, args);
   document.body.append(p);
 

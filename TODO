@@ -1,6 +1,5 @@
 Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
- - latexmk won't work if open from dashboard, but works if open from terminal
 
 Pressing Features:
 
@@ -15,11 +14,6 @@ More Features:
 - Improve style of bracket hilightingh
 
 - Edit menu: add save + compile + comment, Cmd+S and Cmd+R Cmd+/
-
-
-- status bar:
-  - compilation success/error msg
-  - button for opening log of compilation
 
 
 - Documentation

@@ -5,6 +5,12 @@ function space(n) {
   return span;
 }
 
+function vspace(n) {
+  let span = document.createElement('span');
+  span.style.paddingTop = n + 'px';
+  return span;
+}
+
 function inputText(popup, args) {
   let text = document.createElement('textarea');
   text.classList.add('popup-textarea');
@@ -32,11 +38,38 @@ function inputText(popup, args) {
   popup.append(ok_btn);
 }
 
+function log(popup, args) {
+  popup.style.display = 'flex';
+  popup.style.flexFlow = 'column';
+
+  let span = document.createElement('span');
+  span.textContent = args.title;
+  span.style.textAlign = 'center';
+
+  let logtxt = document.createElement('div');
+  logtxt.classList.add('popup-div');
+  logtxt.innerHTML = args.logText.replace(/(! Undefined control sequence.)/g,
+    '<span class="hlight-log">$1</span>');
+
+  let close_btn = document.createElement('button');
+  close_btn.classList.add('popup-btn');
+  close_btn.textContent = "Close";
+  close_btn.onclick = event => {
+    popup.parentElement.removeChild(popup);
+  }
+
+  popup.append(span);
+  popup.append(vspace(8));
+  popup.append(logtxt);
+  popup.append(vspace(8));
+  popup.append(close_btn);
+}
+
 function firePopup(xy, opts, args) {
   const div = document.createElement('div');
   div.classList.add('popup');
   div.style.width = opts.width;
-  div.style.height = opts.height + 'px';
+  div.style.height = opts.height;
 
   div.style.left = xy[0] + 'px';
   div.style.top = xy[1] + 'px';
@@ -44,6 +77,10 @@ function firePopup(xy, opts, args) {
   if (args.type == 'inputText') {
     inputText(div, args);
   }
+  if (args.type == 'log') {
+    log(div, args);
+  }
+
   return div;
 }
 
