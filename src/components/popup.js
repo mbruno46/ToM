@@ -48,8 +48,7 @@ function log(popup, args) {
 
   let logtxt = document.createElement('div');
   logtxt.classList.add('popup-div');
-  logtxt.innerHTML = args.logText.replace(/(! Undefined control sequence.)/g,
-    '<span class="hlight-log">$1</span>');
+  logtxt.textContent = args.logText;
 
   let close_btn = document.createElement('button');
   close_btn.classList.add('popup-btn');

@@ -4,6 +4,7 @@ const fs = require('fs');
 const b =  require('./browser.js'); // for some reason this works
 const {firePopup} = require('./popup.js');
 
+let win = require('electron').remote.getCurrentWindow();
 
 function FileMenu(target, ext) {
   const menu = new Menu();
@@ -91,8 +92,10 @@ function FolderMenu(target) {
 
 function EditMenu() {
   var menu = Menu.buildFromTemplate([
-    {role: 'undo'},
-    {role: 'redo'},
+    {
+      label: 'undo',
+    },
+    {label: 'redo'},
     {type: 'separator'},
     {role: 'cut', accelerator: 'CmdOrCtrl+X'},
     {role: 'copy', accelerator: 'CmdOrCtrl+C'},

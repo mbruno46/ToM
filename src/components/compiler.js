@@ -1,4 +1,4 @@
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 // const {fireBrowser} = require('./browser.js');
 const b =  require('./browser.js'); // for some reason this works and above does not
 const { setViewerPDF, refreshViewer } = require('./viewer.js');
@@ -37,9 +37,10 @@ function compile(fire_browser = false) {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {
-      let data = fs.readFileSync(maintex.substring(0,maintex.lastIndexOf('.')) + '.log', 'utf-8');
+      // let data = fs.readFileSync(maintex.substring(0,maintex.lastIndexOf('.')) + '.log', 'utf-8');
+      let data = execSync('grep "\! " -A 2 -B 1 ' + maintex.substring(0,maintex.lastIndexOf('.')) + '.log');
       args = {type: 'log',  logText: data, title: 'LaTeX Compilation Error'};
-      opts = {width: '80vw', height: '80vh'};
+      opts = {width: '80vw', height: 'minmax(max-content,200px)'};
       let p = firePopup([120, 120], opts, args);
       document.body.append(p);
       // alert(`exec error: ${err}`);

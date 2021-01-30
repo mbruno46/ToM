@@ -32,6 +32,7 @@ ipcRenderer.on('save-user-preferences', (event, arg) => {
   event.returnValue = 'DONE';
 });
 
+let win = remote.getCurrentWindow();
 
 const open = document.getElementById('open');
 open.onclick = e => {
@@ -140,7 +141,7 @@ editor.onkeydown = ev => {
 editor.oncontextmenu = ev => {
   ev.preventDefault();
   const menu = EditMenu();
-  menu.popup({ window: remote.getCurrentWindow() });
+  menu.popup({ window: win });
 }
 editor.onscroll = ev => {
   let gutter = document.getElementById('gutter');

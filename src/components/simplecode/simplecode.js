@@ -1,6 +1,8 @@
 const {LineNumbers} = require('./linenumbers.js');
 const {Cursor} = require('./cursor.js');
 const {Find} = require('./find.js')
+const {highlightText, highlightBrackets} = require('./highlighter.js');
+const {History} = require('./history.js');
 
 function loadCSS() {
   var link = document.createElement( "link" );
@@ -9,92 +11,6 @@ function loadCSS() {
   link.rel = "stylesheet";
 
   document.getElementsByTagName( "head" )[0].appendChild( link );
-}
-
-var replacements = null;
-
-function setup_highlighter() {
-  // https://regex101.com/r/uF4oY4/1
-  kwrds = ['begin','end','title','author','date','section','subsection',
-    'usepackage','documentclass'];
-  re = ''
-  for (kwrd of kwrds) {
-    re += `(?:\\\\${kwrd})`
-    if (kwrd != kwrds[kwrds.length-1]) {
-      re += '|'
-    }
-  }
-  replacements = new Map([
-    [/(%.*)/g, '<span class="hlight-comment">$1</span>'],
-    [new RegExp(`(${re})\\[(.*?)\\]\{(.*?)\}`,'g'),
-      '$1[<span class="hlight-square-bracket">$2</span>]{<span class="hlight-curly-bracket">$3</span>}'],
-    [new RegExp(`(${re})\{(.*?)\}`,'g'),
-      '$1{<span class="hlight-curly-bracket">$2</span>}'],
-    // [/(\\\w+)\[(.+?)\]\{(.+?)\}/g, '$1[<span class="hlight-square-bracket">$2</span>]{<span class="hlight-curly-bracket">$3</span>}'],
-    // [/\[(.+?)\]/g, '{<span class="hlight-square-bracket">$1</span>}']
-    [/(\\\w+)/g,'<span class="hlight-command">$1</span>'],
-    ])
-}
-
-function highlight_brackets(text, pos) {
-  var b = null;
-  if (text[pos]=='\{') {
-    b = posClosingBracket(text, pos, +1, ['\{','\}']);
-  }
-  if (text[pos]=='\}') {
-    b = posClosingBracket(text, pos, -1, ['\{','\}']);
-  }
-  if (text[pos]=='\[') {
-    b = posClosingBracket(text, pos, +1, ['\[','\]']);
-  }
-  if (text[pos]=='\]') {
-    b = posClosingBracket(text, pos, -1, ['\[','\]']);
-  }
-  if (text[pos]=='\(') {
-    b = posClosingBracket(text, pos, +1, ['\(','\)']);
-  }
-  if (text[pos]=='\)') {
-    b = posClosingBracket(text, pos, -1, ['\(','\)']);
-  }
-
-  if (b != null) {
-    let i0 = Math.min(b, pos);
-    let i1 = Math.max(b, pos);
-    text = text.substring(0,i0) + `<span class="hlight-bracket">${text[i0]}</span>` +
-      text.substring(i0+1,i1) + `<span class="hlight-bracket">${text[i1]}</span>` +
-      text.substring(i1+1);
-  }
-
-  function posClosingBracket(text, start, dir, match) {
-    var i, n;
-    n = 0;
-    for (i=start; (dir>0) ? (i<text.length) : (i>0);i+=dir) {
-      if (text[i] == match[0]) {
-        n++;
-      }
-      if (text[i] == match[1]) {
-        n--;
-      }
-      if (n==0) {
-        return i;
-      }
-    }
-    return null;
-  }
-
-  return text;
-};
-
-function highlighter(text, pos) {
-  if (replacements == null) {
-    setup_highlighter();
-  }
-
-  replacements.forEach(function(value, key) {
-    text = text.replace(key, value);
-  });
-
-  return text;
 }
 
 
@@ -117,8 +33,8 @@ function SimpleCode(editor) {
   const options = Object.assign({tab: 4});
 
   let ln = init(editor);
-  let changed = false;
   let currentFind = null;
+  let history = History(editor);
 
   // short-cut
   const on = (type, fn) => {
@@ -168,6 +84,27 @@ function SimpleCode(editor) {
       }
     // ln.refreshLineNumbers(getNumberOfLines());
     // highlight();
+    if (event.key == "z") {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
+        event.preventDefault();
+        let tmp = history.getPreviousState();
+        editor.innerHTML = tmp.data;
+        let c = Cursor(editor);
+        c.setSelection(tmp.pos);
+      }
+    }
+    if (event.key == "y") {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
+        event.preventDefault();
+        let tmp = history.getNextState();
+        editor.innerHTML = tmp.data;
+        let c = Cursor(editor);
+        c.setSelection(tmp.pos);
+      }
+    }
+    if (!event.isComposing) {
+      history.recordState();
+    }
   });
 
   on("keyup", event => {
@@ -182,6 +119,7 @@ function SimpleCode(editor) {
   })
 
   on("click", event => {
+    editor.focus();
     highlight();
   })
 
@@ -259,7 +197,7 @@ function SimpleCode(editor) {
     let c = Cursor(editor);
     let pos = c.getSelection();
 
-    editor.innerHTML = highlighter(editor.textContent, pos[1]);
+    editor.innerHTML = highlightText(editor.textContent);
 
     let i0 = editor.textContent.substring(0,pos[0]).split('\n').length;
     let i1 = editor.textContent.substring(pos[0], pos[1]).split('\n').length - 1;
@@ -269,7 +207,7 @@ function SimpleCode(editor) {
     c.setSelection(pos);
 
     let pos_html = c.getCursorHTML() - 1;
-    editor.innerHTML = highlight_brackets(editor.innerHTML, pos_html);
+    editor.innerHTML = highlightBrackets(editor.innerHTML, pos_html);
 
     editor.focus();
     c.setSelection(pos);
