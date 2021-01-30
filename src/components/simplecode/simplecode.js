@@ -87,23 +87,20 @@ function SimpleCode(editor) {
     if (event.key == "z") {
       if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
         event.preventDefault();
-        let tmp = history.getPreviousState();
-        editor.innerHTML = tmp.data;
-        let c = Cursor(editor);
-        c.setSelection(tmp.pos);
+        history.getPreviousState();
       }
     }
     if (event.key == "y") {
       if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
         event.preventDefault();
-        let tmp = history.getNextState();
-        editor.innerHTML = tmp.data;
-        let c = Cursor(editor);
-        c.setSelection(tmp.pos);
+        history.getNextState();
       }
     }
     if (!event.isComposing) {
-      history.recordState();
+      if (!event.key !== "Meta" && event.key !== "Control"
+      && event.key !== "Alt" && !event.key.startsWith("Arrow")) {
+        history.recordState();
+      }
     }
   });
 
@@ -254,6 +251,9 @@ function SimpleCode(editor) {
 
       editor.focus();
       c.setSelection([pos,pos+word.length]);
+    },
+    getHistory() {
+      return history;
     }
   }
 }

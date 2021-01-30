@@ -90,12 +90,22 @@ function FolderMenu(target) {
 }
 
 
-function EditMenu() {
+function EditMenu(history) {
   var menu = Menu.buildFromTemplate([
     {
-      label: 'undo',
+      label: 'Undo',
+      accelerator: 'CmdOrCtrl+Z',
+      click: () => {
+        history.getPreviousState();
+      }
     },
-    {label: 'redo'},
+    {
+      label: 'Redo',
+      accelerator: 'CmdOrCtrl+Y',
+      click: () => {
+        history.getNextState();
+      }
+    },
     {type: 'separator'},
     {role: 'cut', accelerator: 'CmdOrCtrl+X'},
     {role: 'copy', accelerator: 'CmdOrCtrl+C'},

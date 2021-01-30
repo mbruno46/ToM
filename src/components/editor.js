@@ -4,6 +4,13 @@ const {SimpleCode} = require('./simplecode/simplecode.js');
 let sc = SimpleCode(document.getElementById('code-editor'));
 sc.reset();
 
+const editor = document.getElementById('code-editor');
+editor.oncontextmenu = ev => {
+  ev.preventDefault();
+  const menu = EditMenu(sc.getHistory());
+  menu.popup({ window: require('electron').remote.getCurrentWindow() });
+}
+
 function loadFile(fname) {
   fs.readFile(fname, 'utf-8', (err, data) => {
       if(err){

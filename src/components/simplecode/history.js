@@ -6,6 +6,14 @@ function History(editor) {
   var idx;
   let at = -1;
 
+  function setState() {
+    let tmp = history[idx];
+    editor.innerHTML = tmp.data;
+    editor.focus();
+    let c = Cursor(editor);
+    c.setSelection(tmp.pos);
+  }
+
   return {
     recordState() {
       const data = editor.innerHTML;
@@ -33,13 +41,13 @@ function History(editor) {
       if (idx > 0) {
         idx--;
       }
-      return history[idx];
+      setState();
     },
     getNextState() {
       if (idx < at) {
         idx++;
       }
-      return history[idx];
+      setState();
     }
   }
 }

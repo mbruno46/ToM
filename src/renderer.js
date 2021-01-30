@@ -138,11 +138,6 @@ editor.onkeydown = ev => {
       compile();
     }
 }
-editor.oncontextmenu = ev => {
-  ev.preventDefault();
-  const menu = EditMenu();
-  menu.popup({ window: win });
-}
 editor.onscroll = ev => {
   let gutter = document.getElementById('gutter');
   gutter.scrollTop = editor.scrollTop;
