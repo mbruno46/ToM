@@ -3,6 +3,7 @@ const {loadFile, saveCurrentFile, hasDocumentClass} = require('./editor.js');
 const {FileMenu, FolderMenu} = require('./menu.js');
 const {firePreview} = require('./preview.js');
 const {setMain} = require('./compiler.js');
+const fs = require('fs');
 
 var padding_step = 0.8;
 // extensions of files handled by the program
@@ -211,6 +212,10 @@ function fireBrowser(directory = null, auto_setmain = false) {
     if (auto_setmain)
       setMain(has_document_class);
   }
+
+  fs.watch(directory, {recursive: true},() => {
+    fireBrowser();
+  })
 };
 
 exports.fireBrowser = fireBrowser;

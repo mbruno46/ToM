@@ -198,21 +198,25 @@ function SCode(editor) {
     ln.refreshLineNumbers(n);
   }
 
+  function reset() {
+    editor.textContent = "\n";
+    editor.focus();
+    refreshLineNumbers();
+    history.reset();
+  }
+
 
   return {
-    reset() {
-      editor.textContent = "\n";
-      editor.focus();
-      refreshLineNumbers();
-    },
+    reset,
     setValue(text) {
+      reset();
       if (text == "") {
-        reset();
         return;
       }
       editor.textContent = text;
       refreshLineNumbers();
       highlight();
+      history.recordState();
     },
     getValue() {
       return editor.textContent;

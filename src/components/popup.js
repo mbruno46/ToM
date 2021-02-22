@@ -18,7 +18,10 @@ function inputText(popup, args) {
   text.value = args.defaultText;
   text.rows = args.rows;
   text.cols = args.cols;
-
+  text.addEventListener("keydown", event => {
+    if (event.key == "Enter") {event.preventDefault();}
+  });
+  
   let cancel_btn = document.createElement('button');
   cancel_btn.classList.add('popup-btn');
   cancel_btn.textContent = "Cancel";

@@ -20,6 +20,7 @@ if (prefs.get('last-project') != null) {
   fireBrowser(prefs.get('last-project'), true);
 }
 
+
 // save prefs when closing app
 ipcRenderer.on('save-user-preferences', (event, arg) => {
   // from main
@@ -205,3 +206,9 @@ const find = document.getElementById('find');
 find_btn.onclick = ev => {
   findNext(find.value);
 }
+find.addEventListener("keydown", event => {
+  if (event.key == "Enter") {
+    event.preventDefault();
+    findNext(find.value);
+  }
+})

@@ -48,6 +48,10 @@ function History(editor) {
         idx++;
       }
       setState();
+    },
+    reset() {
+      history = [];
+      at = -1;
     }
   }
 }
