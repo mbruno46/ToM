@@ -1,5 +1,5 @@
 const {remote, shell} = require('electron');
-const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron');
 
 const path = require('path');
 const fs = require('fs');
@@ -183,7 +183,7 @@ resizer.onmousedown = event => {
   size[0] = document.getElementById('editor').offsetWidth;
   size[1] = document.getElementById('viewer').offsetWidth;
   size[2] = event.pageX;
-  size[3] = document.getElementById('container').offsetWidth;;
+  size[3] = document.getElementById('container').offsetWidth;
 }
 document.onmousemove = event => {
   var diff = event.pageX - size[2];

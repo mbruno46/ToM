@@ -1,64 +1,35 @@
-
-class Line {
-  constructor(text, pos){
-    this.text = text;
-    this.pos = pos;
-  };
-}
-
 function Cursor(editor) {
-  var start, end, dir;
+  var anchor, focus;
   var line_pos = [];
 
-  if (editor.textContent == "") {
-    start =0;
-    end = 0;
+  let s = document.getSelection();
+
+  if (editor.textContent == "\n") {
+    anchor = 0;
+    focus = 0;
+  }
+  else {
+    [anchor, focus] = findAnchorFocus(s, editor);
   }
 
-  let s = document.getSelection();
-  dir = s.anchorOffset <= s.focusOffset ? "->" : "<-";
+  let min = (anchor <= focus) ? anchor : focus;
+  let delta = Math.abs(anchor - focus);
 
-  let r0 = s.getRangeAt(0);
-  let r = r0.cloneRange();
-
-  r.selectNodeContents(editor);
-  r.setEnd(r0.endContainer, r0.endOffset);
-  let n = r.toString().split('\n').length;
-  end = r.toString().length;
-
-  r.selectNodeContents(editor);
-  r.setEnd(r0.startContainer, r0.startOffset);
-  let m = r.toString().split('\n').length;
-  start = r.toString().length;
-
-  let idx = r.toString().lastIndexOf('\n')+1;
+  let idx = editor.textContent.substring(0,min).lastIndexOf('\n') + 1;
   line_pos.push(idx);
-  if (n>m) {
-    var i;
-    for (i=0;i<(n-m);i++) {
-      idx += editor.textContent.substring(idx).indexOf('\n')+1;
-      line_pos.push(idx);
-    }
+  for (var i=0;i<editor.textContent.substring(idx,idx+delta).split('\n').length-1;i++) {
+    idx += editor.textContent.substring(idx).indexOf('\n')+1;
+    line_pos.push(idx);
   }
 
   return {
     getSelection() {
-      return [start, end];
+      return [anchor, focus];
     },
     setSelection(pos) {
-      let cursor = findNodeFromPos(editor, pos[0]);
-      if (pos[1] == pos[0]) {
-        s.setBaseAndExtent(cursor[0], cursor[1], cursor[0], cursor[1]);
-      }
-      else {
-        let cursor2 = findNodeFromPos(editor, pos[1]);
-        if (dir=="->") {
-          s.setBaseAndExtent(cursor[0], cursor[1], cursor2[0], cursor2[1]);
-        }
-        else {
-          s.setBaseAndExtent(cursor2[0], cursor2[1], cursor[0], cursor[1]);
-        }
-      }
+      let c0 = findNodeFromPos(editor, pos[0]);
+      let c1 = findNodeFromPos(editor, pos[1]);
+      s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
     },
     setCaret(pos) {
       let cursor = findNodeFromPos(editor, pos);
@@ -105,6 +76,25 @@ function findNodeFromPos(parent, pos) {
   }
 
   return [null, n];
+}
+
+function findAnchorFocus(s, editor) {
+  let dir = (s.focusOffset >= s.anchorOffset);
+
+  let r0 = s.getRangeAt(0);
+  let r = r0.cloneRange();
+
+  r.selectNodeContents(editor);
+  r.setEnd(r0.endContainer, r0.endOffset);
+  focus = (dir) ? r.toString().length : 0;
+  anchor = (dir) ? 0 : r.toString().length;
+
+  r.selectNodeContents(editor);
+  r.setEnd(r0.startContainer, r0.startOffset);
+  focus += (dir) ? 0: r.toString().length ;
+  anchor += (dir) ? r.toString().length : 0;
+
+  return [anchor, focus];
 }
 
 exports.Cursor = Cursor;

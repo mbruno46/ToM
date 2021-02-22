@@ -28,7 +28,7 @@ jobs:
         run: |
           npm run package-mac
           cd release-builds
-          tar -cf ToM-darwin-x64.tar.gz ToM-darwin-x64
+          tar -zcf ToM-darwin-x64.tar.gz ToM-darwin-x64
       
       - uses: actions/upload-artifact@v2
         with:

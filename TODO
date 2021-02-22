@@ -1,9 +1,21 @@
 Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
+ - escape <> symbols
+ - slow response line number highlighter
 
 Pressing Features:
 
-- popup log compilation error: highlight quickly which file and what errors!
+- presentation mode with mouse pointer
+
+- highlight strategy: add \textbf, \texttt etc..
+- hilight strategy: add \hskip{2em} (2em in red) and allow also for \hskip 2em (2em in red)
+
+- file browser does not adjurn if file created outisde tom; perhaps add 
+  automatic refresh every second? too cpu heavy?
+
+- hit enter loses focus end of the page
+
+- home/end for beginning/end of the line?
 
 - replace, replaceAll
 

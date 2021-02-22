@@ -1,7 +1,7 @@
 const fs = require('electron').remote.require('fs');
-const {SimpleCode} = require('./simplecode/simplecode.js');
+const {SCode} = require('./scode/scode.js');
 
-let sc = SimpleCode(document.getElementById('code-editor'));
+let sc = SCode(document.getElementById('code-editor'));
 sc.reset();
 
 const editor = document.getElementById('code-editor');
