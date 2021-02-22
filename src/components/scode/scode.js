@@ -3,6 +3,7 @@ const tex = require('./tex.js');
 const {Cursor} = require('./cursor.js');
 const {History} = require('./history.js');
 const {Find} = require('./find.js')
+const {LineNumbers} = require('./linenumbers.js');
 
 var ntab = 4;
 var timeout = 100;
@@ -18,12 +19,12 @@ function init(editor) {
   editor.setAttribute("contentEditable", "plaintext-only");
   editor.setAttribute("spellcheck", "false");
 
-  // return LineNumbers(css);
+  return LineNumbers(getComputedStyle(editor));
 }
 
 
 function SCode(editor) {
-  init(editor);
+  let ln = init(editor);
 
   let currentFind = null;
   let refTime = Date.now();
@@ -38,16 +39,6 @@ function SCode(editor) {
   on("keydown", event => {
     let prevent = false;
 
-    if (event.key == "Enter") {
-      prevent = true;
-      newLine();
-    }
-    // tab key
-    if (event.key == "Tab") {
-      regex = new RegExp(`^\\s{0,${ntab}}()`);
-      addrmTextBeginningSelection(" ".repeat(ntab), regex, (event.shiftKey) ? 'rm' : 'add');
-    }
-
     if ((event.ctrlKey || event.metaKey)) {
       // cut,copy,paste
       if (event.key == "x") {document.execCommand('cut');}
@@ -60,14 +51,24 @@ function SCode(editor) {
       // undo/redo
       if (event.key == "z" && !event.shiftKey) {history.getPreviousState();}
       if (event.key == "y" && !event.shiftKey) {history.getNextState();}
-
     }
 
-    sanity_check();
-    setTimeout(highlight,30);
+    if (event.key == "Enter") {
+      prevent = true;
+      newLine();
+    }
+    else if (event.key == "Tab") {
+      prevent = true;
+      regex = new RegExp(`^\\s{0,${ntab}}()`);
+      addrmTextBeginningSelection(" ".repeat(ntab), regex, (event.shiftKey) ? 'rm' : 'add');
+    }
 
-    // calling preventDefault below is a trick to execute highlight and other
-    // functions above; otherwise they are not executed;
+    setTimeout(() => {
+      sanity_check();
+      refreshLineNumbers();
+      highlight();
+    },30);
+
     if (prevent) {
       event.preventDefault();
     }
@@ -77,6 +78,11 @@ function SCode(editor) {
       history.recordState();
       refTime = Date.now();
     }
+  });
+
+
+  on("click", event => {
+    highlight();
   });
 
 
@@ -153,7 +159,6 @@ function SCode(editor) {
       }
     };
 
-    highlight();
     c.setSelection(pos);
   }
 
@@ -164,15 +169,16 @@ function SCode(editor) {
     let pos = c.getSelection();
 
     editor.innerHTML = tex.highlightText(editor.textContent);
+    ln.highlightLines(c.line_numbers[0], c.line_numbers[1]);
 
     editor.focus();
     c.setSelection(pos);
 
-    // let pos_html = c.getCursorHTML() - 1;
-    // editor.innerHTML = tex.highlightBrackets(editor.innerHTML, pos_html);
-    //
-    // editor.focus();
-    // c.setSelection(pos);
+    let pos_html = c.getCursorHTML() - 1;
+    editor.innerHTML = tex.highlightBrackets(editor.innerHTML, pos_html);
+
+    editor.focus();
+    c.setSelection(pos);
   }
 
 
@@ -187,11 +193,17 @@ function SCode(editor) {
   };
 
 
+  function refreshLineNumbers() {
+    let n = editor.textContent.split("\n").length-1;
+    ln.refreshLineNumbers(n);
+  }
+
+
   return {
     reset() {
       editor.textContent = "\n";
       editor.focus();
-      // ln.refreshLineNumbers(getNumberOfLines());
+      refreshLineNumbers();
     },
     setValue(text) {
       if (text == "") {
@@ -199,7 +211,7 @@ function SCode(editor) {
         return;
       }
       editor.textContent = text;
-      // ln.refreshLineNumbers(getNumberOfLines());
+      refreshLineNumbers();
       highlight();
     },
     getValue() {

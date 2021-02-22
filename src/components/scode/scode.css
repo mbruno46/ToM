@@ -1,6 +1,9 @@
 .hlight-bracket {
   /* background-color: var(--yellow); */
-  border: 1px solid var(--yellow);
+  /* border: 1px solid var(--yellow); */
+  font-weight: bold;
+  color: var(--yellow);
+  text-decoration: overline;
 }
 
 .hlight-comment {

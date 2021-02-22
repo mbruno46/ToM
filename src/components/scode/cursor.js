@@ -1,6 +1,7 @@
 function Cursor(editor) {
   var anchor, focus;
   var line_pos = [];
+  var line_numbers = [];
 
   let s = document.getSelection();
 
@@ -22,6 +23,9 @@ function Cursor(editor) {
     line_pos.push(idx);
   }
 
+  line_numbers.push(editor.textContent.substring(0,min).split('\n').length);
+  line_numbers.push(line_numbers[0] + line_pos.length-1);
+
   return {
     getSelection() {
       return [anchor, focus];
@@ -42,7 +46,8 @@ function Cursor(editor) {
       tmp.parentNode.removeChild(tmp);
       return pos;
     },
-    line_pos
+    line_pos,
+    line_numbers
   }
 }
 
