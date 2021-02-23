@@ -10,6 +10,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "release": "electron-builder"
   },
   "build": {
@@ -18,7 +19,8 @@
     "files": [
       "src",
       "public",
-      "!node_modules"
+      "!node_modules",
+      "!doc"
     ],
     "directories": {
       "output": "release-builds"
