@@ -212,10 +212,6 @@ function fireBrowser(directory = null, auto_setmain = false) {
     if (auto_setmain)
       setMain(has_document_class);
   }
-
-  fs.watch(directory, {recursive: true},() => {
-    fireBrowser();
-  })
 };
 
 exports.fireBrowser = fireBrowser;

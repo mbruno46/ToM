@@ -4,6 +4,8 @@ const {Cursor} = require('./cursor.js');
 const {History} = require('./history.js');
 const {Find} = require('./find.js')
 const {LineNumbers} = require('./linenumbers.js');
+const {AutoComplete} = require('./autocomplete.js');
+
 
 var ntab = 4;
 var timeout = 100;
@@ -29,6 +31,8 @@ function SCode(editor) {
   let currentFind = null;
   let refTime = Date.now();
   let history = History(editor);
+  let ac = AutoComplete(editor);
+
 
   // short-cut
   const on = (type, fn) => {
@@ -63,10 +67,12 @@ function SCode(editor) {
       addrmTextBeginningSelection(" ".repeat(ntab), regex, (event.shiftKey) ? 'rm' : 'add');
     }
 
+
     setTimeout(() => {
       sanity_check();
       refreshLineNumbers();
       highlight();
+      ac.refreshTags();
     },30);
 
     if (prevent) {
@@ -80,6 +86,10 @@ function SCode(editor) {
     }
   });
 
+
+  on("input", event => {
+    ac.showSuggestions();
+  });
 
   on("click", event => {
     highlight();
