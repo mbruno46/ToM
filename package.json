@@ -2,15 +2,32 @@
   "name": "tom",
   "productName": "ToM",
   "version": "0.1.1",
+  "keywords": [],
+  "author": "Mattia Bruno",
+  "license": "GPL-3.0-only",
   "description": "TeX on Me",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds --ignore='dummy|LICENSE|TODO|screenshots|README.md|node_modules'"
+    "pack": "electron-builder --dir",
+    "release": "electron-builder"
   },
-  "keywords": [],
-  "author": "Mattia Bruno",
-  "license": "MIT",
+  "build": {
+    "appId": "com.electron.tom",
+    "copyright": "Copyright © 2021 ${author}",
+    "files": [
+      "src",
+      "public",
+      "!node_modules"
+    ],
+    "directories": {
+      "output": "release-builds"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "fix-path": "^3.0.0",
@@ -18,7 +35,7 @@
   },
   "devDependencies": {
     "electron": "^11.2.0",
-    "electron-packager": "^15.2.0",
+    "electron-builder": "^22.9.1",
     "pdfjs-dist": "^2.5.207"
   }
 }
