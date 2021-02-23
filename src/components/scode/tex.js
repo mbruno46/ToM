@@ -3,7 +3,7 @@ var replacements = null;
 function setup_highlighter() {
   // https://regex101.com/r/uF4oY4/1
   kwrds = ['begin','end','title','author','date','section','subsection',
-    'usepackage','documentclass'];
+    'usepackage','documentclass','label'];
   re = ''
   for (kwrd of kwrds) {
     re += `(?:\\\\${kwrd})`

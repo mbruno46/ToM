@@ -59,7 +59,7 @@ function SCode(editor) {
 
     if (event.key == "Enter") {
       prevent = true;
-      newLine();
+      if (!ac.isSuggesting()) {newLine();}
     }
     else if (event.key == "Tab") {
       prevent = true;
@@ -88,7 +88,8 @@ function SCode(editor) {
 
 
   on("input", event => {
-    ac.showSuggestions();
+    // enter is only command that triggers new suggestion but we do not want to
+    ac.showSuggestions(event.inputType == "");
   });
 
   on("click", event => {
@@ -119,7 +120,7 @@ function SCode(editor) {
     let c = Cursor(editor);
     let pos = c.getSelection();
 
-    let tmp = editor.textContent.substring(c.line_pos[0]).match(/(^ *)(\\begin\{\w+\})?/);
+    let tmp = editor.textContent.substring(c.line_pos[0]).match(/(^ *)(\\begin\{.*\})?/);
     var padding = tmp[1].length;
     if (tmp[2]) {padding += ntab;}
 

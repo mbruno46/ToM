@@ -1,5 +1,5 @@
 function Cursor(editor) {
-  var anchor, focus;
+  var anchor, focus, pos;
   var line_pos = [];
   var line_numbers = [];
 
@@ -8,9 +8,10 @@ function Cursor(editor) {
   if (editor.textContent == "\n") {
     anchor = 0;
     focus = 0;
+    pos = {x: 0, y:0};
   }
   else {
-    [anchor, focus] = findAnchorFocus(s, editor);
+    [anchor, focus, pos] = findAnchorFocus(s, editor);
   }
 
   let min = (anchor <= focus) ? anchor : focus;
@@ -47,7 +48,8 @@ function Cursor(editor) {
       return pos;
     },
     line_pos,
-    line_numbers
+    line_numbers,
+    pos
   }
 }
 
@@ -87,6 +89,7 @@ function findAnchorFocus(s, editor) {
   let dir = (s.focusOffset >= s.anchorOffset);
 
   let r0 = s.getRangeAt(0);
+  let rect = r0.getClientRects()[0];
   let r = r0.cloneRange();
 
   r.selectNodeContents(editor);
@@ -99,7 +102,7 @@ function findAnchorFocus(s, editor) {
   focus += (dir) ? 0: r.toString().length ;
   anchor += (dir) ? r.toString().length : 0;
 
-  return [anchor, focus];
+  return [anchor, focus, {x: rect.left, y: rect.top}];
 }
 
 exports.Cursor = Cursor;

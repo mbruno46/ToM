@@ -21,7 +21,7 @@ function inputText(popup, args) {
   text.addEventListener("keydown", event => {
     if (event.key == "Enter") {event.preventDefault();}
   });
-  
+
   let cancel_btn = document.createElement('button');
   cancel_btn.classList.add('popup-btn');
   cancel_btn.textContent = "Cancel";
@@ -67,6 +67,18 @@ function log(popup, args) {
   popup.append(close_btn);
 }
 
+function autocomplete(popup, args) {
+  popup.style.display = 'flex';
+  popup.style.flexFlow = 'column';
+
+  for (var i=0;i<args.suggestion.length;i++) {
+    let span = document.createElement('span');
+    span.textContent = args.suggestion[i];
+    span.style.textAlign = 'left';
+    popup.append(span);
+  }
+}
+
 function firePopup(xy, opts, args) {
   const div = document.createElement('div');
   div.classList.add('popup');
@@ -79,8 +91,11 @@ function firePopup(xy, opts, args) {
   if (args.type == 'inputText') {
     inputText(div, args);
   }
-  if (args.type == 'log') {
+  else if (args.type == 'log') {
     log(div, args);
+  }
+  else if (args.type == 'autocomplete') {
+    autocomplete(div, args);
   }
 
   return div;
