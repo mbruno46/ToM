@@ -84,6 +84,9 @@ function firePopup(xy, opts, args) {
   div.classList.add('popup');
   div.style.width = opts.width;
   div.style.height = opts.height;
+  if ('font' in opts) {
+    div.style.font = opts.font;
+  }
 
   div.style.left = xy[0] + 'px';
   div.style.top = xy[1] + 'px';

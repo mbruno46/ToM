@@ -113,9 +113,9 @@ function AutoComplete(editor) {
       closePopup();
       if (shouldSuggest()) {
         let s = search(keyword);
-        opts = {width: 'auto', height: 'auto'};
+        opts = {width: 'auto', height: 'auto',font: getComputedStyle(editor).font};
         args = {type: 'autocomplete', suggestion: s}
-
+        console.log(opts);
         if (s.length>0) {
           popup = firePopup([cpos.x-16,cpos.y+16], opts, args);
           document.body.append(popup);
