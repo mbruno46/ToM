@@ -28,7 +28,7 @@
     "mac": {
       "category": "public.app-category.productivity",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
-    }
+    },
     "win": {
         "target": "nsis"
     },
