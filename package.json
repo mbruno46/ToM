@@ -3,7 +3,10 @@
   "productName": "ToM",
   "version": "0.1.1",
   "keywords": [],
-  "author": "Mattia Bruno",
+  "author": {
+    "name": "Mattia Bruno",
+    "email": "38449948+mbruno46@users.noreply.github.com"
+  },
   "license": "GPL-3.0-only",
   "description": "TeX on Me",
   "main": "src/main.js",
