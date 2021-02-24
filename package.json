@@ -29,6 +29,13 @@
       "category": "public.app-category.productivity",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     }
+    "win": {
+        "target": "nsis"
+    },
+    "linux": {
+        "target": "AppImage, deb",
+        "category": "Utility"
+    }
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
