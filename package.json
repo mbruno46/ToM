@@ -1,20 +1,27 @@
 {
   "name": "tom",
   "productName": "ToM",
+  "description": "TeX on Me",
   "version": "0.1.1",
-  "keywords": [],
+  "keywords": [
+    "note-taking",
+    "LaTex"
+  ],
   "author": {
     "name": "Mattia Bruno",
     "email": "38449948+mbruno46@users.noreply.github.com"
   },
+  "homepage": "https://mbruno46.github.io/ToM/",
+  "bugs": {
+    "url": "https://github.com/mbruno46/ToM/issues"
+  },
   "license": "GPL-3.0-only",
-  "description": "TeX on Me",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "release": "electron-builder"
+    "release": "electron-builder --publish onTagOrDraft"
   },
   "build": {
     "appId": "com.electron.tom",
@@ -37,7 +44,8 @@
     },
     "linux": {
         "target": ["AppImage", "deb"],
-        "category": "Utility"
+        "category": "Utility",
+	"artifactName": "${productName}-${version}-${arch}.${ext}"
     }
   },
   "dependencies": {
