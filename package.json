@@ -36,16 +36,17 @@
       "output": "release-builds"
     },
     "mac": {
+      "target": ["dmg", "zip"],
       "category": "public.app-category.productivity",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
     },
     "win": {
-        "target": "nsis"
+      "target": "nsis"
     },
     "linux": {
-        "target": ["AppImage", "deb"],
-        "category": "Utility",
-	"artifactName": "${productName}-${version}-${arch}.${ext}"
+      "target": ["AppImage", "deb"],
+      "category": "Utility",
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
     }
   },
   "dependencies": {
