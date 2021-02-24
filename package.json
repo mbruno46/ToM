@@ -33,7 +33,7 @@
         "target": "nsis"
     },
     "linux": {
-        "target": "AppImage, deb",
+        "target": ["AppImage", "deb"],
         "category": "Utility"
     }
   },
