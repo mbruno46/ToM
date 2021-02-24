@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macOS-latest, ubuntu-latest, window-latest]
+        os: [macOS-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout repository
