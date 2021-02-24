@@ -8,37 +8,37 @@ jobs:
 
     strategy:
       matrix:
-	os: [macOS-latest]
+        os: [macOS-latest]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Install Node.js, npm
-	uses: actions/setup-node@v1
-	with:
-	  node-version: 11
+        uses: actions/setup-node@v1
+        with:
+          node-version: 11
 
       - name: Install dependecies
-	run: |
-	  npm install
+        run: |
+          npm install
 
       - name: Publish
-	run: |
-	  npm run dist
+        run: |
+          npm run dist
 
       - name: Upload artifacts
-	uses: actions/upload-artifact@v1
-	with:
-	  name: ${{ matrix.os }}
-	  path: release-builds
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.os }}
+          path: release-builds
 
       - name: Create release
-	uses: actions/create-release@v1
-	env:
-	  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-	with:
-	  tag_name: ${{ github.ref }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-	  draft: true
-	  prerelease: false
+          draft: true
+          prerelease: false
