@@ -1,7 +1,10 @@
 Bugs
  - fireBrowser cannot be called in other modules? yes with require(..).fireBrowser!
- - escape <> symbols
+ - escape <> symbols when reading them from file
  - slow response line number highlighter
+ - shift+tab slow refresh highlight, normal tab fast
+ - shift+tab acts like backspace if line is empty
+
 
 Pressing Features:
 

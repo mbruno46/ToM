@@ -1,7 +1,10 @@
 const fs = require('electron').remote.require('fs');
 const {SCode} = require('./scode/scode.js');
+const {Codisy} = require('../codisy/codisy.js');
 
-let sc = SCode(document.getElementById('code-editor'));
+// let sc = SCode(document.getElementById('code-editor'));
+// sc.reset();
+let sc = Codisy(document.getElementById('code-editor'));
 sc.reset();
 
 const editor = document.getElementById('code-editor');
