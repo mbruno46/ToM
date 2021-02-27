@@ -67,18 +67,19 @@ function Cursor(editor) {
     return out;
   }
 
+
+  function setSelection(inp) {
+    [n0, p0] = findNodeFromPos(inp.startLine, inp.startOffset);
+    [n1, p1] = findNodeFromPos(inp.endLine, inp.endOffset);
+    document.getSelection().setBaseAndExtent(n0, p0, n1, p1);
+  }
+
   return {
     save() {
-      cache = document.getSelection().getRangeAt(0);
+      cache = getSelection();
     },
     restore() {
-      let s = document.getSelection();
-      s.removeAllRanges();
-      s.addRange(cache);
-      // [n0, p0] = findNodeFromPos(cache.startContainer, cache.startOffset);
-      // [n1, p1] = findNodeFromPos(cache.endContainer, cache.endOffset);
-      // console.log(n0,p0,n1,p1,cache)
-      // document.getSelection().setBaseAndExtent(n0, p0, n1, p1);
+      setSelection(cache);
     },
     isRange,
     setCaretAtLine(line, pos) {
@@ -88,11 +89,7 @@ function Cursor(editor) {
     getLines,
     getPosition,
     getSelection,
-    setSelection(inp) {
-      [n0, p0] = findNodeFromPos(inp.startLine, inp.startOffset);
-      [n1, p1] = findNodeFromPos(inp.endLine, inp.endOffset);
-      document.getSelection().setBaseAndExtent(n0, p0, n1, p1);
-    }
+    setSelection
   }
 }
 

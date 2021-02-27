@@ -1,7 +1,7 @@
 const path = require('path');
 const hlight = require('./highlight.js');
 const {Cursor} = require('./cursor.js');
-// const {History} = require('./history.js');
+const {History} = require('./history.js');
 // const {Find} = require('./find.js')
 // const {LineNumbers} = require('./linenumbers.js');
 // const {AutoComplete} = require('./autocomplete.js');
@@ -47,7 +47,7 @@ function Codisy(editor) {
 
   let currentFind = null;
   let refTime = Date.now();
-  // let history = History(editor);
+  let history = History(editor);
   // let ac = AutoComplete(editor);
 
 
@@ -88,18 +88,25 @@ function Codisy(editor) {
     if (prevent) {
       event.preventDefault();
     }
+
+    // History
+    if ((Date.now() - refTime) > timeout) {
+      history.recordState();
+      refTime = Date.now();
+    }
   });
 
   on('keyup', even => {
     highlight();
   })
 
+
   function reset() {
     editor.textContent = "";
     editor.appendChild(newLine());
     editor.focus();
     // refreshLineNumbers();
-    // history.reset();
+    history.reset();
   }
 
 
@@ -157,8 +164,24 @@ function Codisy(editor) {
     document.execCommand(cmd, false, true);
   }
 
+
   return {
-    reset
+    reset,
+    setValue(input) {
+      reset();
+      lines = input.split('\n');
+      for (var i=0;i<lines.length;i++) {
+        let l = newLine(lines[i])
+        editor.appendChild(l);
+        hlight.highlightLine(l)
+      }
+    },
+    getValue() {
+      return editor.textContent;
+    },
+    getHistory() {
+      return history;
+    }
   }
 }
 
