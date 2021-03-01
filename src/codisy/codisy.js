@@ -56,11 +56,22 @@ function Codisy(editor) {
       editor.addEventListener(type, fn);
   };
 
+  function isUndoRedo(event) {
+    if ((event.ctrlKey || event.metaKey)) {
+      if (event.key == "z" || event.key == "y") {return true;}
+    }
+    return false;
+  }
+
+
   on("keydown", event => {
-    prevent = false;
+    let prevent = false;
+    let shouldRecord = true;
 
     if ((event.ctrlKey || event.metaKey)) {
+      shouldRecord = false;
       if (event.key == '/') {
+        shouldRecord = true;
         let l = Cursor(editor).getLines();
         if (l[0].textContent.match(/^\s*% /g)) {
           insertBeginningLine(/% ?/, true);
@@ -69,6 +80,9 @@ function Codisy(editor) {
           insertBeginningLine('% ', false);
         }
       }
+      // undo/redo
+      if (event.key == "z" && !event.shiftKey) {history.getPreviousState();}
+      if (event.key == "y" && !event.shiftKey) {history.getNextState();}
     }
 
     if (event.key == "Enter") {
@@ -89,24 +103,29 @@ function Codisy(editor) {
       event.preventDefault();
     }
 
-    // History
-    if ((Date.now() - refTime) > timeout) {
-      history.recordState();
-      refTime = Date.now();
-    }
+
   });
 
-  on('keyup', even => {
-    highlight();
+  on('keyup', event => {
+    // highlight();
+
+    // History
+    if ((Date.now() - refTime) > timeout) {
+      if (!isUndoRedo(event)) {
+        history.recordState();
+        refTime = Date.now();
+      }
+    }
   })
 
 
-  function reset() {
+  function reset(record=false) {
     editor.textContent = "";
     editor.appendChild(newLine());
     editor.focus();
     // refreshLineNumbers();
     history.reset();
+    if (record) {history.recordState();}
   }
 
 
@@ -117,7 +136,7 @@ function Codisy(editor) {
     let txt = current.textContent
     var p = findPadding(txt);
     let pos = c.getPosition();
-    current.textContent = txt.substring(0,pos);
+    current.textContent = txt.substring(0,pos) + '\n';
     let n = newLine(' '.repeat(p) + txt.substring(pos));
     editor.insertBefore(n,current.nextSibling);
     c.setCaretAtLine(n, p);

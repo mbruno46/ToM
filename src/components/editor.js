@@ -5,7 +5,7 @@ const {Codisy} = require('../codisy/codisy.js');
 // let sc = SCode(document.getElementById('code-editor'));
 // sc.reset();
 let sc = Codisy(document.getElementById('code-editor'));
-sc.reset();
+sc.reset(true);
 
 const editor = document.getElementById('code-editor');
 editor.oncontextmenu = ev => {

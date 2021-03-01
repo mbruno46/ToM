@@ -7,7 +7,7 @@ function Cursor(editor) {
   }
 
 
-  function getLines() {
+  function getLines(indices = false) {
     let s = document.getSelection();
     range = s.getRangeAt(0);
 
@@ -30,10 +30,15 @@ function Cursor(editor) {
 
     var end = findLine(range.endContainer);
     var i0 = Array.prototype.indexOf.call(editor.childNodes, start);
-    var i1 = Array.prototype.indexOf.call(editor.childNodes, findLine(range.endContainer));
+    var i1 = Array.prototype.indexOf.call(editor.childNodes, end);
     var lines = []
     for (var i=i0;i<=i1;i++) {
-      lines.push(editor.childNodes[i])
+      if (!indices) {
+        lines.push(editor.childNodes[i])
+      }
+      else {
+        lines.push(i);
+      }
     }
     return lines;
   }
@@ -50,18 +55,18 @@ function Cursor(editor) {
 
 
   function getSelection() {
-    let l = getLines();
+    let lid = getLines(true);
     let r = range.cloneRange();
     var out = {};
 
-    r.selectNodeContents(l[l.length-1]);
+    r.selectNodeContents(editor.childNodes[lid[lid.length-1]]);
     r.setEnd(range.endContainer, range.endOffset);
-    out.endLine = l[l.length-1];
+    out.endLine = lid[lid.length-1];
     out.endOffset = r.toString().length;
 
-    r.selectNodeContents(l[0]);
+    r.selectNodeContents(editor.childNodes[lid[0]]);
     r.setEnd(range.startContainer, range.startOffset);
-    out.startLine = l[0];
+    out.startLine = lid[0];
     out.startOffset = r.toString().length;
 
     return out;
@@ -69,8 +74,8 @@ function Cursor(editor) {
 
 
   function setSelection(inp) {
-    [n0, p0] = findNodeFromPos(inp.startLine, inp.startOffset);
-    [n1, p1] = findNodeFromPos(inp.endLine, inp.endOffset);
+    let [n0, p0] = findNodeFromPos(editor.childNodes[inp.startLine], inp.startOffset);
+    let [n1, p1] = findNodeFromPos(editor.childNodes[inp.endLine], inp.endOffset);
     document.getSelection().setBaseAndExtent(n0, p0, n1, p1);
   }
 
@@ -95,35 +100,31 @@ function Cursor(editor) {
 
 
 // utility function for setCursor
-function findNodeFromPos(parent, pos) {
-  var i;
-  var n = pos;
-
-  for (i=0;i<parent.childNodes.length;i++) {
-    if (parent.childNodes[i].nodeType != Node.TEXT_NODE) {
-      if (parent.childNodes[i].hasChildNodes()) {
-        let val = findNodeFromPos(parent.childNodes[i], n);
-        if (val[0] != null) {
-          return [val[0], val[1]];
-        }
-        else {
+function findNodeFromPos(node, pos) {
+  if (node.nodeType == Node.TEXT_NODE) {
+    if (pos <= node.length) {
+      return [node, pos];
+    }
+    else {
+      return [null, pos - node.length]
+    }
+  }
+  else {
+    if (node.hasChildNodes()) {
+      var n = pos;
+      for (var i=0;i<node.childNodes.length;i++) {
+        let val = findNodeFromPos(node.childNodes[i], n);
+        if (val[0]==null) {
           n = val[1];
         }
+        else {
+          return val;
+        }
       }
-      else {
-        continue;
-      }
-      continue;
+      return [null, n];
     }
-
-    if (n <= parent.childNodes[i].length) {
-      return [parent.childNodes[i], n];
-    }
-
-    n -= parent.childNodes[i].length;
+    return [null, pos];
   }
-
-  return [null, n];
 }
 
 function findAnchorFocus(s, editor) {
