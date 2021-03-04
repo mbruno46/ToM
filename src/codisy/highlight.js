@@ -70,19 +70,26 @@ function highlightBrackets(text, pos) {
   return text;
 };
 
+function highlightText(txt) {
+  if (replacements == null) {
+    setup_highlighter();
+  }
+
+  replacements.forEach(function(value, key) {
+    txt = txt.replace(key, value);
+  });
+
+  return txt;
+}
+
 function highlightLine(line) {
   if (replacements == null) {
     setup_highlighter();
   }
 
-  var txt = line.textContent;
-  replacements.forEach(function(value, key) {
-    txt = txt.replace(key, value);
-  });
-
-  line.innerHTML = txt;
-  console.log(line.innerHTML);
+  line.innerHTML = highlightText(line.textContent);
 }
 
+exports.highlightText = highlightText;
 exports.highlightLine = highlightLine;
 exports.highlightBrackets = highlightBrackets;

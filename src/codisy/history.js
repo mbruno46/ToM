@@ -8,7 +8,6 @@ function History(editor) {
 
   function setState() {
     let tmp = history[idx];
-    console.log(history, idx, at)
     editor.innerHTML = tmp.data;
     editor.focus();
     let c = Cursor(editor);
@@ -46,7 +45,6 @@ function History(editor) {
       idx = at;
     },
     getPreviousState() {
-      console.log(history, idx, at)
       if (idx > 0) {
         idx--;
       }

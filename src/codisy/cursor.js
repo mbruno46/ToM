@@ -94,7 +94,21 @@ function Cursor(editor) {
     getLines,
     getPosition,
     getSelection,
-    setSelection
+    setSelection,
+    createSelection(i0, pos0, i1=null, pos1=null) {
+      var out = {};
+      out.startLine = i0;
+      out.startOffset = pos0;
+      if (i1==null && pos1==null) {
+        out.endLine = out.startLine;
+        out.endOffset = out.startOffset;
+      }
+      else {
+        out.endLine = i1;
+        out.endOffset = pos1;
+      }
+      return out;
+    }
   }
 }
 

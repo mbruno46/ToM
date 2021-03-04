@@ -2,7 +2,7 @@ const path = require('path');
 const hlight = require('./highlight.js');
 const {Cursor} = require('./cursor.js');
 const {History} = require('./history.js');
-// const {Find} = require('./find.js')
+const {Find} = require('./find.js')
 // const {LineNumbers} = require('./linenumbers.js');
 // const {AutoComplete} = require('./autocomplete.js');
 
@@ -42,12 +42,15 @@ function findPadding(text) {
 }
 
 
+
 function Codisy(editor) {
   let ln = init(editor);
 
   let currentFind = null;
   let refTime = Date.now();
   let history = History(editor);
+  let lines2highlight = [];
+  let c = Cursor(editor);
   // let ac = AutoComplete(editor);
 
 
@@ -67,12 +70,13 @@ function Codisy(editor) {
   on("keydown", event => {
     let prevent = false;
     let shouldRecord = true;
+    lines2highlight = c.getLines();
 
     if ((event.ctrlKey || event.metaKey)) {
       shouldRecord = false;
       if (event.key == '/') {
         shouldRecord = true;
-        let l = Cursor(editor).getLines();
+        let l = c.getLines();
         if (l[0].textContent.match(/^\s*% /g)) {
           insertBeginningLine(/% ?/, true);
         }
@@ -98,16 +102,23 @@ function Codisy(editor) {
         insertBeginningLine(' '.repeat(ntab), false)
       }
     }
+    else if (event.key == 'Backspace') {
+      var n = Array.prototype.indexOf.call(editor.childNodes, lines2highlight[0]);
+      if (n>0) {lines2highlight.push(editor.childNodes[n-1]);}
+    }
 
     if (prevent) {
       event.preventDefault();
     }
 
-
+    setTimeout(() => {
+      sanity_checks();
+      // highlight();
+    },30);
   });
 
   on('keyup', event => {
-    // highlight();
+    // sanity_checks();
 
     // History
     if ((Date.now() - refTime) > timeout) {
@@ -130,50 +141,56 @@ function Codisy(editor) {
 
 
   function handleNewLine() {
-    let c = Cursor(editor);
     if (c.isRange()) {run('delete')};
     let [current] = c.getLines();
     let txt = current.textContent
     var p = findPadding(txt);
     let pos = c.getPosition();
-    current.textContent = txt.substring(0,pos) + '\n';
+    current.innerHTML = hlight.highlightText(txt.substring(0,pos) + '\n');
     let n = newLine(' '.repeat(p) + txt.substring(pos));
+    hlight.highlightLine(n);
     editor.insertBefore(n,current.nextSibling);
     c.setCaretAtLine(n, p);
+    lines2highlight = [];
   }
 
 
   function insertBeginningLine(txt, rm=false) {
-    let c = Cursor(editor);
     let l = c.getLines();
     let s = c.getSelection();
 
     for (var i=0;i<l.length;i++) {
       var shift;
+      var newtxt;
       if (!rm) {
-        l[i].textContent = txt + l[i].textContent;
+        newtxt = txt + l[i].textContent;
         shift = txt.length;
       }
       else {
         shift = -l[i].textContent.length;
-        l[i].textContent = l[i].textContent.replace(txt,'')
-        shift += l[i].textContent.length;
+        newtxt = l[i].textContent.replace(txt,'');
+        shift += newtxt.length;
       }
       if (i==0) {s.startOffset += shift}
       if (i==l.length-1) {s.endOffset += shift}
+      l[i].innerHTML = hlight.highlightText(newtxt);
     }
     c.setSelection(s);
+
+    lines2highlight = [];
   }
 
 
-  function highlight(full=false) {
-    let c = Cursor(editor);
+  function sanity_checks() {
+    if (editor.childNodes.length==0 || editor.textContent=="") {
+      editor.childNodes = [];
+      editor.appendChild(newLine());
+    }
     c.save();
-    if (!full) {
-      let l = c.getLines();
-      for (var i=0;i<l.length;i++) {
-        hlight.highlightLine(l[i]);
-      }
+    for (var i=0;i<lines2highlight.length;i++) {
+      let l = lines2highlight[i];
+      l.innerHTML = hlight.highlightText(l.textContent +
+        (!l.textContent.match(/\n$/) ? '\n' : ''));
     }
     c.restore();
   }
@@ -192,7 +209,7 @@ function Codisy(editor) {
       for (var i=0;i<lines.length;i++) {
         let l = newLine(lines[i])
         editor.appendChild(l);
-        hlight.highlightLine(l)
+        hlight.highlightLine(l);
       }
     },
     getValue() {
@@ -200,6 +217,16 @@ function Codisy(editor) {
     },
     getHistory() {
       return history;
+    },
+    findNext(word) {
+      if (currentFind==null || currentFind.getWord() != word) {
+        currentFind = Find(editor.childNodes, word);
+      }
+      found = currentFind.findNext();
+      let s = c.createSelection(found.line, found.pos, found.line, found.pos+word.length);
+
+      editor.childNodes[found.line].scrollIntoView();
+      c.setSelection(s);
     }
   }
 }
