@@ -3,7 +3,7 @@ const hlight = require('./highlight.js');
 const {Cursor} = require('./cursor.js');
 const {History} = require('./history.js');
 const {Find} = require('./find.js')
-// const {LineNumbers} = require('./linenumbers.js');
+const {LineNumbers} = require('./linenumbers.js');
 const {AutoComplete} = require('./autocomplete.js');
 
 
@@ -22,8 +22,7 @@ function init(editor) {
   editor.setAttribute("contentEditable", "plaintext-only");
   editor.setAttribute("spellcheck", "false");
 
-  return true;
-  // return LineNumbers(getComputedStyle(editor));
+  return LineNumbers(getComputedStyle(editor));
 }
 
 
@@ -49,7 +48,7 @@ function Codisy(editor) {
   let currentFind = null;
   let refTime = Date.now();
   let history = History(editor);
-  let lines2highlight = [];
+  let flines = [];
   let c = Cursor(editor);
   let ac = AutoComplete(editor);
 
@@ -70,7 +69,7 @@ function Codisy(editor) {
   on("keydown", event => {
     let prevent = false;
     let shouldRecord = true;
-    lines2highlight = c.getLines();
+    flines = c.getLines();
 
     if ((event.ctrlKey || event.metaKey)) {
       shouldRecord = false;
@@ -103,8 +102,8 @@ function Codisy(editor) {
       }
     }
     else if (event.key == 'Backspace') {
-      var n = Array.prototype.indexOf.call(editor.childNodes, lines2highlight[0]);
-      if (n>0) {lines2highlight.push(editor.childNodes[n-1]);}
+      var n = Array.prototype.indexOf.call(editor.childNodes, flines[0]);
+      if (n>0) {flines.push(editor.childNodes[n-1]);}
     }
 
     if (prevent) {
@@ -130,12 +129,10 @@ function Codisy(editor) {
     ac.showSuggestions(event.inputType == "");
   });
 
-  on('keyup', event => {
-    // sanity_checks();
-  })
-
   on("click", event => {
     ac.reset();
+    flines = c.getLines();
+    sanity_checks();
   })
 
 
@@ -143,7 +140,8 @@ function Codisy(editor) {
     editor.textContent = "";
     editor.appendChild(newLine());
     editor.focus();
-    // refreshLineNumbers();
+    c.setCaretAtLine(editor.childNodes[0], 0);
+    sanity_checks();
     history.reset();
     if (record) {history.recordState();}
   }
@@ -160,7 +158,7 @@ function Codisy(editor) {
     hlight.highlightLine(n);
     editor.insertBefore(n,current.nextSibling);
     c.setCaretAtLine(n, p);
-    lines2highlight = [];
+    flines = [];
   }
 
 
@@ -186,7 +184,7 @@ function Codisy(editor) {
     }
     c.setSelection(s);
 
-    lines2highlight = [];
+    flines = [];
   }
 
 
@@ -196,12 +194,16 @@ function Codisy(editor) {
       editor.appendChild(newLine());
     }
     c.save();
-    for (var i=0;i<lines2highlight.length;i++) {
-      let l = lines2highlight[i];
+    for (var i=0;i<flines.length;i++) {
+      let l = flines[i];
       l.innerHTML = hlight.highlightText(l.textContent +
         (!l.textContent.match(/\n$/) ? '\n' : ''));
     }
     c.restore();
+
+    ln.refreshLineNumbers(editor.childNodes.length);
+    let s = c.getSelection();
+    ln.highlightLines(s.startLine+1, s.endLine+1);
   }
 
 
@@ -218,8 +220,9 @@ function Codisy(editor) {
       for (var i=0;i<lines.length;i++) {
         let l = newLine(lines[i])
         editor.appendChild(l);
-        hlight.highlightLine(l);
       }
+      flines = editor.childNodes;
+      sanity_checks();
     },
     getValue() {
       return editor.textContent;

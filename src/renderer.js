@@ -119,31 +119,6 @@ compile_btn.onclick = ev => {
 
 
 const editor = document.getElementById('code-editor');
-editor.onkeypress = ev => {
-  // keypress ignores CTRL, etc.. so chenged makes sense here
-  const fn = document.getElementById('editor-filename');
-  if (fn.textContent.split('*').length == 1) {
-    fn.textContent = fn.textContent + ' *';
-  }
-};
-editor.onkeydown = ev => {
-  if (ev.key == "s")
-    if ((ev.ctrlKey || ev.metaKey)) {
-      ev.preventDefault();
-      saveCurrentFile();
-    }
-  if (ev.key == "r")
-    if ((ev.ctrlKey || ev.metaKey)) {
-      ev.preventDefault();
-      saveCurrentFile();
-      compile();
-    }
-}
-editor.onscroll = ev => {
-  let gutter = document.getElementById('gutter');
-  gutter.scrollTop = editor.scrollTop;
-  gutter.scrollLeft = editor.scrollLeft;
-};
 
 
 const viewer_menu_btn = document.getElementById('viewer-menu-btn');

@@ -1,18 +1,47 @@
 const fs = require('electron').remote.require('fs');
-const {SCode} = require('./scode/scode.js');
 const {Codisy} = require('../codisy/codisy.js');
-
-// let sc = SCode(document.getElementById('code-editor'));
-// sc.reset();
-let sc = Codisy(document.getElementById('code-editor'));
-sc.reset(true);
+const {compile} = require('./compiler.js');
 
 const editor = document.getElementById('code-editor');
+let sc = Codisy(editor);
+sc.reset(true);
+
 editor.oncontextmenu = ev => {
   ev.preventDefault();
   const menu = EditMenu(sc.getHistory());
   menu.popup({ window: require('electron').remote.getCurrentWindow() });
 }
+
+editor.onscroll = ev => {
+  let gutter = document.getElementById('gutter');
+  gutter.scrollTop = editor.scrollTop;
+  gutter.scrollLeft = editor.scrollLeft;
+};
+
+editor.onkeydown = ev => {
+  let changed = true;
+  if ((ev.ctrlKey || ev.metaKey)) {
+    changed = false;
+    if (ev.key == "s") {
+      ev.preventDefault();
+      saveCurrentFile();
+    }
+    if (ev.key == "r")
+    {
+      ev.preventDefault();
+      saveCurrentFile();
+      compile();
+    }
+  }
+  if (ev.shiftKey || ev.altKey || ev.key == 'CapsLock' || ev.key == 'Escape') {changed = false;}
+  if (ev.key.match(/^F[0-9]+/) || ev.key.match(/^Arrow\w+/) || ev.key.match(/^Page\w+/)) {changed = false;}
+
+  if (changed) {
+    const fn = document.getElementById('editor-filename');
+    fn.textContent += (!fn.textContent.match(/\*$/) ? ' *' : '');
+  }
+}
+
 
 function loadFile(fname) {
   fs.readFile(fname, 'utf-8', (err, data) => {
@@ -51,6 +80,7 @@ function saveCurrentFile() {
   const fn = document.getElementById('editor-filename');
   fn.textContent = fn.textContent.replace(/ \*$/,"");
 }
+
 
 function hasDocumentClass(fname) {
   data = fs.readFileSync(fname, 'utf-8');

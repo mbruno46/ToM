@@ -49,6 +49,8 @@
 }
 
 .autocomplete {
+  background-color: var(--bg0);
+  border: 1px solid var(--fg);  
   margin: 0;
   padding: 2px;
   z-index: 2;
