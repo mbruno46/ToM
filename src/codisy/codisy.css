@@ -47,3 +47,15 @@
 .line-number-selected {
   color: var(--selected);
 }
+
+.autocomplete {
+  margin: 0;
+  padding: 2px;
+  z-index: 2;
+  position: absolute;
+}
+
+.ac-span-selected {
+  background-color: var(--line);
+  color: var(--selected);
+}

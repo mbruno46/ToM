@@ -4,7 +4,7 @@ const {Cursor} = require('./cursor.js');
 const {History} = require('./history.js');
 const {Find} = require('./find.js')
 // const {LineNumbers} = require('./linenumbers.js');
-// const {AutoComplete} = require('./autocomplete.js');
+const {AutoComplete} = require('./autocomplete.js');
 
 
 var ntab = 4;
@@ -51,7 +51,7 @@ function Codisy(editor) {
   let history = History(editor);
   let lines2highlight = [];
   let c = Cursor(editor);
-  // let ac = AutoComplete(editor);
+  let ac = AutoComplete(editor);
 
 
   // short-cut
@@ -91,7 +91,7 @@ function Codisy(editor) {
 
     if (event.key == "Enter") {
       prevent = true;
-      handleNewLine();
+      if (!ac.isSuggesting()) {handleNewLine();}
     }
     else if (event.key == "Tab") {
       prevent = true;
@@ -114,11 +114,8 @@ function Codisy(editor) {
     setTimeout(() => {
       sanity_checks();
       // highlight();
+      ac.refreshTags();
     },30);
-  });
-
-  on('keyup', event => {
-    // sanity_checks();
 
     // History
     if ((Date.now() - refTime) > timeout) {
@@ -127,6 +124,18 @@ function Codisy(editor) {
         refTime = Date.now();
       }
     }
+  });
+
+  on("input", event => {
+    ac.showSuggestions(event.inputType == "");
+  });
+
+  on('keyup', event => {
+    // sanity_checks();
+  })
+
+  on("click", event => {
+    ac.reset();
   })
 
 

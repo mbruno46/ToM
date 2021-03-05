@@ -1,6 +1,7 @@
 function Cursor(editor) {
   var range;
   var cache;
+  var pos = {x: 0, y:0};
 
   function isRange() {
     return document.getSelection().type == 'Range'
@@ -54,6 +55,13 @@ function Cursor(editor) {
   }
 
 
+  function getXY() {
+    let r0 = document.getSelection().getRangeAt(0);
+    let rect = r0.getClientRects()[0];
+    return {x: rect.left, y: rect.top};
+  }
+
+
   function getSelection() {
     let lid = getLines(true);
     let r = range.cloneRange();
@@ -93,6 +101,7 @@ function Cursor(editor) {
     },
     getLines,
     getPosition,
+    getXY,
     getSelection,
     setSelection,
     createSelection(i0, pos0, i1=null, pos1=null) {
