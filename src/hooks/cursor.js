@@ -1,6 +1,6 @@
 import utils from './utils'
 
-export function Cursor() {
+export function Cursor(editor) {
   var anchor, focus;
   let s = document.getSelection();
 
@@ -54,12 +54,22 @@ export function Cursor() {
     save() {
       anchor = getLinePos(s.anchorNode, s.anchorOffset);
       focus = getLinePos(s.focusNode, s.focusOffset);
-      console.log('saved ',anchor)
     },
-    restore() {
-      let c0 = findLineNodeFromPos(anchor[0], anchor[1]);
-      let c1 = findLineNodeFromPos(focus[0], focus[1]);
-      console.log('restore ', c0)
+    getSelectedLines() {
+      anchor = getLinePos(s.anchorNode, s.anchorOffset);
+      focus = getLinePos(s.focusNode, s.focusOffset);
+      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
+      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      // var i0 = editor.children.indexOf(anchor[0]);
+      // var i1 = editor.children.indexOf(focus[0]);
+      if (i0<i1) {
+        return [i0,i1];
+      }
+      return [i1,i0];
+    },
+    restore(shift0=0,shift1=0) {
+      let c0 = findLineNodeFromPos(anchor[0], anchor[1] + shift0);
+      let c1 = findLineNodeFromPos(focus[0], focus[1] + shift1);
       s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
     }
   }

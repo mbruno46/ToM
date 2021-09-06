@@ -1,26 +1,53 @@
 <template>
-  <div ref="editor" class="text-editor" contenteditable="true" @input="handleInput">
+  <div ref="editor" class="text-editor" contenteditable="true" 
+    @input="handleInput"
+    @keydown="handleKeyDown">
     <div single-line class="line"><br></div>
   </div>
 </template>
 
 <script>
-import {Highlighter} from '@/hooks/tex'
-import {Cursor} from '@/hooks/cursor'
+import { ref, onMounted } from 'vue'
+import {TexEditor} from '@/hooks/texeditor'
 
-var h = Highlighter();
-var c = Cursor();
+var e = null;
 
 export default {
+  setup() {
+    const editor = ref(null);
+    onMounted(() => {
+      e = TexEditor(editor.value)
+    });
+    return {
+      editor
+    }
+  },
   methods: {
     focus: function() {
       this.$refs.editor.focus();
     },
     handleInput: function() {
-      var target = c.getLine();
-      c.save();
-      target.innerHTML = h.run(target.textContent);
-      c.restore();
+      e.highlightCaretLine();
+    },
+    handleKeyDown: function(event) {
+      let prevent = false;
+
+      if ((event.ctrlKey || event.metaKey)) {
+        if (event.key == "/") {e.addrmComment();}
+      }
+
+      if (event.key == "Tab") {
+        prevent = true;
+        if (event.shiftKey) {
+          e.removeTab();
+        } else {
+          e.insertTab();
+        }
+      }
+
+      if (prevent) {
+        event.preventDefault();
+      }
     }
   }
 }
