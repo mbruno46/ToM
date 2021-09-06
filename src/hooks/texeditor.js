@@ -64,5 +64,13 @@ export function TexEditor(editor) {
       addrmTab(4, false);
     },
     addrmComment,
+    preventBackspace() {
+      if (lines.length==1) {
+        if (lines[0].firstChild.nodeName == 'BR') {
+          return true;
+        }
+      }
+      return false;
+    }
   }
 }

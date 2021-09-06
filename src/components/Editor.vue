@@ -32,6 +32,10 @@ export default {
     handleKeyDown: function(event) {
       let prevent = false;
 
+      if (event.key == "Backspace") {
+        prevent = e.preventBackspace();
+      }
+
       if ((event.ctrlKey || event.metaKey)) {
         if (event.key == "/") {e.addrmComment();}
       }
