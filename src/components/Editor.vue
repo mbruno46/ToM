@@ -36,8 +36,6 @@ export default {
   color: var(--selected);
   text-align: left;
   white-space: nowrap;
-  overflow-x: scroll;
-  overflow-y: scroll;
   counter-reset: div;
 }
 

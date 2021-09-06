@@ -19,10 +19,11 @@ export function Cursor() {
     return utils.getParentByAttr(node.parentElement, 'single-line');
   }
 
+
   function findLineNodeFromPos(parent, pos) {
     var _pos = pos;
     var cnode = null;
-
+    
     if (pos==0) {
       return [parent, pos]
     }
@@ -32,17 +33,20 @@ export function Cursor() {
         cnode = parent.childNodes[i];
         if (cnode.nodeType != Node.TEXT_NODE) {
           [cnode, _pos] = findLineNodeFromPos(cnode, _pos);
+          if (cnode != null) {
+            return [cnode, _pos];
+          }
         } else {
           var n = cnode.length;
           if  (_pos <= n) {
-            break;
+            return [cnode, _pos];
           } else {
             _pos -= n;
           }
         }
       }
     }
-    return [cnode, _pos];
+    return [null, _pos];
   }
 
   return {
@@ -50,10 +54,12 @@ export function Cursor() {
     save() {
       anchor = getLinePos(s.anchorNode, s.anchorOffset);
       focus = getLinePos(s.focusNode, s.focusOffset);
+      console.log('saved ',anchor)
     },
     restore() {
       let c0 = findLineNodeFromPos(anchor[0], anchor[1]);
       let c1 = findLineNodeFromPos(focus[0], focus[1]);
+      console.log('restore ', c0)
       s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
     }
   }

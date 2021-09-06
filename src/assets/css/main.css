@@ -24,6 +24,15 @@ https://github.com/kkga/spacegray
 .highlight-comment {
   color: var(--cyan);
 }
+
+.highlight-square-bracket {
+  color: var(--red);
+}
+
+.highlight-curly-bracket {
+  color: var(--pink);
+}
+
 .highlight-comment * {
   color: inherit;
 }
