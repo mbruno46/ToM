@@ -29,6 +29,8 @@ export default {
 <style scoped>
 
 .text-editor {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1rem;
   outline: none;
   background-color: var(--bg1);
   color: var(--selected);
