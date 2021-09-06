@@ -1,6 +1,7 @@
 <template>
   <div class="main-panel">
     <div class="browser-container">
+      <FileTree />
     </div>
     <div class="editor-container" @click="clicked">
       <Editor ref="editor"/>
@@ -14,12 +15,14 @@
 <script>
 import Editor from './components/Editor.vue';
 import Footer from '@/components/Footer.vue';
+import FileTree from '@/components/FileTree.vue';
 
 export default {
   name: 'App',
   components: {
     Editor,
     Footer,
+    FileTree,
   },
   mounted() {
     this.$refs.editor.focus();
@@ -34,12 +37,12 @@ export default {
 
 <style>
 #app {
-  background-color: var(--bg0);
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  max-width: 100vw;
+  background-color: var(--bg);
+  color: var(--fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 100%;
-  height: 100%;
 }
 
 .main-panel {
@@ -48,9 +51,13 @@ export default {
   flex-flow: row;
 }
 
+.browser-container {
+  width: 20%;
+}
+
 .editor-container {
   background-color: var(--bg1);
-  width: 50%;
+  width: 40%;
   height: 100%;
   min-height: 800px;
   overflow-x: scroll;
@@ -58,7 +65,7 @@ export default {
 }
 
 .viewer-container {
-  width: 50%;
+  width: 40%;
   height: 100%;
   min-height: 800px;
   overflow-x: scroll;
