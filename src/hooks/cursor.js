@@ -71,6 +71,10 @@ export function Cursor(editor) {
       let c0 = findLineNodeFromPos(anchor[0], anchor[1] + shift0);
       let c1 = findLineNodeFromPos(focus[0], focus[1] + shift1);
       s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
-    }
+    },
+    getSelectedText() {
+      let r = s.getRangeAt(0);
+      return r.toString();
+    },
   }
 }

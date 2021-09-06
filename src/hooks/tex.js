@@ -8,7 +8,6 @@ export function Highlighter() {
       re += '|'
     }
   }
-  console.log(re)
 
   var rules = new Map([
     [/(%.*)/g, '<span class="highlight-comment">$1</span>'],
@@ -19,7 +18,6 @@ export function Highlighter() {
   ]);
 
   function run(text) {
-    console.log(text);
     rules.forEach(function(value, key) {
       text = text.replace(key, value);
     });

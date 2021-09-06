@@ -71,6 +71,6 @@ export function TexEditor(editor) {
         }
       }
       return false;
-    }
+    },
   }
 }

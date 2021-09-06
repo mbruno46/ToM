@@ -37,6 +37,8 @@ export default {
       }
 
       if ((event.ctrlKey || event.metaKey)) {
+        // prevent = true;
+        // if (event.key=="x") {e.fillClipboard();}
         if (event.key == "/") {e.addrmComment();}
       }
 
