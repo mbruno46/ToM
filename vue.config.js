@@ -3,5 +3,10 @@ module.exports = {
     if (process.env.NODE_ENV === 'production') {
       config.output.publicPath = `${process.cwd()}/dist/`
     }
-  }
+  },
+  pluginOptions: {
+    electronBuilder: {
+      nodeIntegration: true,
+    },
+  },
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="main-panel">
     <div class="browser-container">
-      <FileTree />
+      <FileBrowser />
     </div>
     <div class="editor-container" @click="clicked">
       <Editor ref="editor"/>
@@ -15,14 +15,14 @@
 <script>
 import Editor from './components/Editor.vue';
 import Footer from '@/components/Footer.vue';
-import FileTree from '@/components/FileTree.vue';
+import FileBrowser from '@/components/FileBrowser.vue';
 
 export default {
   name: 'App',
   components: {
     Editor,
     Footer,
-    FileTree,
+    FileBrowser,
   },
   mounted() {
     this.$refs.editor.focus();
