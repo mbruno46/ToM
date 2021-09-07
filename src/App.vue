@@ -1,6 +1,9 @@
 <template>
   <div class="main-panel">
     <div class="browser-container">
+      <Toolbar>
+        <AppButton icon="fa-folder-open" title="Open notebook"/>
+      </Toolbar>
       <FileBrowser />
     </div>
     <div class="editor-container" @click="clicked">
@@ -16,6 +19,8 @@
 import Editor from './components/Editor.vue';
 import Footer from '@/components/Footer.vue';
 import FileBrowser from '@/components/FileBrowser.vue';
+import Toolbar from '@/components/Toolbar.vue';
+import AppButton from '@/components/AppButton.vue';
 
 export default {
   name: 'App',
@@ -23,6 +28,8 @@ export default {
     Editor,
     Footer,
     FileBrowser,
+    Toolbar,
+    AppButton,
   },
   mounted() {
     this.$refs.editor.focus();
@@ -51,8 +58,19 @@ export default {
   flex-flow: row;
 }
 
+.container {
+   height: 100%;
+  min-height: 800px;
+  display: flex;
+  flex-flow: column; 
+}
+
 .browser-container {
   width: 20%;
+  height: 100%;
+  min-height: 800px;
+  display: flex;
+  flex-flow: column;
 }
 
 .editor-container {

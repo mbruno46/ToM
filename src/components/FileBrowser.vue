@@ -9,15 +9,7 @@
 </template>
 
 <script>
-// const {FileTree} = window.require('./modules/filetree.js');
-
-// const fs = require('electron');//.remote.require('fs');
-// import {remote} from 'electron';
-// import { ipcRenderer } from "electron";
-// const fs = window.require('fs');
 import TreeCell from '@/components/TreeCell.vue';
-
-// import {ref} from 'vue'
 import {FileTree} from '@/hooks/filetree.js'
 
 export default {

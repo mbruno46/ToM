@@ -1,7 +1,8 @@
 <template>
   <div ref="cell" class="cell" treecell-selected="false">
-    <span class="tag"
-      :class="(isDir) ? 'dir' : 'file'"
+    <span class="icon fa-box"/>
+    <span class="tag icon "
+      :class="(isDir) ? 'fa-angle-right' : 'file'"
       :style="'padding-left: ' + depth +  'rem'" 
       @click="clicked">
       {{name}}
@@ -17,6 +18,8 @@
 </template>
 
 <script>
+// import '@fortawesome/fontawesome-free/js/all.min.js'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 import {ref} from 'vue'
 
 export default {
@@ -46,7 +49,7 @@ export default {
       el.setAttribute('treecell-selected','true');
 
       if (this.isDir) {
-        el.children[0].classList.toggle('dir-open');
+        el.children[0].classList.toggle('fa-angle-down');
         el.children[1].classList.toggle('nested');
       }
     }
@@ -69,13 +72,34 @@ export default {
   width:100%; 
 }
 
-.dir::before {
-  content:  ">";
+/* .icon::before {
   display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+} */
+.icon:before {
+    display: inline-block;
+    margin-right: .5em;
+    /* font: normal normal normal 14px/1 "Font Awesome 5 Free"; */
+    font-family: "Font Awesome 5 Free";
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0, 0);
 }
-.dir-open::before {
+
+/* .dir::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  content: "\f095";
+} */
+
+/* .dir-open::before {
   content: "\\/";
-}
+} */
 
 .file::before {
   content: "-";
