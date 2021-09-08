@@ -1,9 +1,9 @@
 <template>
   <div ref="cell" class="cell" treecell-selected="false">
-    <span class="tag icon "
-      :class="(isDir) ? 'fa-angle-right' : 'file'"
-      :style="'padding-left: ' + depth +  'rem'" 
-      @click="clicked(path, name)">
+    <span class="tag"
+      :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
+      @click="clicked(path, name)"
+      >
       {{name}}
     </span>
     <div v-if="isDir" class="nested">
@@ -19,8 +19,8 @@
 
 <script>
 // import '@fortawesome/fontawesome-free/js/all.min.js'
-import '@fortawesome/fontawesome-free/css/all.min.css'
-import {ref} from 'vue'
+// import '@fortawesome/fontawesome-free/css/all.min.css'
+import { ref } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
 
@@ -52,13 +52,18 @@ export default {
       el.setAttribute('treecell-selected','true');
 
       if (this.isDir) {
-        el.children[0].classList.toggle('fa-angle-down');
         el.children[1].classList.toggle('nested');
+        // if (el.children[1].classList.contains('nested')) {
+        //   this.icon = 'fa-angle-right'
+        // } else {
+        //   this.icon = 'fa-angle-down'
+        // }
       } else {
         console.log(path, name, utils.getExtension(name))
         if (utils.getExtension(name) == 'tex') {
-          store.filename.value = name;
-          console.log(path);
+          store.editor.name = name;
+          store.editor.path = path;
+          store.editor.read = true;
         }
       }
     }
@@ -79,6 +84,8 @@ export default {
 
 .tag {
   width:100%; 
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 /* .icon::before {
@@ -88,17 +95,16 @@ export default {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
 } */
-.icon:before {
+/* .icon:before {
     display: inline-block;
     margin-right: .5em;
-    /* font: normal normal normal 14px/1 "Font Awesome 5 Free"; */
-    font-family: "Font Awesome 5 Free";
+    font-family: Font Awesome 5 Free;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transform: translate(0, 0);
-}
+} */
 
 /* .dir::before {
   font-family: "Font Awesome 5 Free";
@@ -110,10 +116,10 @@ export default {
   content: "\\/";
 } */
 
-.file::before {
+/* .file::before {
   content: "-";
   display: inline-block;
-}
+} */
 
 .selected {
   background-color: var(--line);

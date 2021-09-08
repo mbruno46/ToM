@@ -4,20 +4,6 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  setup() {
-    
-  },
-  methods: {
-    highlight: function (newHTML) {
-      console.log(newHTML)
-    }
-  }
-}
-</script>
-
 <style scoped>
 .line {
   background-color: grey;

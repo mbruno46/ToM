@@ -1,3 +1,5 @@
+const fs = window.require('fs');
+
 export function getParentByAttr(element, attr) {
   if (element.hasAttribute(attr)) {
     return element
@@ -10,7 +12,20 @@ export function getExtension(file) {
   return file.substring(file.lastIndexOf('.')+1);
 }
 
+export function loadTexFile(fname) {
+  if (fname == "") {return [""];}
+  return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
+}
+
+export function removeAllChildren(parent) {
+  while (parent.firstChild) {
+    parent.firstChild.remove();
+  }
+}
+
 export default {
   getParentByAttr,
   getExtension,
+  loadTexFile,
+  removeAllChildren
 }

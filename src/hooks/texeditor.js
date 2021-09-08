@@ -72,5 +72,8 @@ export function TexEditor(editor) {
       }
       return false;
     },
+    highlightLine(target, text) {
+      target.innerHTML = h.run(text);
+    }
   }
 }

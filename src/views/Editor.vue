@@ -11,6 +11,8 @@
 import Toolbar from '@/components/Toolbar.vue';
 import CodeEditor from '@/components/CodeEditor.vue';
 import store from '@/hooks/store.js';
+import utils from '@/hooks/utils.js';
+import { ref, onMounted, watchEffect } from 'vue';
 
 export default {
   components: {
@@ -23,9 +25,22 @@ export default {
     }
   },
   setup() {
-    const filename = store.filename;
+    const editor = ref(null);
+    const filename = store.editor.name;
+    
+    onMounted(() => {
+      watchEffect(() => {
+        if (store.editor.read) {
+          editor.value.refreshEditor(
+            utils.loadTexFile(store.editor.path)
+          )
+        }
+      });
+    });
+
     return {
       filename,
+      editor,
     }
   }
 }

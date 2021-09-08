@@ -1,7 +1,7 @@
-import { ref } from 'vue';
+import { reactive } from 'vue';
 
-const filename = ref('');
+const editor = reactive({read: true, path: '', name: ''});
 
 export default {
-  filename
+  editor
 }

@@ -2,6 +2,7 @@
   <div ref="editor" class="text-editor" contenteditable="true" 
     @input="handleInput"
     @keydown="handleKeyDown"
+    @refresh-editor="console.log('fired')"
     >
     <div single-line class="line"><br></div>
   </div>
@@ -10,6 +11,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import {TexEditor} from '@/hooks/texeditor'
+import utils from '@/hooks/utils.js'
 
 var e = null;
 
@@ -19,6 +21,7 @@ export default {
     onMounted(() => {
       e = TexEditor(editor.value);
     });
+
     return {
       editor
     }
@@ -55,6 +58,20 @@ export default {
       if (prevent) {
         event.preventDefault();
       }
+    },
+    refreshEditor(lines) {
+      utils.removeAllChildren(this.$refs.editor);
+      lines.forEach(line => {
+        let newline = document.createElement('div');
+        newline.setAttribute('single-line','');
+        newline.setAttribute('class','line');
+        if (line=="") {
+          e.highlightLine(newline, "<br>");
+        } else {
+          e.highlightLine(newline, line);
+        }
+        this.$refs.editor.appendChild(newline);
+      });
     }
   }
 }
