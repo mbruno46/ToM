@@ -5,6 +5,7 @@
   <div class="file-tree">
     <TreeCell v-for="(value,key) in ft" 
       :key="value['path']" 
+      :path="value['path']"
       :content="value['content']" 
       :name="key"
       :depth="value['depth']"/>
@@ -38,7 +39,7 @@ export default {
 <style scoped>
 .file-tree {
   width: 100%;
-  height: 100%;
+  height: calc(100% - var(--toolbar-height));
   background-color: var(--bg0);
   flex-grow: 1;
   overflow-y: scroll;

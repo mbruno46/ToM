@@ -6,6 +6,6 @@
 <style scoped>
 .footer {
   width: 100%;
-  height: 2rem;
+  height: 3rem;
 }
 </style>

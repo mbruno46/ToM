@@ -6,6 +6,7 @@
 body {
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 /* color scheme Spacegray Oceanic Dark
@@ -25,6 +26,7 @@ https://github.com/kkga/spacegray
   --red: #bf616a;
   --pink: #b48ead;
   --cyan: #8fa1b3;
+  --toolbar-height: 3rem;
 }
 
 .highlight-command {

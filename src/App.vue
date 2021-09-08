@@ -3,19 +3,10 @@
     <div class="container" style="width:20%">
       <file-browser />
     </div>
-    <!-- <div class="browser-container">
-      <Toolbar>
-        <AppButton icon="fa-folder-open" title="Open notebook"/>
-      </Toolbar>
-      <FileBrowser />
-    </div> -->
-    <!-- <div class="editor-container" @click="clicked">
-      <Editor ref="editor"/>
-    </div> -->
     <div class="container" style="width:40%"  @click="this.$refs.editor.focus()">
       <editor ref="editor"/>
     </div>
-    <div class="viewer-container">
+    <div class="container">
     </div>
   </div>
   <Footer/>
@@ -39,7 +30,8 @@ export default {
 <style>
 #app {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  max-width: 100vw;
+  width: 100vw;
+  height: 100vh;
   background-color: var(--bg);
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
@@ -48,13 +40,13 @@ export default {
 
 .main-panel {
   width: 100%;
+  height: calc(100vh - 3rem);
   display: flex;
   flex-flow: row;
 }
 
 .container {
   height: 100%;
-  min-height: 800px;
   display: flex;
   flex-flow: column; 
 }
@@ -67,21 +59,21 @@ export default {
   flex-flow: column;
 } */
 
-.editor-container {
+/* .editor-container {
   background-color: var(--bg1);
   width: 40%;
   height: 100%;
   min-height: 800px;
   overflow-x: scroll;
   overflow-y: scroll;
-}
+} */
 
-.viewer-container {
+/* .viewer-container {
   width: 40%;
   height: 100%;
   min-height: 800px;
   overflow-x: scroll;
   overflow-y: scroll;  
-}
+} */
 
 </style>

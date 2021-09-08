@@ -7,7 +7,7 @@
 <style scoped>
 .toolbar {
   width: 100%;
-  height: 3rem;
+  height: var(--toolbar-height);
   background-color: var(--bg);
 }
 

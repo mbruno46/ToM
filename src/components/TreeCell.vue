@@ -3,12 +3,13 @@
     <span class="tag icon "
       :class="(isDir) ? 'fa-angle-right' : 'file'"
       :style="'padding-left: ' + depth +  'rem'" 
-      @click="clicked">
+      @click="clicked(path, name)">
       {{name}}
     </span>
     <div v-if="isDir" class="nested">
       <TreeCell v-for="(value,key) in content" 
-        :key="value['path']" 
+        :key="value['path']"
+        :path="value['path']"
         :content="value['content']" 
         :name="key"
         :depth="value['depth']"/>
@@ -20,10 +21,13 @@
 // import '@fortawesome/fontawesome-free/js/all.min.js'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import {ref} from 'vue'
+import utils from '@/hooks/utils.js'
+import store from '@/hooks/store.js'
 
 export default {
   name: "TreeCell",
   props: {
+    path: String,
     content: Object,
     name: String,
     depth: Number,
@@ -36,7 +40,7 @@ export default {
     }
   },
   methods: {
-    clicked() {
+    clicked(path, name) {
       let el = this.$refs.cell;
       let _el = document.querySelector('[treecell-selected="true"]');
       if (_el != null) {
@@ -50,6 +54,12 @@ export default {
       if (this.isDir) {
         el.children[0].classList.toggle('fa-angle-down');
         el.children[1].classList.toggle('nested');
+      } else {
+        console.log(path, name, utils.getExtension(name))
+        if (utils.getExtension(name) == 'tex') {
+          store.filename.value = name;
+          console.log(path);
+        }
       }
     }
   }

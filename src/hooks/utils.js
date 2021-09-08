@@ -6,6 +6,11 @@ export function getParentByAttr(element, attr) {
   }
 }
 
+export function getExtension(file) {
+  return file.substring(file.lastIndexOf('.')+1);
+}
+
 export default {
   getParentByAttr,
+  getExtension,
 }
