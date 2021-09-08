@@ -1,6 +1,5 @@
 <template>
   <div ref="cell" class="cell" treecell-selected="false">
-    <span class="icon fa-box"/>
     <span class="tag icon "
       :class="(isDir) ? 'fa-angle-right' : 'file'"
       :style="'padding-left: ' + depth +  'rem'" 

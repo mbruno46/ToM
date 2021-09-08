@@ -1,7 +1,8 @@
 <template>
   <div ref="editor" class="text-editor" contenteditable="true" 
     @input="handleInput"
-    @keydown="handleKeyDown">
+    @keydown="handleKeyDown"
+    >
     <div single-line class="line"><br></div>
   </div>
 </template>
@@ -16,7 +17,7 @@ export default {
   setup() {
     const editor = ref(null);
     onMounted(() => {
-      e = TexEditor(editor.value)
+      e = TexEditor(editor.value);
     });
     return {
       editor

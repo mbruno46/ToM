@@ -1,13 +1,19 @@
 <template>
   <div class="main-panel">
-    <div class="browser-container">
+    <div class="container" style="width:20%">
+      <file-browser />
+    </div>
+    <!-- <div class="browser-container">
       <Toolbar>
         <AppButton icon="fa-folder-open" title="Open notebook"/>
       </Toolbar>
       <FileBrowser />
-    </div>
-    <div class="editor-container" @click="clicked">
+    </div> -->
+    <!-- <div class="editor-container" @click="clicked">
       <Editor ref="editor"/>
+    </div> -->
+    <div class="container" style="width:40%"  @click="this.$refs.editor.focus()">
+      <editor ref="editor"/>
     </div>
     <div class="viewer-container">
     </div>
@@ -16,11 +22,9 @@
 </template>
 
 <script>
-import Editor from './components/Editor.vue';
+import Editor from '@/views/Editor.vue';
 import Footer from '@/components/Footer.vue';
-import FileBrowser from '@/components/FileBrowser.vue';
-import Toolbar from '@/components/Toolbar.vue';
-import AppButton from '@/components/AppButton.vue';
+import FileBrowser from '@/views/FileBrowser.vue';
 
 export default {
   name: 'App',
@@ -28,17 +32,7 @@ export default {
     Editor,
     Footer,
     FileBrowser,
-    Toolbar,
-    AppButton,
   },
-  mounted() {
-    this.$refs.editor.focus();
-  },
-  methods: {
-    clicked() {
-      this.$refs.editor.focus();
-    }
-  }
 }
 </script>
 
@@ -59,19 +53,19 @@ export default {
 }
 
 .container {
-   height: 100%;
+  height: 100%;
   min-height: 800px;
   display: flex;
   flex-flow: column; 
 }
 
-.browser-container {
+/* .browser-container {
   width: 20%;
   height: 100%;
   min-height: 800px;
   display: flex;
   flex-flow: column;
-}
+} */
 
 .editor-container {
   background-color: var(--bg1);

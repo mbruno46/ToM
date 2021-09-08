@@ -1,4 +1,7 @@
 <template>
+  <Toolbar>
+    <AppButton icon="fa-folder-open" title="Open notebook"/>
+  </Toolbar>
   <div class="file-tree">
     <TreeCell v-for="(value,key) in ft" 
       :key="value['path']" 
@@ -9,12 +12,16 @@
 </template>
 
 <script>
+import Toolbar from '@/components/Toolbar.vue';
+import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
 import {FileTree} from '@/hooks/filetree.js'
 
 export default {
   components: {
     TreeCell,
+    Toolbar,
+    AppButton
   },
   setup() {
     let filetree = FileTree(["tex", "pdf"]);
