@@ -3,11 +3,24 @@
     <div :class="'container transition ' + (browser_visible ? 'width-20' : 'width-0')">
       <file-browser />
     </div>
-    <div :class="'container transition ' + (browser_visible ? 'width-40' : 'width-50')" 
-      @click="this.$refs.editor.focus()">
-      <editor ref="editor"/>
-    </div>
-    <div :class="'container transition ' + (browser_visible ? 'width-40' : 'width-50')">
+    <div ref="panel"
+      :class="'transition ' + (browser_visible ? 'width-80' : 'width-100')"
+      style="height: 100; display:flex; flex-flow:row;"
+      @mousemove="resize"
+      @mouseup="stopResizing"
+    >
+      <div class="container" 
+        :style="`width: calc(${width.editor}*(100% - 4px))`"
+        @click="this.$refs.editor.focus()">
+        <editor ref="editor"/>
+      </div>
+      <div class="container resizer"
+        @mousedown="startResizing"
+      />
+      <div class="container"
+        :style="`width: calc(${width.viewer}*(100% - 4px))`">
+        <viewer />
+      </div>
     </div>
   </div>
   <Footer/>
@@ -15,10 +28,15 @@
 
 <script>
 import Editor from '@/views/Editor.vue';
+import Viewer from '@/views/Viewer.vue';
 import Footer from '@/components/Footer.vue';
 import FileBrowser from '@/views/FileBrowser.vue';
 import store from '@/hooks/store'
-import { computed } from '@vue/reactivity';
+import { computed, ref } from '@vue/reactivity';
+
+var offsetX = 0;
+var resizing = false;
+var width = 0;
 
 export default {
   name: 'App',
@@ -26,11 +44,34 @@ export default {
     Editor,
     Footer,
     FileBrowser,
+    Viewer,
   },
   setup() {
-    const browser_visible = computed(()=>{return store.browser.visible;})
+    const browser_visible = computed(()=>{return store.browser.visible;});
+    const width = ref({editor: 0.5, viewer: 0.5});
+
     return {
       browser_visible,
+      width,
+    }
+  },
+  methods: {
+    startResizing(event) {
+      offsetX = event.pageX;
+      resizing = true;
+      width = this.width.editor;
+    },
+    resize(event) {
+      let w = this.$refs.panel.offsetWidth - 4;
+      let s = (event.pageX - offsetX)/w;
+      if (resizing) {
+        this.width.editor = width + s;
+        this.width.viewer = 1 - this.width.editor;
+      }
+    },
+    stopResizing() {
+      resizing = false;
+      width = 0;
     }
   }
 }
@@ -72,37 +113,23 @@ export default {
   width: 20%;
 }
 
-.width-40 {
-  width: 40%;
+.width-80 {
+  width: 80%;
 }
 
-.width-50 {
-  width: 50%;
+.width-100 {
+  width: 100%;
 }
 
-/* .browser-container {
-  width: 20%;
+.resizer {
   height: 100%;
-  min-height: 800px;
-  display: flex;
-  flex-flow: column;
-} */
+  cursor: col-resize;
+  user-select: none;
+  width: 4px;
+}
 
-/* .editor-container {
-  background-color: var(--bg1);
-  width: 40%;
-  height: 100%;
-  min-height: 800px;
-  overflow-x: scroll;
-  overflow-y: scroll;
-} */
-
-/* .viewer-container {
-  width: 40%;
-  height: 100%;
-  min-height: 800px;
-  overflow-x: scroll;
-  overflow-y: scroll;  
-} */
+.resizer:hover {
+  border: 2px solid var(--fg);
+}
 
 </style>

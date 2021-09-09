@@ -40,8 +40,7 @@ export default {
 }
 
 .btn {
-  /* transition: visibility 1s; */
-  /* -webkit-transition: visibility 1s; */
+  transition-duration: 0.5s;
 }
 
 .btn:hover {

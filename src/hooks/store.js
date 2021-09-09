@@ -5,5 +5,5 @@ const browser = reactive({visible: true});
 
 export default {
   editor,
-  browser
+  browser,
 }
