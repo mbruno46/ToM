@@ -1,7 +1,9 @@
 <template>
   <Toolbar>
     <app-button icon="fa-folder-open" title="Open Folder"/>
-    <app-button icon="fa-caret-left" title="Close browser" @click="clicked"/>
+    <app-button icon="fa-caret-left" title="Close browser" 
+      :style="'position: absolute; right: 0; top: ' + (browser_visible() ? '0':'-100')"
+      @click="clicked"/>
   </Toolbar>
   <div class="file-tree">
     <TreeCell v-for="(value,key) in ft" 
@@ -12,6 +14,7 @@
       :depth="value['depth']"/>
   </div>
 </template>
+      :style="'visibility: ' + (browser_visible() ? 'visible' : 'hidden')"
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
@@ -38,6 +41,9 @@ export default {
     clicked: function() {
       store.browser.visible = false;
       console.log(store.browser)
+    },
+    browser_visible() {
+      return store.browser.visible;
     }
   }
 }

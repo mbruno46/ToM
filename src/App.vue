@@ -1,12 +1,13 @@
 <template>
   <div class="main-panel">
-    <div :class="'container browser ' + (browser_visible ? 'width-20' : 'width-0')">
+    <div :class="'container transition ' + (browser_visible ? 'width-20' : 'width-0')">
       <file-browser />
     </div>
-    <div class="container" style="width:40%"  @click="this.$refs.editor.focus()">
+    <div :class="'container transition ' + (browser_visible ? 'width-40' : 'width-50')" 
+      @click="this.$refs.editor.focus()">
       <editor ref="editor"/>
     </div>
-    <div class="container">
+    <div :class="'container transition ' + (browser_visible ? 'width-40' : 'width-50')">
     </div>
   </div>
   <Footer/>
@@ -59,7 +60,7 @@ export default {
   flex-flow: column; 
 }
 
-.browser {
+.transition {
   transition: width 0.5s;
 }
 
@@ -69,6 +70,14 @@ export default {
 
 .width-20 {
   width: 20%;
+}
+
+.width-40 {
+  width: 40%;
+}
+
+.width-50 {
+  width: 50%;
 }
 
 /* .browser-container {

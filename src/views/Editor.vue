@@ -40,8 +40,8 @@ export default {
       return store.browser.visible;
     },
     save() {
-      store.editor.changed = false;
       if (store.editor.path != '') {
+        store.editor.changed = false;
         utils.saveTexFile(store.editor.path, this.$refs.editor.getText());
       }
     }
