@@ -1,6 +1,6 @@
 <template>
   <Toolbar>
-    <span class="label">{{filename}}</span>
+    <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
   </Toolbar>
   <div class="editor-container">
     <code-editor ref="editor"/>
@@ -12,7 +12,7 @@ import Toolbar from '@/components/Toolbar.vue';
 import CodeEditor from '@/components/CodeEditor.vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect, computed } from 'vue';
 
 export default {
   components: {
@@ -26,8 +26,9 @@ export default {
   },
   setup() {
     const editor = ref(null);
-    const filename = store.editor.name;
-    
+    const filename = computed(()=>{return store.editor.name;})
+    const changed = computed(()=>{return store.editor.changed;})
+
     onMounted(() => {
       watchEffect(() => {
         if (store.editor.read) {
@@ -40,6 +41,7 @@ export default {
 
     return {
       filename,
+      changed,
       editor,
     }
   }
@@ -55,6 +57,10 @@ export default {
   display: inline-block;
   width: 100%;
   text-align: center;
+}
+
+.changed::before {
+  content: "* ";
 }
 
 .editor-container {

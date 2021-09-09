@@ -11,7 +11,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import {TexEditor} from '@/hooks/texeditor'
-import utils from '@/hooks/utils.js'
+import store from '@/hooks/store'
 
 var e = null;
 
@@ -32,6 +32,7 @@ export default {
     },
     handleInput: function() {
       e.highlightCaretLine();
+      store.editor.changed = true;
     },
     handleKeyDown: function(event) {
       let prevent = false;
@@ -60,19 +61,11 @@ export default {
       }
     },
     refreshEditor(lines) {
-      utils.removeAllChildren(this.$refs.editor);
-      lines.forEach(line => {
-        let newline = document.createElement('div');
-        newline.setAttribute('single-line','');
-        newline.setAttribute('class','line');
-        if (line=="") {
-          e.highlightLine(newline, "<br>");
-        } else {
-          e.highlightLine(newline, line);
-        }
-        this.$refs.editor.appendChild(newline);
-      });
-    }
+      e.clean(lines[0]);
+      for (var i=1; i<lines.length; i++) {
+        e.appendLine(lines[i]);
+      }
+    },
   }
 }
 </script>

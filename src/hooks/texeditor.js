@@ -72,8 +72,20 @@ export function TexEditor(editor) {
       }
       return false;
     },
-    highlightLine(target, text) {
-      target.innerHTML = h.run(text);
+    clean() {
+      while ((editor.lastChild) && (editor.children.length>1)) {
+        editor.lastChild.remove();
+      }
+      lines[0].innerHTML = "<br>"
+    },
+    appendLine(text) {
+      let newline = lines[0].cloneNode(false);
+      if (text=="") {
+        newline.innerHTML = "<br>";
+      } else {
+        newline.innerHTML = h.run(text);
+      }
+      editor.appendChild(newline);     
     }
   }
 }

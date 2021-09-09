@@ -17,15 +17,8 @@ export function loadTexFile(fname) {
   return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
 }
 
-export function removeAllChildren(parent) {
-  while (parent.firstChild) {
-    parent.firstChild.remove();
-  }
-}
-
 export default {
   getParentByAttr,
   getExtension,
   loadTexFile,
-  removeAllChildren
 }
