@@ -1,6 +1,6 @@
 <template>
   <div class="main-panel">
-    <div :class="'container ' + (browser_visible ? 'width-20' : 'width-0')">
+    <div :class="'container browser ' + (browser_visible ? 'width-20' : 'width-0')">
       <file-browser />
     </div>
     <div class="container" style="width:40%"  @click="this.$refs.editor.focus()">
@@ -57,6 +57,10 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column; 
+}
+
+.browser {
+  transition: width 0.5s;
 }
 
 .width-0 {
