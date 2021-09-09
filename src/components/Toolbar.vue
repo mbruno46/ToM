@@ -9,6 +9,7 @@
   width: 100%;
   height: var(--toolbar-height);
   background-color: var(--bg);
+  position: relative;
 }
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <Toolbar>
-    <AppButton icon="fa-folder-open" title="Open notebook"/>
-    <AppButton icon="fa-caret-left" title="Close browser" @click="clicked"/>
+    <app-button icon="fa-folder-open" title="Open Folder"/>
+    <app-button icon="fa-caret-left" title="Close browser" @click="clicked"/>
   </Toolbar>
   <div class="file-tree">
     <TreeCell v-for="(value,key) in ft" 

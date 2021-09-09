@@ -5,6 +5,8 @@
       class="caret"
       @click="clicked"/>
     <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
+    <app-button icon="fa-save" title="Save"
+      class="save"/>
   </Toolbar>
   <div class="editor-container">
     <code-editor ref="editor"/>
@@ -69,11 +71,18 @@ export default {
   display: inline-block;
   width: 100%;
   text-align: center;
+  position: absolute;
+  z-index: 0;
 }
 
 .caret {
   position: absolute;
   z-index: 1;
+}
+
+.save {
+  z-index: 1;
+  float: right;
 }
 
 .changed::before {

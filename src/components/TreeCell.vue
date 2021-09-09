@@ -1,6 +1,6 @@
 <template>
   <div ref="cell" class="cell" treecell-selected="false">
-    <span class="tag"
+    <span :class="'tag icon ' + setIcon(isDir, name)"
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
       @click="clicked(path, name)"
       >
@@ -18,8 +18,8 @@
 </template>
 
 <script>
-// import '@fortawesome/fontawesome-free/js/all.min.js'
-// import '@fortawesome/fontawesome-free/css/all.min.css'
+import '@fortawesome/fontawesome-free/js/all.min.js'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 import { ref } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
@@ -53,17 +53,25 @@ export default {
 
       if (this.isDir) {
         el.children[1].classList.toggle('nested');
-        // if (el.children[1].classList.contains('nested')) {
-        //   this.icon = 'fa-angle-right'
-        // } else {
-        //   this.icon = 'fa-angle-down'
-        // }
+        el.children[0].classList.toggle('dir');
+        el.children[0].classList.toggle('dir-open');
       } else {
         console.log(path, name, utils.getExtension(name))
         if (utils.getExtension(name) == 'tex') {
           store.editor.name = name;
           store.editor.path = path;
           store.editor.read = true;
+        }
+      }
+    },
+    setIcon(isDir, name) {
+      if (isDir) {
+        return 'dir';
+      } else {
+        if (utils.getExtension(name) == 'tex') {
+          return 'file';
+        } else if (utils.getExtension(name) == 'pdf') {
+          return 'pdf';
         }
       }
     }
@@ -80,6 +88,8 @@ export default {
 .cell {
   display: flex;
   flex-flow: column;
+  width: max-content;
+  min-width: 100%;
 }
 
 .tag {
@@ -88,17 +98,21 @@ export default {
   padding-bottom: 0.5rem;
 }
 
-/* .icon::before {
+.icon::before {
   display: inline-block;
+  width: 1rem;
+  margin-right: 0.5rem;
+  text-align: center;
   font-style: normal;
   font-variant: normal;
+  font-size: 1.0rem;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
-} */
+}
 /* .icon:before {
     display: inline-block;
     margin-right: .5em;
-    font-family: Font Awesome 5 Free;
+    font-family: "Font Awesome 5 Free";
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
@@ -106,20 +120,30 @@ export default {
     transform: translate(0, 0);
 } */
 
-/* .dir::before {
+.dir::before {
   font-family: "Font Awesome 5 Free";
-  font-weight: 400;
-  content: "\f095";
-} */
-
-/* .dir-open::before {
-  content: "\\/";
-} */
-
-/* .file::before {
-  content: "-";
-  display: inline-block;
-} */
+  font-weight: 900;
+  content: "\f105";
+  color: var(--yellow);
+}
+.dir-open::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f107";
+  color: var(--yellow);
+}
+.file::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f15c";
+  color: var(--green);
+}
+.pdf::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f1c1";
+  color: var(--cyan);
+}
 
 .selected {
   background-color: var(--line);
