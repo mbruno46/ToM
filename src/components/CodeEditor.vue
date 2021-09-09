@@ -66,6 +66,9 @@ export default {
         e.appendLine(lines[i]);
       }
     },
+    getText() {
+      return e.toString();
+    }
   }
 }
 </script>

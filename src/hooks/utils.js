@@ -17,8 +17,17 @@ export function loadTexFile(fname) {
   return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
 }
 
+export function saveTexFile(fname, content) {
+  fs.writeFile(fname, content, 'utf-8', (err) => {
+    if (err) {
+      alert(`The file could not be saved\n${err}`);
+    }
+  });  
+}
+
 export default {
   getParentByAttr,
   getExtension,
   loadTexFile,
+  saveTexFile,
 }

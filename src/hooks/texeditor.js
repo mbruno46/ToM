@@ -86,6 +86,13 @@ export function TexEditor(editor) {
         newline.innerHTML = h.run(text);
       }
       editor.appendChild(newline);     
+    },
+    toString() {
+      var text = ''
+      lines.forEach(line => {
+        text += `${line.textContent}\n`
+      });
+      return text;
     }
   }
 }

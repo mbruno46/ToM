@@ -4,9 +4,11 @@
       :style="(browser_visible() ? 'display: none' : '')"
       class="caret"
       @click="clicked"/>
-    <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
     <app-button icon="fa-save" title="Save"
-      class="save"/>
+      class="save"
+      :style="(changed ? '' : 'display: none')"
+      @click="save"/>
+    <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
   </Toolbar>
   <div class="editor-container">
     <code-editor ref="editor"/>
@@ -36,6 +38,12 @@ export default {
     },
     browser_visible: function() {
       return store.browser.visible;
+    },
+    save() {
+      store.editor.changed = false;
+      if (store.editor.path != '') {
+        utils.saveTexFile(store.editor.path, this.$refs.editor.getText());
+      }
     }
   },
   setup() {
@@ -81,8 +89,9 @@ export default {
 }
 
 .save {
-  z-index: 1;
-  float: right;
+  position: absolute;
+  z-index: 2;
+  right: 0;
 }
 
 .changed::before {
