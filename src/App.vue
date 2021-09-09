@@ -1,6 +1,6 @@
 <template>
   <div class="main-panel">
-    <div class="container" style="width:20%">
+    <div :class="'container ' + (browser_visible ? 'width-20' : 'width-0')">
       <file-browser />
     </div>
     <div class="container" style="width:40%"  @click="this.$refs.editor.focus()">
@@ -16,6 +16,8 @@
 import Editor from '@/views/Editor.vue';
 import Footer from '@/components/Footer.vue';
 import FileBrowser from '@/views/FileBrowser.vue';
+import store from '@/hooks/store'
+import { computed } from '@vue/reactivity';
 
 export default {
   name: 'App',
@@ -24,6 +26,12 @@ export default {
     Footer,
     FileBrowser,
   },
+  setup() {
+    const browser_visible = computed(()=>{return store.browser.visible;})
+    return {
+      browser_visible,
+    }
+  }
 }
 </script>
 
@@ -49,6 +57,14 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column; 
+}
+
+.width-0 {
+  width: 0px;
+}
+
+.width-20 {
+  width: 20%;
 }
 
 /* .browser-container {

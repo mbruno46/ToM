@@ -1,5 +1,9 @@
 <template>
   <Toolbar>
+    <app-button icon="fa-caret-right" title="Show browser" 
+      :style="(browser_visible() ? 'display: none' : '')"
+      class="caret"
+      @click="clicked"/>
     <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
   </Toolbar>
   <div class="editor-container">
@@ -13,15 +17,23 @@ import CodeEditor from '@/components/CodeEditor.vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 import { ref, onMounted, watchEffect, computed } from 'vue';
+import AppButton from '@/components/AppButton.vue';
 
 export default {
   components: {
     Toolbar,
     CodeEditor,
+    AppButton,
   },
   methods: {
     focus: function() {
       this.$refs.editor.focus();
+    },
+    clicked: function() {
+      store.browser.visible = true;
+    },
+    browser_visible: function() {
+      return store.browser.visible;
     }
   },
   setup() {
@@ -44,7 +56,7 @@ export default {
       changed,
       editor,
     }
-  }
+  },
 }
 </script>
 
@@ -57,6 +69,11 @@ export default {
   display: inline-block;
   width: 100%;
   text-align: center;
+}
+
+.caret {
+  position: absolute;
+  z-index: 1;
 }
 
 .changed::before {

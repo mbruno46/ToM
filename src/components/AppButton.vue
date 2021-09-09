@@ -32,10 +32,10 @@ export default {
   outline: none;
   display: inline-block;
   align-items: center;
-  margin: 0.2rem;
+  margin: 0rem;
   box-sizing: border-box;
-  width: 3rem;
-  height: 3rem;
+  width: var(--toolbar-height);
+  height: var(--toolbar-height);
   font-size: inherit;
 }
 
