@@ -88,6 +88,7 @@ export default {
       if ((sel != null) && (dir != sel)) {
         store.editor.clean = true;
         store.editor.name = '';
+        store.editor.changed = false;
         ft.value = readDir(sel);
         dir = sel;
         return
@@ -100,8 +101,6 @@ export default {
       store.loader.value = true;
       debounce_open_folder();
     }
-
-    open_folder();
 
     return {
       ft,

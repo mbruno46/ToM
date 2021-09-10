@@ -35,7 +35,6 @@ export default {
     isDir: Boolean,
   },
   setup(props) {
-    // const isDir = ref(props.isDir);
     const isMain = ref(false);
     if (utils.getExtension(props.name) == 'tex') {
       if (utils.isMainTexFile(props.path)) {
@@ -44,7 +43,6 @@ export default {
       }
     }
 
-    // console.log(props.name, Object.keys(props.content), isDir.value)
     return {
       isMain,
     }

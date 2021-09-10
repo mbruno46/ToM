@@ -91,12 +91,7 @@ export default {
 
     watch(
       () => store.viewer.basepath,
-      (newv, oldv) => {
-        console.log(newv, oldv)
-        console.time('load');
-        load();
-        console.timeEnd('load');
-      }
+      () => {load();}
     );
   
     return {
