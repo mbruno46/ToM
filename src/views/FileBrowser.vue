@@ -12,7 +12,8 @@
       :path="value['path']"
       :content="value['content']" 
       :name="key"
-      :depth="value['depth']"/>
+      :depth="value['depth']"
+      :isDir="value['isDir']"/>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ import TreeCell from '@/components/TreeCell.vue';
 // import {FileTree} from '@/hooks/filetree.js'
 import store from '@/hooks/store'
 import { ref } from 'vue';
+import {debouncer} from '@/hooks/utils.js';
 
 const {ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
@@ -41,10 +43,12 @@ function readDir(path, depth=0) {
   fs.readdirSync(path).forEach(file => {
     var fname = pathlib.resolve(pathlib.join(path, file));
     var _c = null;
+    var isDir = false;
 
     if (!UnixHidden(fname)) {
       if (fs.statSync(fname).isDirectory()) {
         _c = readDir(fname, depth + 1);
+        isDir = true;
       } else {
         var ext = file.substring(file.lastIndexOf('.')+1);
         if (exts.includes(ext)) {
@@ -58,6 +62,7 @@ function readDir(path, depth=0) {
         'path': fname,
         'content': _c,
         'depth': depth,
+        'isDir': isDir,
       };
     }
   });
@@ -75,14 +80,25 @@ export default {
     const ft = ref({});
     let dir = null;
 
-    function open_folder() {
-      let sel = ipcRenderer.sendSync('open-folder-dialog');
-      if (dir != sel) {
-        store.loader.value = true;
+    const debounce_open_folder = debouncer(_open_folder, 20);
+
+    function _open_folder() {
+      let sel = ipcRenderer.sendSync('open-folder-dialog');      
+
+      if ((sel != null) && (dir != sel)) {
         store.editor.clean = true;
+        store.editor.name = '';
         ft.value = readDir(sel);
         dir = sel;
+        return
       }
+      
+      store.loader.value = false;
+    }
+
+    function open_folder() {
+      store.loader.value = true;
+      debounce_open_folder();
     }
 
     open_folder();

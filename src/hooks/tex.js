@@ -19,11 +19,12 @@ export function Highlighter() {
 
   function run(text) {
     text = text
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+      .replace(/\s/g, "&nbsp;");
     rules.forEach(function(value, key) {
       text = text.replace(key, value);
     });

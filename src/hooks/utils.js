@@ -37,24 +37,8 @@ export function isMainTexFile(fname) {
 
 export function compileTex(basename, callback = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  var cmd = `cd ${workdir}; latexmk -pdf -gg ${basename}.tex`;
+  var cmd = `cd ${workdir}; latexmk -pdf -g ${basename}.tex`;
 
-  // var process = exec(cmd);
-  // process.stdout.on('data', function(data) {
-  //   // if (data.toString().match(/^Run number \d.*/)) {
-  //   //   console.log('ahahha')
-  //   // }
-  //   // console.log(data.toString());
-  // });
-  // process.stderr.on('data', function(data) {
-  //   if (data.toString().match(/.*Run number \d.*/g)) {
-  //     callback_progress();
-  //   }
-  // });
-  // process.on('exit', function() {
-  //   // console.log('exit code = ', code);
-  //   callback();
-  // });
   exec(cmd, (err, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);

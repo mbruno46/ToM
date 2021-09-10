@@ -84,14 +84,18 @@ export default {
 
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
+      console.time('load');
       load();
+      console.timeEnd('load');
     });
 
     watch(
       () => store.viewer.basepath,
       (newv, oldv) => {
         console.log(newv, oldv)
+        console.time('load');
         load();
+        console.timeEnd('load');
       }
     );
   

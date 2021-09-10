@@ -12,7 +12,8 @@
         :path="value['path']"
         :content="value['content']" 
         :name="key"
-        :depth="value['depth']"/>
+        :depth="value['depth']"
+        :isDir="value['isDir']"/>
     </div>
   </div>
 </template>
@@ -31,20 +32,20 @@ export default {
     content: Object,
     name: String,
     depth: Number,
+    isDir: Boolean,
   },
   setup(props) {
-    const isDir = ref(Object.keys(props.content).length !== 0);
+    // const isDir = ref(props.isDir);
     const isMain = ref(false);
     if (utils.getExtension(props.name) == 'tex') {
-      console.log(props.path, utils.isMainTexFile(props.path))
       if (utils.isMainTexFile(props.path)) {
         store.viewer.basepath = props.path.substring(0, props.path.lastIndexOf('.tex'));
         isMain.value = true;
       }
     }
 
+    // console.log(props.name, Object.keys(props.content), isDir.value)
     return {
-      isDir,
       isMain,
     }
   },
@@ -65,8 +66,8 @@ export default {
         el.children[0].classList.toggle('dir');
         el.children[0].classList.toggle('dir-open');
       } else {
-        console.log(path, name, utils.getExtension(name))
-        if (utils.getExtension(name) == 'tex') {
+        let e = utils.getExtension(name);
+        if ((e == 'tex') || (e=='bib')) {
           store.editor.name = name;
           store.editor.path = path;
           store.editor.read = true;
@@ -77,11 +78,7 @@ export default {
       if (isDir) {
         return 'dir';
       } else {
-        if (utils.getExtension(name) == 'tex') {
-          return 'file';
-        } else if (utils.getExtension(name) == 'pdf') {
-          return 'pdf';
-        }
+        return utils.getExtension(name);
       }
     }
   }
@@ -118,16 +115,6 @@ export default {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
 }
-/* .icon:before {
-    display: inline-block;
-    margin-right: .5em;
-    font-family: "Font Awesome 5 Free";
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transform: translate(0, 0);
-} */
 
 .dir::before {
   font-family: "Font Awesome 5 Free";
@@ -141,10 +128,16 @@ export default {
   content: "\f107";
   color: var(--yellow);
 }
-.file::before {
+.tex::before {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "\f15c";
+  color: var(--green);
+}
+.bib::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f1c9";
   color: var(--green);
 }
 .pdf::before {
