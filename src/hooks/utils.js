@@ -35,35 +35,35 @@ export function isMainTexFile(fname) {
   return false;
 }
 
-export function compileTex(basename, callback_progress = ()=>{}, callback_end = ()=>{}) {
+export function compileTex(basename, callback = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
   var cmd = `cd ${workdir}; latexmk -pdf -gg ${basename}.tex`;
 
-  var process = exec(cmd);
+  // var process = exec(cmd);
   // process.stdout.on('data', function(data) {
   //   // if (data.toString().match(/^Run number \d.*/)) {
   //   //   console.log('ahahha')
   //   // }
   //   // console.log(data.toString());
   // });
-  process.stderr.on('data', function(data) {
-    if (data.toString().match(/.*Run number \d.*/g)) {
-      callback_progress();
-    }
-  });
-  process.on('exit', function() {
-    // console.log('exit code = ', code);
-    callback_end();
-  });
-  // , (err, stdout, stderr) => {
-  //   console.log(stdout);
-  //   console.log(stderr);
-  //   if (err != null) {
-  //     console.log(err);
-  //   } else {
-  //     callback();
+  // process.stderr.on('data', function(data) {
+  //   if (data.toString().match(/.*Run number \d.*/g)) {
+  //     callback_progress();
   //   }
   // });
+  // process.on('exit', function() {
+  //   // console.log('exit code = ', code);
+  //   callback();
+  // });
+  exec(cmd, (err, stdout, stderr) => {
+    console.log(stdout);
+    console.log(stderr);
+    if (err != null) {
+      console.log(err);
+    } else {
+      callback();
+    }
+  });
 }
 
 export function debouncer(callback, timeout = 300){

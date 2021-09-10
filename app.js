@@ -1,5 +1,6 @@
 const path = require('path');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const dialog = require('electron').dialog;
 
 let isDev = (process.env.NODE_ENV === 'DEV');
 
@@ -11,6 +12,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      enableRemoteModule: true,
     },
   });
 
@@ -44,6 +46,15 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+ipcMain.on('open-folder-dialog', (event, arg) => {
+  dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }).then((data) => {
+      let dir = data.filePaths;
+      event.returnValue = dir[0];
+    });
 });
 
 // const electron = require('electron')

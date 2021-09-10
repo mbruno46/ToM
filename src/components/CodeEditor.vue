@@ -59,6 +59,9 @@ export default {
         event.preventDefault();
       }
     },
+    clean() {
+      e.clean();
+    },
     refreshEditor(lines) {
       e.clean(lines[0]);
       for (var i=1; i<lines.length; i++) {

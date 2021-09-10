@@ -20,7 +20,7 @@
 import Toolbar from '@/components/Toolbar.vue';
 import AppButton from '@/components/AppButton.vue';
 import PDFPage from '@/components/PDFPage.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 
@@ -42,17 +42,20 @@ export default {
     const viewer = ref(null);
     const reload = ref(false);
 
-    var path = '/Users/mbruno/Physics/talks/valencia_19/valencia_19.pdf';
-
     function load() {
+      var path = store.viewer.basepath + '.pdf';
+      if (!fs.existsSync(path)) {
+        db1();
+        return;
+      }
       var data = fs.readFileSync(path, null);
-      store.progressbar.value += 1;
       pdfjsLib.getDocument(data).promise.then((pdfDoc_) => {
         pdf.value = pdfDoc_;
         numpages.value = pdfDoc_.numPages;
         reload.value = !reload.value;
         db0();
         db1();
+        fitH();
       }, function (reason) {
         // PDF loading error
         alert('Error ' + reason);
@@ -76,18 +79,28 @@ export default {
     }, 500);
     let db1 = utils.debouncer(function() {      
       store.progressbar.active = false;
+      store.loader.value = false;
     }, 1500);
 
     function compile() {
-      utils.compileTex(store.viewer.basepath, db0, load);
+      utils.compileTex(store.viewer.basepath, load);
     }
 
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
       load();
-      fitH();
-    })
-    
+    });
+
+    watch(
+      () => store.viewer.basepath,
+      (newv, oldv) => {
+        console.log(newv, oldv)
+        // if (path != newv) {
+        load();
+        // }
+      }
+    );
+  
     return {
       load,
       numpages,

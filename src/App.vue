@@ -74,12 +74,9 @@ export default {
       width = 0;
     },
     sync() {
-      store.progressbar.active = true;
-      store.progressbar.value = 0;
-      store.progressbar.max = 4;
-      if (this.$refs.editor.save()) {
-        this.$refs.viewer.compile();
-      }
+      store.loader.value = true;
+      this.$refs.editor.save();
+      this.$refs.viewer.compile();
     }
   }
 }
