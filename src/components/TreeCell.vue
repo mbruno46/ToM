@@ -1,6 +1,6 @@
 <template>
   <div ref="cell" class="cell" treecell-selected="false">
-    <span :class="'tag icon ' + setIcon(isDir, name)"
+    <span :class="'tag icon ' + setIcon(isDir, name) + ' ' + (isMain ? 'main':'')"
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
       @click="clicked(path, name)"
       >
@@ -34,9 +34,18 @@ export default {
   },
   setup(props) {
     const isDir = ref(Object.keys(props.content).length !== 0);
+    const isMain = ref(false);
+    if (utils.getExtension(props.name) == 'tex') {
+      console.log(props.path, utils.isMainTexFile(props.path))
+      if (utils.isMainTexFile(props.path)) {
+        store.viewer.basepath = props.path.substring(0, props.path.lastIndexOf('.tex'));
+        isMain.value = true;
+      }
+    }
 
     return {
       isDir,
+      isMain,
     }
   },
   methods: {
@@ -143,6 +152,13 @@ export default {
   font-weight: 900;
   content: "\f1c1";
   color: var(--cyan);
+}
+.main::after {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f192";
+  margin-left: 0.5rem;
+  color: var(--pink);
 }
 
 .selected {

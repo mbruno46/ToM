@@ -25,9 +25,18 @@ export function saveTexFile(fname, content) {
   });  
 }
 
+export function isMainTexFile(fname) {
+  var data = fs.readFileSync(fname, 'utf-8');
+  if (data.match(/^\s*(%.*)?\s*\\documentclass/)) {
+    return true;
+  }
+  return false;
+}
+
 export default {
   getParentByAttr,
   getExtension,
   loadTexFile,
   saveTexFile,
+  isMainTexFile,
 }

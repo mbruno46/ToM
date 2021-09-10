@@ -1,6 +1,6 @@
 <template>
   <toolbar>
-    <app-button icon="fa-sync-alt" title="Refresh" @click="load"/>
+    <app-button icon="fa-sync-alt" title="Refresh" @click="refresh"/>
     <app-button icon="fa-search-plus" title="Zoom in" @click="zoomIn"/>
     <app-button icon="fa-search-minus" title="Zoom out" @click="zoomOut"/>
     <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
@@ -66,6 +66,10 @@ export default {
       width.value = viewer.value.offsetWidth;
     }
 
+    function refresh() {
+      console.log('compile latex ', store.viewer.basepath);
+    }
+
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
       load();
@@ -82,6 +86,7 @@ export default {
       zoomOut,
       fitV,
       fitH,
+      refresh,
     }
   },
 }

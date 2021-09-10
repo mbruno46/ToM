@@ -14,7 +14,6 @@
       :depth="value['depth']"/>
   </div>
 </template>
-      :style="'visibility: ' + (browser_visible() ? 'visible' : 'hidden')"
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
