@@ -1,12 +1,11 @@
 <template>
   <div class="page-div" :style="`width: ${width}px;`">
-    {{width}}
     <canvas ref="canvas" class="page-canvas"/>
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import store from '@/hooks/store.js';
 
 export default {
@@ -14,6 +13,7 @@ export default {
     num: Number,
     pdfproxy: Object,
     width: Number,
+    reload: Boolean,
   },
   setup(props) {
     const canvas = ref(null);
@@ -42,6 +42,8 @@ export default {
     onMounted(() => {
       load();
     })
+
+    watch(() => props.reload, () => {load();});
 
     return {
       canvas,

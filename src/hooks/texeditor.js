@@ -72,11 +72,15 @@ export function TexEditor(editor) {
       }
       return false;
     },
-    clean() {
+    clean(text = null) {
       while ((editor.lastChild) && (editor.children.length>1)) {
         editor.lastChild.remove();
       }
-      lines[0].innerHTML = "<br>"
+      if (text==null) {
+        lines[0].innerHTML = "<br>"
+      } else {
+        lines[0].innerHTML = h.run(text);
+      }
     },
     appendLine(text) {
       let newline = lines[0].cloneNode(false);

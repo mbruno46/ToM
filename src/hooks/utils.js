@@ -1,4 +1,5 @@
 const fs = window.require('fs');
+const { exec } = window.require('child_process');
 
 export function getParentByAttr(element, attr) {
   if (element.hasAttribute(attr)) {
@@ -18,11 +19,12 @@ export function loadTexFile(fname) {
 }
 
 export function saveTexFile(fname, content) {
-  fs.writeFile(fname, content, 'utf-8', (err) => {
-    if (err) {
-      alert(`The file could not be saved\n${err}`);
-    }
-  });  
+  // fs.writeFile(fname, content, 'utf-8', (err) => {
+  //   if (err) {
+  //     alert(`The file could not be saved\n${err}`);
+  //   }
+  // });  
+  fs.writeFileSync(fname, content, 'utf-8');
 }
 
 export function isMainTexFile(fname) {
@@ -33,10 +35,25 @@ export function isMainTexFile(fname) {
   return false;
 }
 
+export function compileTex(basename, callback) {
+  var workdir = basename.substring(0,basename.lastIndexOf('/'));
+  var cmd = `cd ${workdir}; latexmk -pdf -silent -g ${basename}.tex`;
+  exec(cmd, (err, stdout, stderr) => {
+    console.log(stdout);
+    console.log(stderr);
+    if (err != null) {
+      console.log(err);
+    } else {
+      callback();
+    }
+  });
+}
+
 export default {
   getParentByAttr,
   getExtension,
   loadTexFile,
   saveTexFile,
   isMainTexFile,
+  compileTex,
 }

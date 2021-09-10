@@ -1,18 +1,18 @@
 <template>
   <toolbar>
-    <app-button icon="fa-sync-alt" title="Refresh" @click="refresh"/>
+    <app-button icon="fa-sync-alt" title="Refresh" @click="$emit('sync')"/>
     <app-button icon="fa-search-plus" title="Zoom in" @click="zoomIn"/>
     <app-button icon="fa-search-minus" title="Zoom out" @click="zoomOut"/>
     <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
     <app-button icon="fa-arrows-alt-h" title="Fit horizontal" @click="fitH"/>
   </toolbar>
-  <!-- <PDFViewer/> -->
   <div ref="viewer" class="pdf-viewer">
     <PDFPage v-for="index in numpages" 
       :key="index" 
       :num="index" 
       :pdfproxy="pdf"
-      :width="width"/>
+      :width="width"
+      :reload="reload"/>
   </div>
 </template>
 
@@ -20,9 +20,9 @@
 import Toolbar from '@/components/Toolbar.vue';
 import AppButton from '@/components/AppButton.vue';
 import PDFPage from '@/components/PDFPage.vue';
-import { ref } from '@vue/reactivity';
-import { onMounted } from '@vue/runtime-core';
+import { ref, onMounted } from 'vue';
 import store from '@/hooks/store.js';
+import utils from '@/hooks/utils.js';
 
 const pdfjsLib = window.require('pdfjs-dist');
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry'
@@ -34,11 +34,13 @@ export default {
     AppButton,
     PDFPage,
   },
+  emits: ['sync'],
   setup() {
     const numpages = ref(null);
     const pdf = ref(null);
     const width = ref(0);
     const viewer = ref(null);
+    const reload = ref(false);
 
     var path = '/Users/mbruno/Physics/talks/valencia_19/valencia_19.pdf';
 
@@ -47,6 +49,7 @@ export default {
       pdfjsLib.getDocument(data).promise.then((pdfDoc_) => {
         pdf.value = pdfDoc_;
         numpages.value = pdfDoc_.numPages;
+        reload.value = !reload.value;
       }, function (reason) {
         // PDF loading error
         alert('Error ' + reason);
@@ -65,9 +68,8 @@ export default {
     function fitH() {
       width.value = viewer.value.offsetWidth;
     }
-
-    function refresh() {
-      console.log('compile latex ', store.viewer.basepath);
+    function compile() {
+      utils.compileTex(store.viewer.basepath, load);
     }
 
     onMounted(() => {
@@ -86,7 +88,8 @@ export default {
       zoomOut,
       fitV,
       fitH,
-      refresh,
+      compile,
+      reload,
     }
   },
 }

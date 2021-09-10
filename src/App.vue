@@ -19,7 +19,7 @@
       />
       <div class="container"
         :style="`width: calc(${width.viewer}*(100% - 4px))`">
-        <viewer />
+        <viewer ref="viewer" @sync="sync"/>
       </div>
     </div>
   </div>
@@ -72,6 +72,11 @@ export default {
     stopResizing() {
       resizing = false;
       width = 0;
+    },
+    sync() {
+      if (this.$refs.editor.save()) {
+        this.$refs.viewer.compile();
+      }
     }
   }
 }

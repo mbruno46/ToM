@@ -2,7 +2,6 @@
   <div ref="editor" class="text-editor" contenteditable="true" 
     @input="handleInput"
     @keydown="handleKeyDown"
-    @refresh-editor="console.log('fired')"
     >
     <div single-line class="line"><br></div>
   </div>

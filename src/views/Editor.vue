@@ -40,11 +40,13 @@ export default {
       return store.browser.visible;
     },
     save() {
-      if (store.editor.path != '') {
-        store.editor.changed = false;
+      if ((store.editor.path != '') && (store.editor.changed)) {
         utils.saveTexFile(store.editor.path, this.$refs.editor.getText());
+        store.editor.changed = false;
+        return true;
       }
-    }
+      return false;
+    },
   },
   setup() {
     const editor = ref(null);
@@ -56,9 +58,10 @@ export default {
         if (store.editor.read) {
           editor.value.refreshEditor(
             utils.loadTexFile(store.editor.path)
-          )
+          );
+          store.editor.read = false;
         }
-      });
+      });    
     });
 
     return {
