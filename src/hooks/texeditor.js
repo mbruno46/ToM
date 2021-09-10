@@ -5,25 +5,51 @@ export function TexEditor(editor) {
   var h = Highlighter();
   var c = Cursor(editor);
   var lines = editor.children;
+  var ntabs = 4;
 
-  function addrmTab(ntabs, add=true) {
+  function insertTab() {
     let indices = c.getSelectedLines();
     var re = new RegExp(`^(\\s{0,${ntabs}})(.*)`,'g');
     c.save();
+    // caret = selection length=0
+    let caret = c.getCaret();
+    if (caret != null) {
+      let line = lines[caret[0]];
+      let text = line.textContent;
+      if (text.length == caret[1]) {
+        line.innerHTML = h.run(text + " ".repeat(ntabs));
+      } else {
+        line.innerHTML = h.run(" ".repeat(ntabs) + text);
+      }
+      c.restore(ntabs, ntabs);
+      return;
+    }
+    // selection
     let shift = [];
     for (var index=indices[0]; index<indices[1]+1; index++) {
       var text = lines[index].textContent;
       shift[index - indices[0]] = -text.length;
       let s = text.split(re);
-      if (add) {
-        text = (s[1].length==ntabs ? s[1] : '') + s[2];
-        lines[index].innerHTML = h.run("&nbsp;".repeat(ntabs) + text);
-        shift[index - indices[0]] += ntabs;
-      } else {
-        text = s[2];
-        lines[index].innerHTML = h.run(text);
-      }
-      console.log(add, text);
+      text = (s[1].length==ntabs ? s[1] : '') + s[2];
+      lines[index].innerHTML = h.run(" ".repeat(ntabs) + text);
+      shift[index - indices[0]] += ntabs;
+      shift[index - indices[0]] += text.length;
+    }
+    c.restore(shift[0], shift[shift.length-1]);
+  }
+
+  function removeTab() {
+    let indices = c.getSelectedLines();
+    var re = new RegExp(`^(\\s{0,${ntabs}})(.*)`,'g');
+    c.save();
+    // selection
+    let shift = [];
+    for (var index=indices[0]; index<indices[1]+1; index++) {
+      var text = lines[index].textContent;
+      shift[index - indices[0]] = -text.length;
+      let s = text.split(re);
+      text = s[2];
+      lines[index].innerHTML = h.run(text);      
       shift[index - indices[0]] += text.length;
     }
     c.restore(shift[0], shift[shift.length-1]);
@@ -31,7 +57,7 @@ export function TexEditor(editor) {
 
   function addrmComment() {
     let indices = c.getSelectedLines();
-    var re = new RegExp(`^(\\s*%)?(.*)`,'g');
+    var re = new RegExp(`^(\\s*)(%)?(.*)`,'g');
     c.save();
     let shift = [];
     for (var index=indices[0]; index<indices[1]+1; index++) {
@@ -39,10 +65,10 @@ export function TexEditor(editor) {
       shift[index - indices[0]] = -text.length;
       let s = text.split(re);
       console.log(s);
-      if (s[1]) {
-        text = s[2];
+      if (s[2]) {
+        text = s[1] + s[3];
       } else {
-        text = '%' + s[2];
+        text = '%' + s[1] + s[3];
       }
       lines[index].innerHTML = h.run(text);
       shift[index - indices[0]] += text.length;
@@ -57,12 +83,8 @@ export function TexEditor(editor) {
       target.innerHTML = h.run(target.textContent);
       c.restore();
     },
-    insertTab() {
-      addrmTab(4, true);
-    },
-    removeTab() {
-      addrmTab(4, false);
-    },
+    insertTab,
+    removeTab,
     addrmComment,
     preventBackspace() {
       if (lines.length==1) {

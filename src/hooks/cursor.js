@@ -76,5 +76,15 @@ export function Cursor(editor) {
       let r = s.getRangeAt(0);
       return r.toString();
     },
+    getCaret() {
+      if (s.anchorNode == s.focusNode) {
+        if (s.anchorOffset == s.focusOffset) {
+          anchor = getLinePos(s.anchorNode, s.anchorOffset);
+          var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
+          return [i0, anchor[1]];
+        }
+      }
+      return null;
+    },
   }
 }
