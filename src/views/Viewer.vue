@@ -46,10 +46,13 @@ export default {
 
     function load() {
       var data = fs.readFileSync(path, null);
+      store.progressbar.value += 1;
       pdfjsLib.getDocument(data).promise.then((pdfDoc_) => {
         pdf.value = pdfDoc_;
         numpages.value = pdfDoc_.numPages;
         reload.value = !reload.value;
+        db0();
+        db1();
       }, function (reason) {
         // PDF loading error
         alert('Error ' + reason);
@@ -68,8 +71,15 @@ export default {
     function fitH() {
       width.value = viewer.value.offsetWidth;
     }
+    let db0 = utils.debouncer(function() {      
+      store.progressbar.value += 1;
+    }, 500);
+    let db1 = utils.debouncer(function() {      
+      store.progressbar.active = false;
+    }, 1500);
+
     function compile() {
-      utils.compileTex(store.viewer.basepath, load);
+      utils.compileTex(store.viewer.basepath, db0, load);
     }
 
     onMounted(() => {

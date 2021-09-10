@@ -29,7 +29,7 @@
 <script>
 import Editor from '@/views/Editor.vue';
 import Viewer from '@/views/Viewer.vue';
-import Footer from '@/components/Footer.vue';
+import Footer from '@/views/Footer.vue';
 import FileBrowser from '@/views/FileBrowser.vue';
 import store from '@/hooks/store'
 import { computed, ref } from '@vue/reactivity';
@@ -74,6 +74,9 @@ export default {
       width = 0;
     },
     sync() {
+      store.progressbar.active = true;
+      store.progressbar.value = 0;
+      store.progressbar.max = 4;
       if (this.$refs.editor.save()) {
         this.$refs.viewer.compile();
       }

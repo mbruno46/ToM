@@ -43,6 +43,7 @@ export default {
       if ((store.editor.path != '') && (store.editor.changed)) {
         utils.saveTexFile(store.editor.path, this.$refs.editor.getText());
         store.editor.changed = false;
+        store.progressbar.value += 1;
         return true;
       }
       return false;
