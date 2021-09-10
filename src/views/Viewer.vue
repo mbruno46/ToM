@@ -45,7 +45,7 @@ export default {
     function load() {
       var path = store.viewer.basepath + '.pdf';
       if (!fs.existsSync(path)) {
-        db1();
+        db();
         return;
       }
       var data = fs.readFileSync(path, null);
@@ -53,8 +53,7 @@ export default {
         pdf.value = pdfDoc_;
         numpages.value = pdfDoc_.numPages;
         reload.value = !reload.value;
-        db0();
-        db1();
+        db();
         fitH();
       }, function (reason) {
         // PDF loading error
@@ -74,11 +73,8 @@ export default {
     function fitH() {
       width.value = viewer.value.offsetWidth;
     }
-    let db0 = utils.debouncer(function() {      
-      store.progressbar.value += 1;
-    }, 500);
-    let db1 = utils.debouncer(function() {      
-      store.progressbar.active = false;
+
+    let db = utils.debouncer(function() {      
       store.loader.value = false;
     }, 1500);
 
@@ -95,9 +91,7 @@ export default {
       () => store.viewer.basepath,
       (newv, oldv) => {
         console.log(newv, oldv)
-        // if (path != newv) {
         load();
-        // }
       }
     );
   

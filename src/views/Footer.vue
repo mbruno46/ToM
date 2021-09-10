@@ -5,7 +5,6 @@
       <button class="finder-btn">FIND</button>
     </div>
     <div class="vert" style="float:right">
-      <progress-bar />
       <loader />
       <app-button icon="fa-cog" title="Settings" style="float: right"/>
     </div>
@@ -14,14 +13,12 @@
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
-import ProgressBar from '@/components/ProgressBar.vue';
 import AppButton from '../components/AppButton.vue';
 import Loader from '../components/Loader.vue';
 
 export default {
   components: {
     Toolbar,
-    ProgressBar,
     AppButton,
     Loader,
   },
