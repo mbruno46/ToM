@@ -9,7 +9,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import {Highlighter} from '@/hooks/tex'
+import {Highlighter} from '@/hooks/highlight'
 import {Cursor} from '@/hooks/cursor'
 // import {TexEditor} from '@/hooks/texeditor'
 import store from '@/hooks/store'
@@ -38,7 +38,7 @@ export default {
       if (text==null) {
         lines[0].innerHTML = "<br>"
       } else {
-        lines[0].innerHTML = h.run(text);
+        lines[0].innerHTML = h(text);
       }
     }
 
@@ -76,7 +76,7 @@ export default {
         } else {
           text = '% ' + text;
         }
-        lines[index].innerHTML = h.run(text);
+        lines[index].innerHTML = h(text);
         shift[index - indices[0]] += text.length;
       }
       c.restore(shift[0], shift[shift.length-1]);
@@ -91,7 +91,7 @@ export default {
         var text = lines[index].textContent;
         shift[index - indices[0]] = -text.length;
         text = text.split(re)[2];
-        lines[index].innerHTML = h.run(text);      
+        lines[index].innerHTML = h(text);      
         shift[index - indices[0]] += text.length;
       }
       c.restore(shift[0], shift[shift.length-1]);
@@ -106,11 +106,11 @@ export default {
       // if caret at end of line then add at caret position
       // if caret inside line then add tab in front of line
       if (text.length == pos) {
-        line.innerHTML = h.run(text + " ".repeat(ntabs));
+        line.innerHTML = h(text + " ".repeat(ntabs));
       } else {
         let s = text.split(re);
         text = (s[1].length==ntabs ? s[1] : '') + s[2];
-        line.innerHTML = h.run(" ".repeat(ntabs) + text);
+        line.innerHTML = h(" ".repeat(ntabs) + text);
       }
       shift += ntabs + text.length;
       return shift;
@@ -133,7 +133,7 @@ export default {
 
     function highlightLine(target) {
       c.save();
-      target.innerHTML = h.run(target.textContent);
+      target.innerHTML = h(target.textContent);
       c.restore();
     }
 
@@ -150,7 +150,7 @@ export default {
       if (text=="") {
         newline.innerHTML = "<br>";
       } else {
-        newline.innerHTML = h.run(text);
+        newline.innerHTML = h(text);
       }
       utils.appendAtIndex(e, newline, idx);
     }
@@ -159,7 +159,7 @@ export default {
       let caret = c.getCaret();
       let idx = caret.index;
       let text = lines[idx].textContent;
-      lines[idx].innerHTML = h.run(text.substring(0,caret.pos));
+      lines[idx].innerHTML = h(text.substring(0,caret.pos));
       var n = text.split(/^(\s*).*/g)[1].length;
       n = ntabs * Math.floor(n/ntabs);
       appendLine(" ".repeat(n) + text.substring(caret.pos), idx+1);

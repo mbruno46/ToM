@@ -19,11 +19,6 @@ export function loadTexFile(fname) {
 }
 
 export function saveTexFile(fname, content) {
-  // fs.writeFile(fname, content, 'utf-8', (err) => {
-  //   if (err) {
-  //     alert(`The file could not be saved\n${err}`);
-  //   }
-  // });  
   fs.writeFileSync(fname, content, 'utf-8');
 }
 
@@ -35,15 +30,15 @@ export function isMainTexFile(fname) {
   return false;
 }
 
-export function compileTex(basename, callback = ()=>{}) {
+export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  var cmd = `cd ${workdir}; latexmk -pdf -g ${basename}.tex`;
-
+  var cmd = `cd ${workdir}; latexmk -pdf -silent -g ${basename}.tex`;
+  
   exec(cmd, (err, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {
-      console.log(err);
+      callback_err(loadTexFile(`${basename}.log`));
     } else {
       callback();
     }

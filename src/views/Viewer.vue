@@ -6,13 +6,16 @@
     <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
     <app-button icon="fa-arrows-alt-h" title="Fit horizontal" @click="fitH"/>
   </toolbar>
-  <div ref="viewer" class="pdf-viewer">
+  <div ref="viewer" class="pdf-viewer" :style="error ? 'display:none' : ''">
     <PDFPage v-for="index in numpages" 
       :key="index" 
       :num="index" 
       :pdfproxy="pdf"
       :width="width"
       :reload="reload"/>
+  </div>
+  <div class="pdf-viewer" :style="error ? '' : 'display:none'">
+    <error-message v-for="(txt, index) in errmsg" :key="index" :msg="txt"/>
   </div>
 </template>
 
@@ -23,16 +26,21 @@ import PDFPage from '@/components/PDFPage.vue';
 import { ref, onMounted, watch } from 'vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
+import {HighlightError} from '@/hooks/highlight.js';
 
 const pdfjsLib = window.require('pdfjs-dist');
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry'
+import ErrorMessage from '../components/ErrorMessage.vue';
 const fs = window.require('fs');
+
+var h = HighlightError();
 
 export default {
   components: {
     Toolbar,
     AppButton,
     PDFPage,
+    ErrorMessage,
   },
   emits: ['sync'],
   setup() {
@@ -41,6 +49,8 @@ export default {
     const width = ref(0);
     const viewer = ref(null);
     const reload = ref(false);
+    const error = ref(false);
+    const errmsg = ref([]);
 
     function load() {
       var path = store.viewer.basepath + '.pdf';
@@ -79,14 +89,24 @@ export default {
     }, 1500);
 
     function compile() {
-      utils.compileTex(store.viewer.basepath, load);
+      utils.compileTex(store.viewer.basepath, 
+      ()=>{
+        error.value = false;
+        load();
+      },
+      (msg)=>{
+        error.value = true;
+        errmsg.value = [];
+        for (var i=0; i<msg.length; i++) {
+          errmsg.value.push(h(msg[i]));
+        }
+        db();
+      });
     }
 
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
-      console.time('load');
       load();
-      console.timeEnd('load');
     });
 
     watch(
@@ -104,10 +124,15 @@ export default {
       zoomOut,
       fitV,
       fitH,
-      compile,
       reload,
+      error,
+      errmsg,
+      compile,
     }
   },
+  methods: {
+    
+  }
 }
 </script>
 
