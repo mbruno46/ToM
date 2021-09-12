@@ -60,6 +60,15 @@ export function debouncer(callback, timeout = 300){
   };
 }
 
+export function appendAtIndex(parent, child, index) {
+  if (!index) index = 0
+  if ((index<0) || (index >= parent.children.length)) {
+    parent.appendChild(child)
+  } else {
+    parent.insertBefore(child, parent.children[index])
+  }
+}
+
 export default {
   getParentByAttr,
   getExtension,
@@ -68,4 +77,5 @@ export default {
   isMainTexFile,
   compileTex,
   debouncer,
+  appendAtIndex,
 }

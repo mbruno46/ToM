@@ -81,10 +81,25 @@ export function Cursor(editor) {
         if (s.anchorOffset == s.focusOffset) {
           anchor = getLinePos(s.anchorNode, s.anchorOffset);
           var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
-          return [i0, anchor[1]];
+          return {index: i0, pos: anchor[1]};
         }
       }
       return null;
     },
+    getSelection() {
+      this.save();
+      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
+      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      return {anchor: {index: i0, pos: anchor[1]},
+        focus: {index: i1, pos: focus[1]}
+      }
+    },
+    setCaret(line, pos) {
+      let c0 = findLineNodeFromPos(line, pos);
+      s.setBaseAndExtent(c0[0], c0[1], c0[0], c0[1]);
+    },
+    getRange() {
+      return s.getRangeAt(0);
+    }
   }
 }
