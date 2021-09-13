@@ -73,8 +73,28 @@ export function Cursor(editor) {
       s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
     },
     getSelectedText() {
-      let r = s.getRangeAt(0);
-      return r.toString();
+      this.save();
+      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
+      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      var text;
+      if (i0==i1) {
+        let min = Math.min(anchor[1], focus[1]);
+        let max = Math.max(anchor[1], focus[1]);
+        text = anchor[0].textContent.substring(min, max);
+      } else if (i0<i1) {
+        text = anchor[0].textContent.substring(anchor[1]);
+        for (let i=i0+1;i<i1;i++) {
+          text += `\n${editor.children[i].textContent}`;
+        }
+        text += `\n${focus[0].textContent.substring(0, focus[1])}`;
+      } else if (i0>i1) {
+        text = [focus[0].textContent.substring(focus[1])];
+        for (let i=i0+1;i<i1;i++) {
+          text += `\n${editor.children[i].textContent}`
+        }
+        text += `\n${anchor[0].textContent.substring(0, anchor[1])}`
+      }
+      return text;
     },
     getCaret() {
       if (s.anchorNode == s.focusNode) {
@@ -86,12 +106,30 @@ export function Cursor(editor) {
       }
       return null;
     },
-    getSelection() {
+    getSelection(oriented = true) {
       this.save();
       var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
       var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
-      return {anchor: {index: i0, pos: anchor[1]},
-        focus: {index: i1, pos: focus[1]}
+      if (oriented) {
+        return {anchor: {index: i0, pos: anchor[1]},
+          focus: {index: i1, pos: focus[1]}
+        }
+      } else {
+        if (i0==i1) {
+          let min = Math.min(anchor[1], focus[1]);
+          let max = Math.max(anchor[1], focus[1]);
+          return {anchor: {index: i0, pos: min},
+            focus: {index: i1, pos: max}
+          }
+        } else if (i0<i1) {
+          return {anchor: {index: i0, pos: anchor[1]},
+            focus: {index: i1, pos: focus[1]}
+          }
+        } else if (i0>i1) {
+          return {anchor: {index: i1, pos: anchor[1]},
+            focus: {index: i0, pos: focus[1]}
+          }
+        }
       }
     },
     setCaret(line, pos) {

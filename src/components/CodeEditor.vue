@@ -15,6 +15,8 @@ import {Cursor} from '@/hooks/cursor'
 import store from '@/hooks/store'
 import utils from '@/hooks/utils.js'
 
+const { clipboard } = window.require('electron');
+
 var h = Highlighter();
 var c = null;
 var e = null;
@@ -137,9 +139,14 @@ export default {
       c.restore();
     }
 
-    function insertTextAtSelection(text='') {
+    function deleteSelectedText() {
       let r = c.getRange();
       r.deleteContents();
+    }
+
+    function insertTextAtCaret(text) {
+      // insert text at caret position and moves caret to end of inserted text
+      let r = c.getRange();
       r.insertNode(document.createTextNode(text));
       r.collapse(false);
       this.highlightLine(c.getLine());
@@ -155,15 +162,18 @@ export default {
       utils.appendAtIndex(e, newline, idx);
     }
 
-    function insertNewLine() {
+    function insertNewLine(tabbing = true) {
       let caret = c.getCaret();
       let idx = caret.index;
       let text = lines[idx].textContent;
-      lines[idx].innerHTML = h(text.substring(0,caret.pos));
-      var n = text.split(/^(\s*).*/g)[1].length;
-      n = ntabs * Math.floor(n/ntabs);
-      appendLine(" ".repeat(n) + text.substring(caret.pos), idx+1);
-      c.setCaret(lines[idx + 1], n);
+      var n = 0;
+      if (text != "") {
+        lines[idx].innerHTML = h(text.substring(0,caret.pos));
+        n = text.split(/^(\s*).*/g)[1].length;
+        n = ntabs * Math.floor(n/ntabs);
+      }
+      appendLine(" ".repeat(tabbing ? n : 0) + text.substring(caret.pos), idx+1);
+      c.setCaret(lines[idx + 1], tabbing ? n : 0);
     }
 
     return {
@@ -175,7 +185,8 @@ export default {
       removeTab,
       insertTab,
       appendLine,
-      insertTextAtSelection,
+      deleteSelectedText,
+      insertTextAtCaret,
       insertNewLine,
     }
   },
@@ -200,6 +211,22 @@ export default {
 
       if ((event.ctrlKey || event.metaKey)) {
         if (event.key == "/") {this.addrmComment();}
+        if (event.key == "x") {
+          prevent = true;
+          clipboard.writeText(c.getSelectedText());
+          this.deleteSelectedText();
+        } else if (event.key == "c") {
+          prevent = true;
+          clipboard.writeText(c.getSelectedText());
+        } else if (event.key == "v") {
+          prevent = true;
+          let s = clipboard.readText().split(/\r?\n/);
+          console.log(s);
+          for (var i=0;i<s.length;i++) {
+            if (i>0) this.insertNewLine(false);
+            this.insertTextAtCaret(s[i]);
+          }
+        }
       }
 
       if (event.key == "Tab") {
@@ -213,7 +240,7 @@ export default {
 
       if (event.key == "Enter") {
         prevent = true;
-        this.insertTextAtSelection('');
+        this.deleteSelectedText();
         this.insertNewLine();
       }
 
