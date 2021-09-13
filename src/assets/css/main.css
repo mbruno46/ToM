@@ -49,3 +49,7 @@ https://github.com/kkga/spacegray
 .highlight-comment * {
   color: inherit;
 }
+
+.highlight-error {
+  color: var(--error);
+}

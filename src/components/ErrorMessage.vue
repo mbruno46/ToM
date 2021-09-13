@@ -14,7 +14,6 @@ export default {
     const div = ref(null);
 
     onMounted(()=>{
-      console.log(props.msg);
       div.value.innerHTML = props.msg;
     })
 
