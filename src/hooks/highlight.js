@@ -101,7 +101,6 @@ export function AutoComplete() {
     } else {
       suggestions = (word=="") ? cmds : _filter(cmds, word);
     }
-    console.log(word);
     return {filter: word, suggestions: suggestions, active: (suggestions.length>0)};
   }
 

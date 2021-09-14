@@ -1,5 +1,5 @@
 <template>
-  <div ref="editor" class="text-editor" contenteditable="true" 
+  <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
     @input="handleInput"
     @keydown="handleKeyDown"
     >

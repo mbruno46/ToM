@@ -1,6 +1,6 @@
 <template>
   <div ref="panel" class="panel" v-show="active"
-    :style="`left: ${pos.x}; top: ${pos.y}; max-width: calc(100% - ${pos.y});`"
+    :style="`left: ${pos.x}; top: ${pos.y};`"
     @keydown="handleKeyDown">
     <span class="entry" v-for="(val, idx) in suggestions" 
       :key="idx" :class="`entry ` + ((current == idx) ? 'selected':'')"
@@ -16,6 +16,7 @@ import {AutoComplete} from '@/hooks/highlight'
 
 var ac = AutoComplete();
 var char_width = 0;
+var char_height = 0;
 
 export default {
   emits: ['autocomplete-choice'],
@@ -33,12 +34,12 @@ export default {
       s.textContent = 'test string';
       e.appendChild(s);
       char_width = s.offsetWidth / 11;
+      char_height = s.offsetHeight / 1;
       e.removeChild(s);
     });
 
     function launch(text, x, y) {
       let suggestion = ac.check(text);
-      console.log(suggestion);
       if (suggestion.active) {
         suggestions.value = suggestion.suggestions;
         current.value = -1;
@@ -82,12 +83,18 @@ export default {
       if (event.key == "ArrowDown") {
         this.current += 1;
         this.current = this.current % this.suggestions.length;
+        this.$refs.panel.scroll(0, this.current * char_height);
       } else if (event.key == "ArrowUp") {
         this.current -= 1;
         this.current += (this.current<0) ? this.suggestions.length : 0;
+        this.$refs.panel.scroll(0, this.current * char_height);
       } else if (event.key == "Enter") {
-        this.choose(this.suggestions[this.current]);
+        if (this.current>=0) {
+          this.$refs.panel.scroll(0, 0);
+          this.choose(this.suggestions[this.current]);
+        }
       }
+
     }
   }
 }
@@ -105,8 +112,13 @@ export default {
   position: absolute;
   display: flex;
   flex-flow: column;
-  min-width: minmax(fit-content, 8rem);
-  min-height: minmax(fit-content, 8rem);
+  min-width: 8rem;
+  width: max-content;
+  min-height: fit-content;
+  max-height: 8rem;
+  overflow-y: scroll;
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 
 .entry {
@@ -115,7 +127,7 @@ export default {
 }
 
 .selected {
-  background-color: var(--electric-blue);
+  background-color: var(--dark-blue);
 }
 
 .span-char-width {
