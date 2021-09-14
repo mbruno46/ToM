@@ -1,7 +1,8 @@
 import utils from './utils'
 
 export function Cursor(editor) {
-  var anchor, focus;
+  var anchor = getLinePos(editor.children[0], 0);
+  var focus = getLinePos(editor.children[0], 0);
   let s = document.getSelection();
 
   function getLinePos(node, offset) {
@@ -101,7 +102,12 @@ export function Cursor(editor) {
         if (s.anchorOffset == s.focusOffset) {
           anchor = getLinePos(s.anchorNode, s.anchorOffset);
           var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
-          return {index: i0, pos: anchor[1]};
+          let r0 = s.getRangeAt(0);
+          var rect = {left: 0, top: 0};
+          if (r0.getClientRects().length>0) {
+            rect = r0.getClientRects()[0];
+          }
+          return {index: i0, pos: anchor[1], x: rect.left, y: rect.top};
         }
       }
       return null;

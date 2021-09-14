@@ -5,15 +5,16 @@
     >
     <div single-line class="line"><br></div>
   </div>
+  <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import {Highlighter} from '@/hooks/highlight'
 import {Cursor} from '@/hooks/cursor'
-// import {TexEditor} from '@/hooks/texeditor'
 import store from '@/hooks/store'
 import utils from '@/hooks/utils.js'
+import AutoComplete from './AutoComplete.vue'
 
 const { clipboard } = window.require('electron');
 
@@ -24,8 +25,12 @@ var lines = null;
 var ntabs = 4;
 
 export default {
+  components: {
+    AutoComplete,
+  },
   setup() {
     const editor = ref(null);
+
     onMounted(() => {
       c = Cursor(editor.value);
       lines = editor.value.children;
@@ -149,7 +154,7 @@ export default {
       let r = c.getRange();
       r.insertNode(document.createTextNode(text));
       r.collapse(false);
-      this.highlightLine(c.getLine());
+      highlightLine(c.getLine());
     }
     
     function appendLine(text, idx = -1) {
@@ -176,6 +181,19 @@ export default {
       c.setCaret(lines[idx + 1], tabbing ? n : 0);
     }
 
+    function autoComplete(word) {
+      c.restore();
+      let caret = c.getCaret();
+      var text = lines[caret.index].textContent.substring(0,caret.pos);
+      for (var i=word.length;i>0;i--) {
+        if (text.substring(text.length-i)==word.substring(0,i)) {
+          insertTextAtCaret(word.substring(i));
+          return;
+        }
+      }
+      insertTextAtCaret(word);
+    }
+
     return {
       editor,
       clean,
@@ -188,21 +206,26 @@ export default {
       deleteSelectedText,
       insertTextAtCaret,
       insertNewLine,
+      autoComplete,
     }
   },
   methods: {
     focus: function() {
       this.$refs.editor.focus();
+      c.restore();
     },
-    handleInput: function(event) {
-      if (event.data == '{') {
-        console.log('ah! autocomplete?')
-      }
-
+    launchAutoComplete() {
+      let caret = c.getCaret();
+      var text = lines[caret.index].textContent.substring(0,caret.pos);
+      this.$refs.ac.launch(text, caret.x, caret.y);
+    },
+    handleInput: function() {
+      this.launchAutoComplete();
       this.highlightLine(c.getLine());
       store.editor.changed = true;
     },
     handleKeyDown: function(event) {
+      c.save();
       let prevent = false;
 
       if (event.key == "Backspace") {
@@ -240,8 +263,19 @@ export default {
 
       if (event.key == "Enter") {
         prevent = true;
-        this.deleteSelectedText();
-        this.insertNewLine();
+        if (this.$refs.ac.isActive()) {
+          this.$refs.ac.handleKeyDown(event);
+        } else {
+          this.deleteSelectedText();
+          this.insertNewLine();
+        }
+      }
+
+      if (this.$refs.ac.isActive()) {
+        if (["ArrowDown","ArrowUp"].includes(event.key)) {
+          prevent = true;
+          this.$refs.ac.handleKeyDown(event);
+        }
       }
 
       if (prevent) {
