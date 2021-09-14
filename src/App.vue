@@ -137,4 +137,8 @@ export default {
   border: 2px solid var(--fg);
 }
 
+*::selection {
+    background: var(--dark-blue);
+    /* color: #ffffff; */
+}
 </style>

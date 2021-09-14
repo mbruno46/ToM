@@ -112,4 +112,13 @@ export default {
   overflow-y: scroll;
   background-color: var(--bg1);
 }
+
+span {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 </style>

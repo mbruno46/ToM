@@ -329,4 +329,17 @@ export default {
   padding-right: 0.5rem;
   text-align: right;
 }
+
+.text-editor::selection {
+    background: #cc0000;
+    /* color: #ffffff; */
+}
+/* .text-editor::-moz-selection {
+    background: #cc0000;
+    color: #ffffff;
+}
+.text-editor::-webkit-selection {
+    background: #cc0000;
+    color: #ffffff;
+} */
 </style>
