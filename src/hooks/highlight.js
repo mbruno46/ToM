@@ -1,3 +1,18 @@
+import latex_cmd_src from 'raw-loader!@/hooks/latex.commands';
+import latex_env_src from 'raw-loader!@/hooks/latex.environments';
+
+function parse_latex_src(data) {
+  var out = [];
+  data.split(/\r?\n/).forEach(e => {
+    if (!e.includes('#')) {
+      out.push(e.trim());
+    }
+  })
+  return out;
+}
+var cmds = parse_latex_src(latex_cmd_src);
+var envs = parse_latex_src(latex_env_src);
+
 function genericHighlighter(rules) {
   // we replace white space with &nbsp; only in text, not  inside <span style..>
   rules.set(/\s(?<!<span\s)/g, "&nbsp;");
@@ -19,11 +34,6 @@ function genericHighlighter(rules) {
     return text;
   }
 }
-
-var cmds = ['\\begin','\\end','\\title','\\author','\\date','\\section','\\subsection',
-  '\\usepackage','\\documentclass','\\label'];
-
-var args = ['equation', 'split'];
 
 var refs = [];
 
@@ -86,7 +96,7 @@ export function AutoComplete() {
       if ((before=="\\ref") || (!cmds.includes(before))) {
         suggestions = (word=="") ? refs : _filter(refs, word);
       } else {
-        suggestions = (word=="") ? args : _filter(args, word);
+        suggestions = (word=="") ? envs : _filter(envs, word);
       }
     } else {
       suggestions = (word=="") ? cmds : _filter(cmds, word);

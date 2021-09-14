@@ -64,6 +64,16 @@ export function appendAtIndex(parent, child, index) {
   }
 }
 
+export function loadLatexSource(fname) {
+  var out = [];
+  for (var e in fs.readFileSync(fname, 'utf-8').split(/\r?\n/)) {
+    if (!e.includes('#')) {
+      out.push(e.trim());
+    }
+  }
+  return out;
+}
+
 export default {
   getParentByAttr,
   getExtension,

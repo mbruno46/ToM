@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "electron": "^14.0.0",
     "pdfjs-dist": "^2.9.359",
+    "raw-loader": "^4.0.2",
     "vue": "^3.0.0"
   },
   "devDependencies": {
