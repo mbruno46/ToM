@@ -45,6 +45,7 @@ export default {
 
 .btn:hover {
   color: var(--selected);
+  background-color: var(--dark-blue);
 }
 .btn:active {
   color: var(--selected);

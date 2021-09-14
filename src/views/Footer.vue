@@ -1,10 +1,10 @@
 <template>
   <toolbar>
-    <div class="vert" style="float:left; padding: 0 1rem;">
+    <div class="vert" style="padding: 0 1rem;">
       <input class="finder" placeholder="find"/>
       <button class="finder-btn">FIND</button>
     </div>
-    <div class="vert" style="float:right">
+    <div class="vert" style="position: absolute; right: 0;">
       <loader />
       <app-button icon="fa-cog" title="Settings" style="float: right"/>
     </div>
@@ -48,7 +48,6 @@ export default {
 }
 
 .vert {
-  float: right;
   align-items: center;
   display: flex;
   height: 100%;

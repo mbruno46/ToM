@@ -212,7 +212,6 @@ export default {
   methods: {
     focus: function() {
       this.$refs.editor.focus();
-      c.restore();
     },
     launchAutoComplete() {
       let caret = c.getCaret();

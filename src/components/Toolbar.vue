@@ -10,6 +10,7 @@
   height: var(--toolbar-height);
   background-color: var(--bg);
   position: relative;
+  display: flex;
+  flex-flow: row;
 }
-
 </style>

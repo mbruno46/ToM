@@ -3,7 +3,6 @@
     <app-button icon="fa-folder-open" title="Open Folder" @click="open_folder"/>
     <app-button icon="fa-plus" title="New File"/>
     <app-button icon="fa-caret-left" title="Close browser" 
-      :style="'position: absolute; right: 0; top: ' + (browser_visible() ? '0':'-100')"
       @click="clicked"/>
   </Toolbar>
   <div class="file-tree">
@@ -16,6 +15,7 @@
       :isDir="value['isDir']"/>
   </div>
 </template>
+      :style="'position: absolute; right: 0; top: ' + (browser_visible() ? '0':'-100')"
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
