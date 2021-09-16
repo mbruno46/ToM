@@ -18,6 +18,12 @@
 \pageref
 \footnote
 #
+\bibliography
+\bibliographystyle
+\bibitem
+\cite
+#
+\includegraphics
 \caption
 #
 \textrm

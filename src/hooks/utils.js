@@ -13,12 +13,12 @@ export function getExtension(file) {
   return file.substring(file.lastIndexOf('.')+1);
 }
 
-export function loadTexFile(fname) {
+export function loadTextFile(fname) {
   if (fname == "") {return [""];}
   return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
 }
 
-export function saveTexFile(fname, content) {
+export function saveTextFile(fname, content) {
   fs.writeFileSync(fname, content, 'utf-8');
 }
 
@@ -38,7 +38,7 @@ export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {
-      callback_err(loadTexFile(`${basename}.log`));
+      callback_err(loadTextFile(`${basename}.log`));
     } else {
       callback();
     }
@@ -64,23 +64,18 @@ export function appendAtIndex(parent, child, index) {
   }
 }
 
-export function loadLatexSource(fname) {
-  var out = [];
-  for (var e in fs.readFileSync(fname, 'utf-8').split(/\r?\n/)) {
-    if (!e.includes('#')) {
-      out.push(e.trim());
-    }
-  }
-  return out;
+export function getIndexOf(arr, el) {
+  return Array.prototype.indexOf.call(arr, el);
 }
 
 export default {
   getParentByAttr,
   getExtension,
-  loadTexFile,
-  saveTexFile,
+  loadTextFile,
+  saveTextFile,
   isMainTexFile,
   compileTex,
   debouncer,
   appendAtIndex,
+  getIndexOf,
 }

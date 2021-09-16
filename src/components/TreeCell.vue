@@ -25,6 +25,9 @@ import { ref } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
 
+import {MetaData} from '@/hooks/metadata.js';
+var meta = MetaData();
+
 export default {
   name: "TreeCell",
   props: {
@@ -40,6 +43,8 @@ export default {
       if (utils.isMainTexFile(props.path)) {
         store.viewer.basepath = props.path.substring(0, props.path.lastIndexOf('.tex'));
         isMain.value = true;
+        meta.init(props.path);
+        meta.parse();
       }
     }
 

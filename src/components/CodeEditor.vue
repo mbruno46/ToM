@@ -16,6 +16,9 @@ import store from '@/hooks/store'
 import utils from '@/hooks/utils.js'
 import AutoComplete from './AutoComplete.vue'
 
+import {MetaData} from '@/hooks/metadata.js';
+var meta = MetaData();
+
 const { clipboard } = window.require('electron');
 
 var h = Highlighter();
@@ -142,6 +145,7 @@ export default {
       c.save();
       target.innerHTML = h(target.textContent);
       c.restore();
+      meta.parseTeXLine(store.editor.name, utils.getIndexOf(lines, target), target.textContent)
     }
 
     function deleteSelectedText() {
@@ -330,16 +334,4 @@ export default {
   text-align: right;
 }
 
-.text-editor::selection {
-    background: #cc0000;
-    /* color: #ffffff; */
-}
-/* .text-editor::-moz-selection {
-    background: #cc0000;
-    color: #ffffff;
-}
-.text-editor::-webkit-selection {
-    background: #cc0000;
-    color: #ffffff;
-} */
 </style>

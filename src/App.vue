@@ -139,6 +139,5 @@ export default {
 
 *::selection {
     background: var(--dark-blue);
-    /* color: #ffffff; */
 }
 </style>

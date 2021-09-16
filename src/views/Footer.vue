@@ -2,7 +2,7 @@
   <toolbar>
     <div class="vert" style="padding: 0 1rem;">
       <input class="finder" placeholder="find"/>
-      <button class="finder-btn">FIND</button>
+      <app-button icon="fa-search" title="Find"/>
     </div>
     <div class="vert" style="position: absolute; right: 0;">
       <loader />
@@ -41,10 +41,6 @@ export default {
   white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
-}
-
-.finder-btn {
-  margin-left: 0.5rem;
 }
 
 .vert {

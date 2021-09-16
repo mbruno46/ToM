@@ -59,8 +59,8 @@ export function Cursor(editor) {
     getSelectedLines() {
       anchor = getLinePos(s.anchorNode, s.anchorOffset);
       focus = getLinePos(s.focusNode, s.focusOffset);
-      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
-      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      var i0 = utils.getIndexOf(editor.children, anchor[0]);
+      var i1 = utils.getIndexOf(editor.children, focus[0]);
       // var i0 = editor.children.indexOf(anchor[0]);
       // var i1 = editor.children.indexOf(focus[0]);
       if (i0<i1) {
@@ -75,8 +75,8 @@ export function Cursor(editor) {
     },
     getSelectedText() {
       this.save();
-      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
-      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      var i0 = utils.getIndexOf(editor.children, anchor[0]);
+      var i1 = utils.getIndexOf(editor.children, focus[0]);
       var text;
       if (i0==i1) {
         let min = Math.min(anchor[1], focus[1]);
@@ -101,7 +101,7 @@ export function Cursor(editor) {
       if (s.anchorNode == s.focusNode) {
         if (s.anchorOffset == s.focusOffset) {
           anchor = getLinePos(s.anchorNode, s.anchorOffset);
-          var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
+          var i0 = utils.getIndexOf(editor.children, anchor[0]);
           let r0 = s.getRangeAt(0);
           var rect = {left: 0, top: 0};
           if (r0.getClientRects().length>0) {
@@ -114,8 +114,8 @@ export function Cursor(editor) {
     },
     getSelection(oriented = true) {
       this.save();
-      var i0 = Array.prototype.indexOf.call(editor.children, anchor[0]);
-      var i1 = Array.prototype.indexOf.call(editor.children, focus[0]);
+      var i0 = utils.getIndexOf(editor.children, anchor[0]);
+      var i1 = utils.getIndexOf(editor.children, focus[0]);
       if (oriented) {
         return {anchor: {index: i0, pos: anchor[1]},
           focus: {index: i1, pos: focus[1]}

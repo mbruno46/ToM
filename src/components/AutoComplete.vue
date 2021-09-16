@@ -25,7 +25,7 @@ export default {
     const pos = ref({x:0, y:0});
     const suggestions = ref([]);
     const active = ref(false);
-    const current = ref(-1);
+    const current = ref(0);
 
     onMounted(() => {
       let s = document.createElement('span');
@@ -42,7 +42,7 @@ export default {
       let suggestion = ac.check(text);
       if (suggestion.active) {
         suggestions.value = suggestion.suggestions;
-        current.value = -1;
+        current.value = 0;
         active.value = true;
 
         let n = suggestion.filter.length;

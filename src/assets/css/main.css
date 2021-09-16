@@ -21,10 +21,10 @@ https://github.com/kkga/spacegray
   --fg: rgb(101, 115, 127);
   --selected: rgb(223, 225, 232);
   --line: rgb(51, 61, 70);
-  --green: #a3be8c;
+  --green: #82c448; /* #a3be8c */
   --yellow: #ebcb8b;
-  --red: #bf616a;
-  --pink: #b48ead;
+  --red: #f1727f; /* #bf616a */
+  --pink: #ff84e8; /* b48ead */
   --cyan: #8fa1b3;
   --toolbar-height: 3rem;
   --error: #ff6c28;

@@ -23,6 +23,9 @@ import utils from '@/hooks/utils.js';
 import { ref, onMounted, watchEffect, computed } from 'vue';
 import AppButton from '@/components/AppButton.vue';
 
+import {MetaData} from '@/hooks/metadata.js';
+var meta = MetaData();
+
 export default {
   components: {
     Toolbar,
@@ -41,8 +44,9 @@ export default {
     },
     save() {
       if ((store.editor.path != '') && (store.editor.changed)) {
-        utils.saveTexFile(store.editor.path, this.$refs.editor.getText());
+        utils.saveTextFile(store.editor.path, this.$refs.editor.getText());
         store.editor.changed = false;
+        meta.parseFile(store.editor.name);
       }
     },
   },
@@ -55,7 +59,7 @@ export default {
       watchEffect(() => {
         if (store.editor.read) {
           editor.value.refreshEditor(
-            utils.loadTexFile(store.editor.path)
+            utils.loadTextFile(store.editor.path)
           );
           store.editor.read = false;
         }

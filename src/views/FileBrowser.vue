@@ -15,7 +15,6 @@
       :isDir="value['isDir']"/>
   </div>
 </template>
-      :style="'position: absolute; right: 0; top: ' + (browser_visible() ? '0':'-100')"
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
@@ -25,6 +24,9 @@ import TreeCell from '@/components/TreeCell.vue';
 import store from '@/hooks/store'
 import { ref } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
+
+// import {MetaData} from '@/hooks/metadata.js';
+// var meta = MetaData();
 
 const {ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
