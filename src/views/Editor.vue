@@ -42,18 +42,21 @@ export default {
     browser_visible: function() {
       return store.browser.visible;
     },
-    save() {
-      if ((store.editor.path != '') && (store.editor.changed)) {
-        utils.saveTextFile(store.editor.path, this.$refs.editor.getText());
-        store.editor.changed = false;
-        meta.parseFile(store.editor.name);
-      }
-    },
   },
   setup() {
     const editor = ref(null);
     const filename = computed(()=>{return store.editor.name;})
     const changed = computed(()=>{return store.editor.changed;})
+
+    var autosave_timer = null;
+    
+    function save() {
+      if ((store.editor.path != '') && (store.editor.changed)) {
+        utils.saveTextFile(store.editor.path, editor.value.getText());
+        store.editor.changed = false;
+        meta.parseFile(store.editor.name);
+      }
+    }
 
     onMounted(() => {
       watchEffect(() => {
@@ -70,12 +73,24 @@ export default {
           store.editor.clean = false;
         }
       });
+      watchEffect(() => {
+        if (store.editor.changed) {
+          if (store.preferences.autosave == 0) {
+            clearInterval(autosave_timer);
+          } else {
+            autosave_timer = window.setInterval(save, store.preferences.autosave);
+          }
+        } else {
+          clearInterval(autosave_timer);
+        }
+      })
     });
 
     return {
       filename,
       changed,
       editor,
+      save,
     }
   },
 }
