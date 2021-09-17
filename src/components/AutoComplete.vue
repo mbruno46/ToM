@@ -93,6 +93,8 @@ export default {
           this.$refs.panel.scroll(0, 0);
           this.choose(this.suggestions[this.current]);
         }
+      } else if (event.key == "Escape") {
+        this.active = false;
       }
 
     }

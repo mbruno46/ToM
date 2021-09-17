@@ -281,6 +281,13 @@ export default {
         }
       }
 
+      if (event.key == "Escape") {
+        if (this.$refs.ac.isActive()) {
+          prevent = true;
+          this.$refs.ac.handleKeyDown(event);
+        }
+      }
+      
       if (prevent) {
         event.preventDefault();
       }

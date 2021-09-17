@@ -2,14 +2,13 @@ import utils from '@/hooks/utils.js';
 const pathlib = window.require('path');
 const fs = window.require('fs');
 
-var meta = {dir: '', main: '', inputs: [], files: []};
+var meta = {dir: '', inputs: [], files: []};
 
 // fundamental facts: \input is always full path relative to main
 //   \include cannot be nested, ie only in main file
 
 // want a regex like /\\label{(.*?)}/g
 function extractor(re, text, callback) {
-  console.log(re, text, text.match(re));
   let m = text.match(re);
   if (m) {
     m.forEach(e => {
@@ -21,7 +20,7 @@ function extractor(re, text, callback) {
 }
 
 
-var usable_exts = [".tex",".bib",".pdf",".eps",".jpg",".png"];
+var usable_exts = utils.getAllowedExts();
 function finder(dir, files_){
   files_ = files_ || [];
   var files = fs.readdirSync(dir);
@@ -37,19 +36,20 @@ function finder(dir, files_){
 }
 
 export function MetaData() {
-  var parse_input = false;
 
-  function init(main_file) {
+  function init(project_dir) {
     meta = {};
-    meta.main = pathlib.basename(main_file);
-    meta.dir = pathlib.resolve(pathlib.dirname(main_file)) + '/';
-    meta.inputs = [];
+    meta.dir = pathlib.resolve(project_dir) + '/';
     meta.files = finder(meta.dir);
-    addInput(meta.main);
+    meta.inputs = [];
+    meta.files.forEach(f => {
+      if (utils.getAllowedExts('latex').includes(pathlib.extname(f))) {
+        addInput(f.substring(meta.dir.length));
+      }
+    });
   }
 
   function addInput(path) {
-    console.log('adding ', path)
     var name = pathlib.basename(path);
     if (!(name in meta)) {
       meta.inputs.push(name);
@@ -58,8 +58,8 @@ export function MetaData() {
         lines: [],
         bibrefs: [],
       }
-    } 
-    if (parse_input) parseFile(name);
+    }
+    parseFile(name);
   }
 
   function parseFile(name) {
@@ -80,14 +80,9 @@ export function MetaData() {
   }
 
   function parseTeXLine(name, idx, text) {
-    var isMain = name == meta.main;
-    let line = meta[name].lines[idx];
-    extractor(new RegExp(`\\input{(.*?)}`,'g'), text, (e)=>{addInput(e);});
-    if (isMain) {
-      extractor(new RegExp(`\\include{(.*?)}`,'g'), text, (e)=>{addInput(e);});
-    }
-    extractor(new RegExp(`\\bibliography{(.*?)}`,'g'), text, (e)=>{addInput(e);});
+    let line = newLine();
     extractor(new RegExp(`\\label{(.*?)}`,'g'), text, (e)=>{line.labels.push(e);});
+    meta[name].lines[idx] = line;
   }
 
   function parseBibFile(name) {
@@ -106,14 +101,6 @@ export function MetaData() {
 
   return {
     init,
-    set_recursive(r) {
-      parse_input = r;
-    },
-    parse() {
-      parse_input = true;
-      parseTeXFile(meta.main);
-      parse_input = false;
-    },
     parseFile,
     parseTeXLine,
     getAllLabels() {

@@ -68,6 +68,16 @@ export function getIndexOf(arr, el) {
   return Array.prototype.indexOf.call(arr, el);
 }
 
+export function getAllowedExts(key='all') {
+  // files that can be edited
+  var latex_exts = [".tex",".bib"];
+  // files that can't be edited but it's useful to visualize in browser
+  var figure_exts = [".pdf",".eps",".png","jpg"];
+  if (key=='latex') return latex_exts;
+  if (key=="figure") return figure_exts;
+  return latex_exts.concat(figure_exts);
+}
+
 export default {
   getParentByAttr,
   getExtension,
@@ -78,4 +88,5 @@ export default {
   debouncer,
   appendAtIndex,
   getIndexOf,
+  getAllowedExts,
 }

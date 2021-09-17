@@ -1,6 +1,7 @@
 import latex_cmd_src from 'raw-loader!@/hooks/latex.commands';
 import latex_env_src from 'raw-loader!@/hooks/latex.environments';
 import {MetaData} from '@/hooks/metadata.js';
+import {getAllowedExts} from '@/hooks/utils.js';
 
 var meta = MetaData();
 
@@ -91,16 +92,16 @@ export function AutoComplete() {
         list = meta.getAllBibReferences();
       } else if (before.match(/(\\begin|\\end)/g)) {
         list = envs;
-      } else if (before.match(/\\input/g)){
+      } else if (before.match(/(\\input|\\include)/g)){
         list = meta.getAllFiles(['.tex']);
       } else if (before.match(/\\bibliography/g)){
         list = meta.getAllFiles(['.bib']);
       } else if (before.match(/\\includegraphics/g)){
-        list = meta.getAllFiles(['.pdf','.eps','.png','.jpg']);
+        list = meta.getAllFiles(getAllowedExts('figure'));
       } else if (before.match(/\\cite/g)){
         list = meta.getAllBibReferences();
       } else {
-        list = meta.getAllLabels();
+        list = meta.getAllLabels().concat(meta.getAllBibReferences());
       }
     }
     else {

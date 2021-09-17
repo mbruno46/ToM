@@ -25,8 +25,8 @@ import store from '@/hooks/store'
 import { ref } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
 
-// import {MetaData} from '@/hooks/metadata.js';
-// var meta = MetaData();
+import {MetaData} from '@/hooks/metadata.js';
+var meta = MetaData();
 
 const {ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
@@ -93,6 +93,7 @@ export default {
         store.editor.changed = false;
         ft.value = readDir(sel);
         dir = sel;
+        meta.init(dir);
         return
       }
       

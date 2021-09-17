@@ -11,6 +11,9 @@
 \subsubsection
 \paragraph
 #
+\input
+\include
+#
 \item
 #
 \label
