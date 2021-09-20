@@ -1,14 +1,17 @@
 const path = require('path');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
 const dialog = require('electron').dialog;
 
+const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
 
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
+    minWidth: 800,
     height: 600,
+    minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -25,6 +28,48 @@ function createWindow() {
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
+
+  var menu = Menu.buildFromTemplate([
+    ...(isMac ? [{
+      label: app.name,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }] : []),
+  ]);
+
+  menu.append(new MenuItem({
+    label: 'File',
+    submenu: [
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ],
+    visible: true,
+  }));
+
+  menu.append(new MenuItem({
+    label: "Edit",
+    submenu: [
+      // {role: 'undo'},
+      // {role: 'redo'},
+      {type: 'separator'},
+      {role: 'cut'},
+      {role: 'copy'},
+      {role: 'paste'},
+      {role: 'selectAll'},
+      {role: 'reload'},
+    ],
+    visible: true,
+  }))
+
+  Menu.setApplicationMenu(menu);
 }
 
 // This method will be called when Electron has finished
