@@ -38,7 +38,6 @@ function Selection(editor, lines) {
   function save() {
     anchor = getIndexPos(s.anchorNode, s.anchorOffset);
     focus = getIndexPos(s.focusNode, s.focusOffset);
-    console.log('saving ', lines[0]);
   }
 
   function set(a, f=null) {
@@ -110,7 +109,6 @@ function Selection(editor, lines) {
     },
     text() {
       let o = oriented();
-      console.log('text ', o, lines);
       if (o[0]==o[1]) return lines[o[0]].substring(o[2],o[3]);
       else {
         let t = lines[o[0]].substring(o[2]);
@@ -123,7 +121,6 @@ function Selection(editor, lines) {
       let r0 = s.getRangeAt(0);
       var rect = {left: 0, top: 0};
       var ofs = editor.getBoundingClientRect();
-      console.log(editor.getBoundingClientRect(), r0.getBoundingClientRect())
       if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
       return {index: anchor.index, x: rect.left - ofs.x, y: rect.top - ofs.y};
     },
@@ -133,7 +130,7 @@ function Selection(editor, lines) {
 
 function History() {
   var stack = [];
-  var at = -1;
+  var at = 0;
   var NMAX = 50;
   var recording = false;
   var undo = {};
@@ -142,7 +139,7 @@ function History() {
   return {
     reset() {
       stack = [];
-      at = -1;
+      at = 0;
     },
     isRecording() {
       return recording;
@@ -180,7 +177,6 @@ function History() {
     },
     undo() {
       if (at==0) {return;}
-      console.log('undo ', at, stack)
       at--;
       let _s = stack[at].undo;
       s.set(_s.anchor, _s.focus);
@@ -334,9 +330,6 @@ export default {
     }
 
     function autoComplete(word) {
-      // c.restore();
-      // let caret = c.getCaret();
-      // var text = lines[caret.index].textContent.substring(0,caret.pos);
       let c = s.anchor();
       var text = lines.value[c.index];
       for (var i=word.length;i>0;i--) {
@@ -442,20 +435,16 @@ export default {
         event.preventDefault();
       }
     },
-    refreshEditor(text) {
+    refreshEditor(text_lines) {
       this.focus();
       s.reset();
       h.reset();
-      this.clean();
-      h.startRecord();
-      this.insertTextAtCaret(text);
-      h.closeRecord();
+      this.lines = [];
+      text_lines.forEach(line => {this.lines.push(line);})
     },
     getText() {
-      var text = ''
-      this.lines.forEach(l => {
-        text += `${l}\n`
-      });
+      var text = this.lines[0];
+      for (var i=1;i<this.lines.length;i++) text += `\n${this.lines[i]}`;
       return text;
     }
   }

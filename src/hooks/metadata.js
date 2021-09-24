@@ -71,7 +71,7 @@ export function MetaData() {
   }
 
   function parseTeXFile(name) {
-    let lines = utils.loadTextFile(pathlib.join(meta.dir, meta[name].reldir, name), true);
+    let lines = utils.loadTextFile(pathlib.join(meta.dir, meta[name].reldir, name));
     meta[name].lines = [];
     lines.forEach((l,i) => {
       meta[name].lines.push(newLine());
@@ -86,7 +86,7 @@ export function MetaData() {
   }
 
   function parseBibFile(name) {
-    let lines = utils.loadTextFile(pathlib.join(meta.dir, meta[name].reldir, name), true);
+    let lines = utils.loadTextFile(pathlib.join(meta.dir, meta[name].reldir, name));
     meta[name].bibrefs = [];
     lines.forEach(l => {
       extractor(new RegExp(`@article{(.*?),`,'g'), l, (e)=>{meta[name].bibrefs.push(e);});

@@ -66,9 +66,11 @@ export default {
       } else {
         let e = utils.getExtension(name);
         if ((e == 'tex') || (e=='bib')) {
-          store.editor.name = name;
-          store.editor.path = path;
-          store.editor.read = true;
+          if (store.editor.name != name) {
+            store.editor.name = name;
+            store.editor.path = path;
+            store.editor.read = true;
+          }
         }
       }
     },

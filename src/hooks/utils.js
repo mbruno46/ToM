@@ -13,10 +13,9 @@ export function getExtension(file) {
   return file.substring(file.lastIndexOf('.')+1);
 }
 
-export function loadTextFile(fname,split=false) {
-  if (fname == "") {return (split) ? [""] : "";}
-  if (split) return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
-  else return fs.readFileSync(fname, 'utf-8');
+export function loadTextFile(fname) {
+  if (fname == "") {return [""];}
+  return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
 }
 
 export function saveTextFile(fname, content) {
@@ -33,7 +32,7 @@ export function isMainTexFile(fname) {
 
 export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  var cmd = `cd ${workdir}; latexmk -pdf -silent -g ${basename}.tex`;
+  var cmd = `cd ${workdir}; latexmk -pdf -silent -gg ${basename}.tex`;
   
   exec(cmd, (err, stdout, stderr) => {
     console.log(stdout);
