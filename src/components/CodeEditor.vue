@@ -11,9 +11,11 @@
 
 <script>
 import Line from './Line.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import utils from '@/hooks/utils.js';
 import store from '@/hooks/store'
+
+const { clipboard } = window.require('electron');
 
 function Selection(editor, lines) {
   var anchor = {index: 0, pos:0}
@@ -30,10 +32,9 @@ function Selection(editor, lines) {
   }
 
   function save() {
-    console.log('save ',s.anchorNode, s.anchorOffset, s.focusNode, s.focusOffset);
     anchor = getIndexPos(s.anchorNode, s.anchorOffset);
     focus = getIndexPos(s.focusNode, s.focusOffset);
-    console.log('saving ', anchor, focus);
+    console.log('saving ', lines[0]);
   }
 
   function set(a, f=null) {
@@ -67,26 +68,32 @@ function Selection(editor, lines) {
     }
   }
 
+  function oriented() {
+    if (anchor.index==focus.index) {
+      return [anchor.index, anchor.index, Math.min(anchor.pos, focus.pos), Math.max(anchor.pos, focus.pos)]
+    } else if (anchor.index<focus.index) {
+      return [anchor.index, focus.index, anchor.pos, focus.pos];
+    } else if (anchor.index>focus.index) {
+      return [focus.index, anchor.index, focus.pos, anchor.pos];
+    }
+  }
+
   return {
+    reset() {
+      anchor = {index: 0, pos:0}
+      focus = {index: 0, pos: 0}
+    },
     anchor() {return anchor},
     focus() {return focus},
     save,
     set,
+    oriented,
     shift(na, nf=null) {
       shifter(anchor, na);
       shifter(focus, (nf==null) ? na : nf);
     },
     restore() {
       s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);        
-    },
-    oriented() {
-      if (anchor.index==focus.index) {
-        return [anchor.index, anchor.index, Math.min(anchor.pos, focus.pos), Math.max(anchor.pos, focus.pos)]
-      } else if (anchor.index<focus.index) {
-        return [anchor.index, focus.index, anchor.pos, focus.pos];
-      } else if (anchor.index>focus.index) {
-        return [focus.index, anchor.index, focus.pos, anchor.pos];
-      }
     },
     isCollapsed() {
       return (anchor.index==focus.index) && (anchor.pos==focus.pos);
@@ -96,6 +103,17 @@ function Selection(editor, lines) {
       focus.pos += (nf==null) ? na : nf;
       if (anchor.pos<0) anchor.pos = 0;
       if (focus.pos<0) focus.pos = 0;
+    },
+    text() {
+      let o = oriented();
+      console.log('text ', o, lines);
+      if (o[0]==o[1]) return lines[o[0]].substring(o[2],o[3]);
+      else {
+        let t = lines[o[0]].substring(o[2]);
+        for (var i=o[0]+1;i<o[1];i++) t += '\n' + lines[i];
+        t += '\n' + lines[o[1]].substring(0,o[3]);
+        return t;
+      }
     }
   }
 }
@@ -162,7 +180,7 @@ function History() {
       s.set(_s.anchor, _s.focus);
       _s.events.forEach(e => {e();});
       at++;
-    }
+    },
   }
 }
 
@@ -181,7 +199,9 @@ export default {
     const lines = ref(['']);
 
     onMounted(() => {
-      s = Selection(editor.value, lines.value);
+      watch(()=>{
+        s = Selection(editor.value, lines.value);
+      });
 
       var observer = new MutationObserver(()=>{s.restore();});
       observer.observe(editor.value, {
@@ -208,9 +228,16 @@ export default {
       if (t.length>0) lines.value[c.index] += t;
 
       s.set(c);
-      h.addUndo(()=>{
-        console.log('undo insert', s.anchor(), s.focus(), -text.length);
-        deleteTextAtCaret(-text.length);});
+      h.addUndo(()=>{deleteTextAtCaret(-text.length);});
+      store.editor.changed = true;
+    }
+
+    function preventBackspace() {
+      if (s.isCollapsed()) {
+        let a = s.anchor();
+        if ((a.index==0)&&(a.pos==0)) {return true;}
+      }
+      return false;
     }
 
     function deleteTextAtCaret(dir) {
@@ -218,22 +245,14 @@ export default {
 
       s.shift(0, (s.isCollapsed()) ? dir : 0);
       let o = s.oriented();
-      console.log('oriented ',o)
       let t0 = lines.value[o[0]].substring(0,o[2]);
       let t1 = lines.value[o[1]].substring(o[3]);
-      var oldt = '';
-      if (o[0]==o[1]) oldt = lines.value[o[0]].substring(o[2],o[3]);
-      else {
-        oldt = lines.value[o[0]].substring(o[2]);
-        for (var i=o[0]+1;i<o[1];i++) oldt += '\n' + lines.value[i];
-        oldt += '\n' + lines.value[o[1]].substring(0,o[3]);
-      }
+      var oldt = s.text();
       lines.value.splice(o[0], o[1]+1-o[0], t0+t1);
 
       s.set({index: o[0], pos: o[2]});
-      h.addUndo(()=>{
-        console.log('undo delete ', s.anchor(), s.focus());
-        insertTextAtCaret(oldt);});
+      h.addUndo(()=>{insertTextAtCaret(oldt);});
+      store.editor.changed = true;
     }
 
     function whiteSpaces(idx) {
@@ -266,6 +285,7 @@ export default {
 
       s.translate(shift[0], shift[shift.length-1]);
       h.addUndo(()=>{tab(-m);})
+      store.editor.changed = true;
     }
 
     function comment() {
@@ -291,6 +311,7 @@ export default {
 
       s.translate(shift[0], shift[shift.length-1]);
       h.addUndo(()=>{comment();})
+      store.editor.changed = true;
     }
 
     return {
@@ -298,6 +319,7 @@ export default {
       lines,
       insertTextAtCaret,
       deleteTextAtCaret,
+      preventBackspace,
       getTabbing,
       tab,
       comment,
@@ -321,12 +343,21 @@ export default {
           else h.undo();
         } else {
           h.startRecord();
+
           if (event.key == "/") this.comment();
+          else if (event.key == "x") {
+            clipboard.writeText(s.text());
+            this.deleteTextAtCaret(0);
+          } else if (event.key == "c") {
+            clipboard.writeText(s.text());
+          } else if (event.key == "v") {
+            this.deleteTextAtCaret(0);
+            this.insertTextAtCaret(clipboard.readText());
+          }
+
           h.closeRecord();
         }
       } else {
-        store.editor.changed = true;
-
         if (event.key.length == 1) {
           if (!h.isRecording()) h.startRecord();
           this.deleteTextAtCaret(0);
@@ -345,7 +376,7 @@ export default {
             if (event.shiftKey) this.tab(-1);
             else this.tab(+1);
           } else if (event.key == "Backspace") {
-            this.deleteTextAtCaret(-1);
+            if (!this.preventBackspace()) this.deleteTextAtCaret(-1);
           } else if (event.key == "Delete") {
             this.deleteTextAtCaret(+1);
           }
@@ -357,10 +388,13 @@ export default {
       if (prevent) {
         event.preventDefault();
       }
+      console.log(this.lines);
     },
     refreshEditor(text) {
       this.focus();
+      s.reset();
       h.reset();
+      this.clean();
       h.startRecord();
       this.insertTextAtCaret(text);
       h.closeRecord();
