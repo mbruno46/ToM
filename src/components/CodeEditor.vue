@@ -1,307 +1,374 @@
 <template>
   <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
-    @input="handleInput"
     @keydown="handleKeyDown"
     >
-    <div single-line class="line"><br></div>
+    <Line v-for="(val, index) in lines" :key="index" :text="val"/>
   </div>
-  <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
+  <div class="render">
+    <Line v-for="(val, index) in lines" :key="index" :text="val" :highlight="true" />
+  </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import {Highlighter} from '@/hooks/highlight'
-import {Cursor} from '@/hooks/cursor'
+import Line from './Line.vue';
+import { onMounted, ref } from 'vue';
+import utils from '@/hooks/utils.js';
 import store from '@/hooks/store'
-import utils from '@/hooks/utils.js'
-import AutoComplete from './AutoComplete.vue'
 
-import {MetaData} from '@/hooks/metadata.js';
-var meta = MetaData();
+function Selection(editor, lines) {
+  var anchor = {index: 0, pos:0}
+  var focus = {index: 0, pos: 0};
+  var s = document.getSelection();
 
-const { clipboard } = window.require('electron');
+  function getIndexPos(node, ofs) {
+    var line = (node.nodeName=="DIV") ? node : node.parentElement;
+    let idx = utils.getIndexOf(editor.children, line);
+    let r = new Range();
+    r.selectNodeContents(line);
+    r.setEnd(node, ofs);
+    return {index: idx, pos: r.toString().length};
+  }
 
-var h = Highlighter();
-var c = null;
-var e = null;
-var lines = null;
+  function save() {
+    console.log('save ',s.anchorNode, s.anchorOffset, s.focusNode, s.focusOffset);
+    anchor = getIndexPos(s.anchorNode, s.anchorOffset);
+    focus = getIndexPos(s.focusNode, s.focusOffset);
+    console.log('saving ', anchor, focus);
+  }
+
+  function set(a, f=null) {
+    anchor = utils.copyObject(a);
+    focus = utils.copyObject((f==null) ? a : f);
+  }
+
+  function shifter(ref, length) {
+    while (length>0) {
+      let n = lines[ref.index].length - ref.pos;
+      if (length>n) {
+        ref.index++;
+        length--;
+        ref.pos = 0;
+        length -= n;
+      } else {
+        ref.pos += length;
+        length = 0;
+      }
+    }
+    while (length<0) {
+      if (ref.pos + length<0) {
+        ref.index--;
+        length++;
+        ref.pos = lines[ref.index].length;
+        length += ref.pos;
+      } else {
+        ref.pos += length;
+        length = 0;
+      }        
+    }
+  }
+
+  return {
+    anchor() {return anchor},
+    focus() {return focus},
+    save,
+    set,
+    shift(na, nf=null) {
+      shifter(anchor, na);
+      shifter(focus, (nf==null) ? na : nf);
+    },
+    restore() {
+      s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);        
+    },
+    oriented() {
+      if (anchor.index==focus.index) {
+        return [anchor.index, anchor.index, Math.min(anchor.pos, focus.pos), Math.max(anchor.pos, focus.pos)]
+      } else if (anchor.index<focus.index) {
+        return [anchor.index, focus.index, anchor.pos, focus.pos];
+      } else if (anchor.index>focus.index) {
+        return [focus.index, anchor.index, focus.pos, anchor.pos];
+      }
+    },
+    isCollapsed() {
+      return (anchor.index==focus.index) && (anchor.pos==focus.pos);
+    },
+    translate(na, nf=null) {
+      anchor.pos += na;
+      focus.pos += (nf==null) ? na : nf;
+      if (anchor.pos<0) anchor.pos = 0;
+      if (focus.pos<0) focus.pos = 0;
+    }
+  }
+}
+
+
+function History() {
+  var stack = [];
+  var at = -1;
+  var NMAX = 50;
+  var recording = false;
+  var undo = {};
+  var redo = {};
+
+  return {
+    reset() {
+      stack = [];
+      at = -1;
+    },
+    isRecording() {
+      return recording;
+    },
+    startRecord() {
+      redo = {
+        anchor: utils.copyObject(s.anchor()), 
+        focus: utils.copyObject(s.focus()), 
+        events: [],
+      }
+      undo = {events: []};
+      recording = true;
+    },
+    addRedo(event) {
+      if (!recording) {return;}
+      redo.events.push(event);
+    },
+    addUndo(event) {
+      if (!recording) {return;}
+      undo.events.push(event);
+    },
+    closeRecord() {
+      if (undo.events.length==0) {return;}
+      undo.anchor = utils.copyObject(s.anchor())
+      undo.focus = utils.copyObject(s.focus())
+      stack.splice(at, stack.length - at, {undo: undo, redo: redo});
+      at++;
+      undo = {};
+      redo = {};
+      recording = false;
+      if (at==NMAX) {
+        stack.splice(0,1);
+        at--;
+      }
+    },
+    undo() {
+      if (at==0) {return;}
+      console.log('undo ', at, stack)
+      at--;
+      let _s = stack[at].undo;
+      s.set(_s.anchor, _s.focus);
+      _s.events.slice().reverse().forEach(e => {e();});
+    },
+    redo() {
+      if (at==stack.length) {return;}
+      let _s = stack[at].redo;
+      s.set(_s.anchor, _s.focus);
+      _s.events.forEach(e => {e();});
+      at++;
+    }
+  }
+}
+
+var s = null;
 var ntabs = 4;
+var h = History();
+var user_typing = {timer: null, time: 250};
 
 export default {
+  name: 'CodeEditor',
   components: {
-    AutoComplete,
+    Line,
   },
   setup() {
     const editor = ref(null);
+    const lines = ref(['']);
 
     onMounted(() => {
-      c = Cursor(editor.value);
-      lines = editor.value.children;
-      // e = TexEditor(editor.value);
-      e = editor.value;
+      s = Selection(editor.value, lines.value);
+
+      var observer = new MutationObserver(()=>{s.restore();});
+      observer.observe(editor.value, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+      })
     });
 
-    function clean(text = null) {
-      while ((e.lastChild) && (lines.length>1)) {
-        e.lastChild.remove();
-      }
-      if (text==null) {
-        lines[0].innerHTML = "<br>"
-      } else {
-        lines[0].innerHTML = h(text);
-      }
-    }
-
-    function preventBackspace() {
-      if (lines.length==1) {
-        if (lines[0].firstChild.nodeName == 'BR') {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function addrmComment() {
-      let indices = c.getSelectedLines();
-      var re = new RegExp(`^(\\s*)(%\\s?)?(.*)`,'g');
-      c.save();
-      var index;
-      let count = indices[1]+1-indices[0];
-      // dry run; check if all lines commented
-      for (index=indices[0]; index<indices[1]+1; index++) {
-        let text = lines[index].textContent;
-        let s = text.split(re);
-        if (s[2]) {
-          count -= 1;
-        }
-      }
-      // real run; uncomment only if all lines commented
-      let shift = [];
-      for (index=indices[0]; index<indices[1]+1; index++) {
-        let text = lines[index].textContent;
-        shift[index - indices[0]] = -text.length;
-        if (count==0) {
-          let s = text.split(re);
-          text = s[1] + s[3];
-        } else {
-          text = '% ' + text;
-        }
-        lines[index].innerHTML = h(text);
-        shift[index - indices[0]] += text.length;
-      }
-      c.restore(shift[0], shift[shift.length-1]);
-    }
-
-    function removeTab() {
-      let indices = c.getSelectedLines();
-      var re = new RegExp(`^(\\s{0,${ntabs}})(.*)`,'g');
-      c.save();
-      let shift = [];
-      for (var index=indices[0]; index<indices[1]+1; index++) {
-        var text = lines[index].textContent;
-        shift[index - indices[0]] = -text.length;
-        text = text.split(re)[2];
-        lines[index].innerHTML = h(text);      
-        shift[index - indices[0]] += text.length;
-      }
-      c.restore(shift[0], shift[shift.length-1]);
-    }
-
-    function insertTabLine(index, pos) {
-      var re = new RegExp(`^(\\s{0,${ntabs}})(.*)`,'g');
-      let line = lines[index];
-      let text = line.textContent;
-      let shift = -text.length;
-      console.log(text, text.length, pos);
-      // if caret at end of line then add at caret position
-      // if caret inside line then add tab in front of line
-      if (text.length == pos) {
-        line.innerHTML = h(text + " ".repeat(ntabs));
-      } else {
-        let s = text.split(re);
-        text = (s[1].length==ntabs ? s[1] : '') + s[2];
-        line.innerHTML = h(" ".repeat(ntabs) + text);
-      }
-      shift += ntabs + text.length;
-      return shift;
-    }
-
-    function insertTab() {
-      let caret = c.getCaret();    
-      c.save();
-      let shift = [];
-      if (caret != null) {
-        shift[0] = insertTabLine(caret.index, caret.pos);
-      } else {
-        let indices = c.getSelectedLines();
-        for (var index=indices[0]; index<indices[1]+1; index++) {
-          shift[index - indices[0]] = insertTabLine(index, -1);
-        }
-      }
-      c.restore(shift[0], shift[shift.length-1]);
-    }
-
-    function highlightLine(target) {
-      c.save();
-      target.innerHTML = h(target.textContent);
-      c.restore();
-      meta.parseTeXLine(store.editor.name, utils.getIndexOf(lines, target), target.textContent)
-    }
-
-    function deleteSelectedText() {
-      let r = c.getRange();
-      r.deleteContents();
-    }
 
     function insertTextAtCaret(text) {
-      // insert text at caret position and moves caret to end of inserted text
-      let r = c.getRange();
-      r.insertNode(document.createTextNode(text));
-      r.collapse(false);
-      highlightLine(c.getLine());
-    }
-    
-    function appendLine(text, idx = -1) {
-      let newline = lines[0].cloneNode(false);
-      if (text=="") {
-        newline.innerHTML = "<br>";
-      } else {
-        newline.innerHTML = h(text);
-      }
-      utils.appendAtIndex(e, newline, idx);
+      h.addRedo(()=>{insertTextAtCaret(text);})
+
+      let c = s.anchor();
+      let ll = text.split(/\r?\n/);
+      let t = lines.value[c.index].substring(c.pos);
+      lines.value[c.index] = lines.value[c.index].substring(0,c.pos) + ll[0];
+      c.pos += ll[0].length;
+      for (var i=1;i<ll.length;i++) {
+        c.index++;
+        c.pos = ll[i].length;
+        lines.value.splice(c.index, 0, ll[i]);
+      } 
+      if (t.length>0) lines.value[c.index] += t;
+
+      s.set(c);
+      h.addUndo(()=>{
+        console.log('undo insert', s.anchor(), s.focus(), -text.length);
+        deleteTextAtCaret(-text.length);});
     }
 
-    function insertNewLine(tabbing = true) {
-      let caret = c.getCaret();
-      let idx = caret.index;
-      let text = lines[idx].textContent;
-      var n = 0;
-      if (text != "") {
-        lines[idx].innerHTML = h(text.substring(0,caret.pos));
-        n = text.split(/^(\s*).*/g)[1].length;
-        n = ntabs * Math.floor(n/ntabs);
+    function deleteTextAtCaret(dir) {
+      h.addRedo(()=>{deleteTextAtCaret(dir);})
+
+      s.shift(0, (s.isCollapsed()) ? dir : 0);
+      let o = s.oriented();
+      console.log('oriented ',o)
+      let t0 = lines.value[o[0]].substring(0,o[2]);
+      let t1 = lines.value[o[1]].substring(o[3]);
+      var oldt = '';
+      if (o[0]==o[1]) oldt = lines.value[o[0]].substring(o[2],o[3]);
+      else {
+        oldt = lines.value[o[0]].substring(o[2]);
+        for (var i=o[0]+1;i<o[1];i++) oldt += '\n' + lines.value[i];
+        oldt += '\n' + lines.value[o[1]].substring(0,o[3]);
       }
-      appendLine(" ".repeat(tabbing ? n : 0) + text.substring(caret.pos), idx+1);
-      c.setCaret(lines[idx + 1], tabbing ? n : 0);
+      lines.value.splice(o[0], o[1]+1-o[0], t0+t1);
+
+      s.set({index: o[0], pos: o[2]});
+      h.addUndo(()=>{
+        console.log('undo delete ', s.anchor(), s.focus());
+        insertTextAtCaret(oldt);});
     }
 
-    function autoComplete(word) {
-      c.restore();
-      let caret = c.getCaret();
-      var text = lines[caret.index].textContent.substring(0,caret.pos);
-      for (var i=word.length;i>0;i--) {
-        if (text.substring(text.length-i)==word.substring(0,i)) {
-          insertTextAtCaret(word.substring(i));
-          return;
-        }
+    function whiteSpaces(idx) {
+      let n = 0;
+      let t = lines.value[idx];
+      for (var i=0;i<t.length;i++) {
+        if (t[i]==" ") n++;
+        else break;
       }
-      insertTextAtCaret(word);
+      return n;
+    }
+
+    function getTabbing() {
+      let c = s.anchor();
+      return Math.floor(whiteSpaces(c.index) / ntabs) * ntabs;
+    }
+
+    function tab(m) {
+      h.addRedo(()=>{tab(m);})
+
+      let o = s.oriented();
+      let shift = [];
+      for (var i=o[0];i<o[1]+1;i++) {
+        let n = whiteSpaces(i);
+        let nn = (Math.floor(n/ntabs) + m);
+        let nt = ntabs*( (nn<0) ? 0 : nn );
+        lines.value[i] = " ".repeat(nt) + lines.value[i].substring(n);
+        shift.push(nt - n);
+      }
+
+      s.translate(shift[0], shift[shift.length-1]);
+      h.addUndo(()=>{tab(-m);})
+    }
+
+    function comment() {
+      h.addRedo(()=>{comment();})
+
+      let o = s.oriented();
+      // dry run
+      let count = 0;
+      for (var i=o[0];i<o[1]+1;i++) {
+        count++;
+        if (lines.value[i].match(/^\s*%.*$/g)) count--;
+      }
+      var re = new RegExp(`^(\\s*)(%\\s?)?(.*)`,'g');
+      let shift = [];
+      for (i=o[0];i<o[1]+1;i++) {
+        let text = lines.value[i];
+        if (count==0) {
+          let s = text.split(re);
+          lines.value[i] = s[1] + s[3];
+        } else lines.value[i] = '% ' + text;
+        shift.push(lines.value[i].length - text.length);
+      }
+
+      s.translate(shift[0], shift[shift.length-1]);
+      h.addUndo(()=>{comment();})
     }
 
     return {
       editor,
-      clean,
-      highlightLine,
-      preventBackspace,
-      addrmComment,
-      removeTab,
-      insertTab,
-      appendLine,
-      deleteSelectedText,
+      lines,
       insertTextAtCaret,
-      insertNewLine,
-      autoComplete,
+      deleteTextAtCaret,
+      getTabbing,
+      tab,
+      comment,
     }
   },
   methods: {
+    clean() {
+      this.lines = [""];
+    },
     focus: function() {
       this.$refs.editor.focus();
     },
-    launchAutoComplete() {
-      let caret = c.getCaret();
-      var text = lines[caret.index].textContent.substring(0,caret.pos);
-      this.$refs.ac.launch(text, caret.x, caret.y);
-    },
-    handleInput: function() {
-      this.launchAutoComplete();
-      this.highlightLine(c.getLine());
-      store.editor.changed = true;
-    },
     handleKeyDown: function(event) {
-      c.save();
-      let prevent = false;
+      let prevent = !["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(event.key);
+      s.save();
 
-      if (event.key == "Backspace") {
-        prevent = this.preventBackspace();
-      }
-
+      console.log(event.key, event.key.length)
       if ((event.ctrlKey || event.metaKey)) {
-        if (event.key == "/") {this.addrmComment();}
-        if (event.key == "x") {
-          prevent = true;
-          clipboard.writeText(c.getSelectedText());
-          this.deleteSelectedText();
-        } else if (event.key == "c") {
-          prevent = true;
-          clipboard.writeText(c.getSelectedText());
-        } else if (event.key == "v") {
-          prevent = true;
-          let s = clipboard.readText().split(/\r?\n/);
-          console.log(s);
-          for (var i=0;i<s.length;i++) {
-            if (i>0) this.insertNewLine(false);
-            this.insertTextAtCaret(s[i]);
+        if (event.key == "z") {
+          if (event.shiftKey) h.redo();
+          else h.undo();
+        } else {
+          h.startRecord();
+          if (event.key == "/") this.comment();
+          h.closeRecord();
+        }
+      } else {
+        store.editor.changed = true;
+
+        if (event.key.length == 1) {
+          if (!h.isRecording()) h.startRecord();
+          this.deleteTextAtCaret(0);
+          this.insertTextAtCaret(event.key);
+          clearTimeout(user_typing.timer);
+          user_typing.timer = setTimeout(()=>{h.closeRecord()}, user_typing.time);
+        } else {
+          clearTimeout(user_typing.timer);
+          if (h.isRecording()) h.closeRecord();
+          h.startRecord();
+
+          if (event.key == "Enter") {
+            this.deleteTextAtCaret(0);
+            this.insertTextAtCaret("\n" + " ".repeat(this.getTabbing()));
+          } else if (event.key == "Tab") {
+            if (event.shiftKey) this.tab(-1);
+            else this.tab(+1);
+          } else if (event.key == "Backspace") {
+            this.deleteTextAtCaret(-1);
+          } else if (event.key == "Delete") {
+            this.deleteTextAtCaret(+1);
           }
-        }
-      }
 
-      if (event.key == "Tab") {
-        prevent = true;
-        if (event.shiftKey) {
-          this.removeTab();
-        } else {
-          this.insertTab();
+          h.closeRecord();
         }
-      }
+      }      
 
-      if (event.key == "Enter") {
-        prevent = true;
-        if (this.$refs.ac.isActive()) {
-          this.$refs.ac.handleKeyDown(event);
-        } else {
-          this.deleteSelectedText();
-          this.insertNewLine();
-        }
-      }
-
-      if (this.$refs.ac.isActive()) {
-        if (["ArrowDown","ArrowUp"].includes(event.key)) {
-          prevent = true;
-          this.$refs.ac.handleKeyDown(event);
-        }
-      }
-
-      if (event.key == "Escape") {
-        if (this.$refs.ac.isActive()) {
-          prevent = true;
-          this.$refs.ac.handleKeyDown(event);
-        }
-      }
-      
       if (prevent) {
         event.preventDefault();
       }
     },
-    refreshEditor(lines) {
-      this.clean(lines[0]);
-      for (var i=1; i<lines.length; i++) {
-        this.appendLine(lines[i]);
-      }
+    refreshEditor(text) {
+      this.focus();
+      h.reset();
+      h.startRecord();
+      this.insertTextAtCaret(text);
+      h.closeRecord();
     },
     getText() {
       var text = ''
-      lines.forEach(line => {
-        text += `${line.textContent}\n`
+      this.lines.forEach(l => {
+        text += `${l}\n`
       });
       return text;
     }
@@ -309,9 +376,9 @@ export default {
 }
 </script>
 
-<style scoped>
 
-.text-editor {
+<style scoped>
+.render {
   font-family: 'Source Code Pro', monospace;
   font-size: 1rem;
   outline: none;
@@ -319,14 +386,12 @@ export default {
   text-align: left;
   white-space: nowrap;
   counter-reset: div;
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.line {
-  margin: 0 0 0 4.5rem;
-  position: relative;
-}
-
-.text-editor > .line:before {
+.render > .line:before {
   background-color: var(--bg1);
   color: var(--selected);
   content: counter(div);
@@ -339,6 +404,18 @@ export default {
   width: 4rem;
   padding-right: 0.5rem;
   text-align: right;
+}
+
+.text-editor {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 1rem;
+  outline: none;
+  text-align: left;
+  white-space: nowrap;
+  /* margin-left: 4.5rem; */
+  caret-color: var(--selected);
+  position: absolute;
+  z-index: 1;
 }
 
 </style>

@@ -130,6 +130,7 @@ export default {
   overflow-x: scroll;
   overflow-y: scroll;
   background-color: var(--bg1);
+  position: relative;
 }
 
 span {

@@ -61,8 +61,6 @@ export function Cursor(editor) {
       focus = getLinePos(s.focusNode, s.focusOffset);
       var i0 = utils.getIndexOf(editor.children, anchor[0]);
       var i1 = utils.getIndexOf(editor.children, focus[0]);
-      // var i0 = editor.children.indexOf(anchor[0]);
-      // var i1 = editor.children.indexOf(focus[0]);
       if (i0<i1) {
         return [i0,i1];
       }
@@ -112,38 +110,25 @@ export function Cursor(editor) {
       }
       return null;
     },
-    getSelection(oriented = true) {
-      this.save();
-      var i0 = utils.getIndexOf(editor.children, anchor[0]);
-      var i1 = utils.getIndexOf(editor.children, focus[0]);
-      if (oriented) {
-        return {anchor: {index: i0, pos: anchor[1]},
-          focus: {index: i1, pos: focus[1]}
-        }
-      } else {
-        if (i0==i1) {
-          let min = Math.min(anchor[1], focus[1]);
-          let max = Math.max(anchor[1], focus[1]);
-          return {anchor: {index: i0, pos: min},
-            focus: {index: i1, pos: max}
-          }
-        } else if (i0<i1) {
-          return {anchor: {index: i0, pos: anchor[1]},
-            focus: {index: i1, pos: focus[1]}
-          }
-        } else if (i0>i1) {
-          return {anchor: {index: i1, pos: anchor[1]},
-            focus: {index: i0, pos: focus[1]}
-          }
-        }
-      }
-    },
-    setCaret(line, pos) {
+    setCaret(line, pos, len=null) {
       let c0 = findLineNodeFromPos(line, pos);
+      if (len!=null) {
+        let c1 = findLineNodeFromPos(line, pos+len);
+        s.setBaseAndExtent(c0[0], c0[1], c1[0], c1[1]);
+        return;
+      }
       s.setBaseAndExtent(c0[0], c0[1], c0[0], c0[1]);
     },
     getRange() {
-      return s.getRangeAt(0);
-    }
+      if (s.rangeCount>0) {
+        return s.getRangeAt(0);
+      } else {
+        return new Range();
+      }
+    },
+    setRange(r) {
+      s.removeAllRanges();
+      s.addRange(r);
+    },
   }
 }

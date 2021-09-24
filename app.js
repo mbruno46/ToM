@@ -57,8 +57,8 @@ function createWindow() {
   menu.append(new MenuItem({
     label: "Edit",
     submenu: [
-      // {role: 'undo'},
-      // {role: 'redo'},
+      {role: 'undo'},
+      {role: 'redo'},
       {type: 'separator'},
       {role: 'cut'},
       {role: 'copy'},

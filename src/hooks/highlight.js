@@ -39,7 +39,7 @@ function genericHighlighter(rules) {
   }
 }
 
-export function Highlighter() {
+function init_latex() {
   let re = ''
   for (var cmd of cmds) {
     re += `\\${cmd}`
@@ -57,6 +57,14 @@ export function Highlighter() {
   ]);
 
   return genericHighlighter(rules);
+}
+
+var LaTeXHighlighter = init_latex()
+var plainHighlighter = genericHighlighter(new Map());
+
+export default {
+  LaTeXHighlighter,
+  plainHighlighter,
 }
 
 export function HighlightError() {

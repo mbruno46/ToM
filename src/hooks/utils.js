@@ -13,9 +13,10 @@ export function getExtension(file) {
   return file.substring(file.lastIndexOf('.')+1);
 }
 
-export function loadTextFile(fname) {
-  if (fname == "") {return [""];}
-  return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
+export function loadTextFile(fname,split=false) {
+  if (fname == "") {return (split) ? [""] : "";}
+  if (split) return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
+  else return fs.readFileSync(fname, 'utf-8');
 }
 
 export function saveTextFile(fname, content) {
@@ -64,6 +65,15 @@ export function appendAtIndex(parent, child, index) {
   }
 }
 
+export function deleteAtIndex(parent, index) {
+  if (!index) index = 0
+  if ((index<0) || (index >= parent.children.length)) {
+    parent.lastChild.remove();
+  } else {
+    parent.removeChild(parent.children[index]);
+  }
+}
+
 export function getIndexOf(arr, el) {
   return Array.prototype.indexOf.call(arr, el);
 }
@@ -78,6 +88,10 @@ export function getAllowedExts(key='all') {
   return latex_exts.concat(figure_exts);
 }
 
+export function copyObject(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export default {
   getParentByAttr,
   getExtension,
@@ -87,6 +101,8 @@ export default {
   compileTex,
   debouncer,
   appendAtIndex,
+  deleteAtIndex,
   getIndexOf,
   getAllowedExts,
+  copyObject,
 }
