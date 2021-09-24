@@ -7,6 +7,7 @@
   <div class="render">
     <Line v-for="(val, index) in lines" :key="index" :text="val" :highlight="true" />
   </div>
+  <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
 </template>
 
 <script>
@@ -14,6 +15,9 @@ import Line from './Line.vue';
 import { onMounted, ref, watch } from 'vue';
 import utils from '@/hooks/utils.js';
 import store from '@/hooks/store'
+import AutoComplete from './AutoComplete.vue'
+import {MetaData} from '@/hooks/metadata.js';
+var meta = MetaData();
 
 const { clipboard } = window.require('electron');
 
@@ -114,7 +118,15 @@ function Selection(editor, lines) {
         t += '\n' + lines[o[1]].substring(0,o[3]);
         return t;
       }
-    }
+    },
+    caret() {
+      let r0 = s.getRangeAt(0);
+      var rect = {left: 0, top: 0};
+      var ofs = editor.getBoundingClientRect();
+      console.log(editor.getBoundingClientRect(), r0.getBoundingClientRect())
+      if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
+      return {index: anchor.index, x: rect.left - ofs.x, y: rect.top - ofs.y};
+    },
   }
 }
 
@@ -193,17 +205,24 @@ export default {
   name: 'CodeEditor',
   components: {
     Line,
+    AutoComplete,
   },
   setup() {
     const editor = ref(null);
     const lines = ref(['']);
+    const ac = ref(null);
 
     onMounted(() => {
       watch(()=>{
         s = Selection(editor.value, lines.value);
       });
 
-      var observer = new MutationObserver(()=>{s.restore();});
+      var observer = new MutationObserver(()=>{
+        s.restore();
+        let c = s.caret();
+        ac.value.launch(lines.value[c.index], c.x, c.y);
+        meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
+      });
       observer.observe(editor.value, {
         subtree: true,
         childList: true,
@@ -314,15 +333,32 @@ export default {
       store.editor.changed = true;
     }
 
+    function autoComplete(word) {
+      // c.restore();
+      // let caret = c.getCaret();
+      // var text = lines[caret.index].textContent.substring(0,caret.pos);
+      let c = s.anchor();
+      var text = lines.value[c.index];
+      for (var i=word.length;i>0;i--) {
+        if (text.substring(text.length-i)==word.substring(0,i)) {
+          insertTextAtCaret(word.substring(i));
+          return;
+        }
+      }
+      insertTextAtCaret(word);
+    }
+
     return {
       editor,
       lines,
+      ac,
       insertTextAtCaret,
       deleteTextAtCaret,
       preventBackspace,
       getTabbing,
       tab,
       comment,
+      autoComplete,
     }
   },
   methods: {
@@ -334,6 +370,12 @@ export default {
     },
     handleKeyDown: function(event) {
       let prevent = !["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(event.key);
+      if (this.$refs.ac.isActive()) {
+        if (["ArrowDown","ArrowUp"].includes(event.key)) {
+          prevent = true;
+          this.$refs.ac.handleKeyDown(event);
+        }
+      }      
       s.save();
 
       console.log(event.key, event.key.length)
@@ -370,8 +412,12 @@ export default {
           h.startRecord();
 
           if (event.key == "Enter") {
-            this.deleteTextAtCaret(0);
-            this.insertTextAtCaret("\n" + " ".repeat(this.getTabbing()));
+            if (this.$refs.ac.isActive()) {
+              this.$refs.ac.handleKeyDown(event);
+            } else {
+              this.deleteTextAtCaret(0);
+              this.insertTextAtCaret("\n" + " ".repeat(this.getTabbing()));
+            }
           } else if (event.key == "Tab") {
             if (event.shiftKey) this.tab(-1);
             else this.tab(+1);
@@ -383,12 +429,18 @@ export default {
 
           h.closeRecord();
         }
-      }      
+      }
+
+      if (event.key == "Escape") {
+        if (this.$refs.ac.isActive()) {
+          prevent = true;
+          this.$refs.ac.handleKeyDown(event);
+        }
+      }
 
       if (prevent) {
         event.preventDefault();
       }
-      console.log(this.lines);
     },
     refreshEditor(text) {
       this.focus();
