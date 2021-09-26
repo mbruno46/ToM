@@ -5,6 +5,14 @@ const dialog = require('electron').dialog;
 const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
 
+function KeyDown(key, ctrlKey = false, shiftKey = false) {
+  return {
+    ctrlKey,
+    shiftKey,
+    key,
+  }
+}
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -57,12 +65,42 @@ function createWindow() {
   menu.append(new MenuItem({
     label: "Edit",
     submenu: [
-      {role: 'undo'},
-      {role: 'redo'},
+      {
+        label: 'Undo',
+        accelerator: 'CommandOrControl+Z',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('z', ctrlKey=true));
+        },
+      },
+      {
+        label: 'Redo',
+        accelerator: 'CommandOrControl+Shift+Z',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('z', ctrlKey=true, shiftKey=true));
+        },
+      },
       {type: 'separator'},
-      {role: 'cut'},
-      {role: 'copy'},
-      {role: 'paste'},
+      {
+        label: 'Cut',
+        accelerator: 'CommandOrControl+Shift+X',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('x', ctrlKey=true));
+        },
+      },      
+      {
+        label: 'Copy',
+        accelerator: 'CommandOrControl+Shift+C',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('c', ctrlKey=true));
+        },
+      },      
+      {
+        label: 'Paste',
+        accelerator: 'CommandOrControl+Shift+V',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('v', ctrlKey=true));
+        },
+      },
       {role: 'selectAll'},
       {role: 'reload'},
     ],

@@ -1,11 +1,13 @@
 {
-  "name": "editor",
+  "name": "ToM",
+  "description": "TeX on Me",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build:vue": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "electron:vue": "vue-cli-service serve & NODE_ENV=DEV electron app.js",
     "electron": "NODE_ENV=DEV electron app.js"
   },
   "dependencies": {

@@ -431,6 +431,7 @@ export default {
         }
       }
 
+      console.log(event);
       if (prevent) {
         event.preventDefault();
       }

@@ -26,6 +26,8 @@ import AppButton from '@/components/AppButton.vue';
 import {MetaData} from '@/hooks/metadata.js';
 var meta = MetaData();
 
+const {ipcRenderer} = window.require('electron');
+
 export default {
   components: {
     Toolbar,
@@ -83,7 +85,13 @@ export default {
         } else {
           clearInterval(autosave_timer);
         }
-      })
+      });
+      ipcRenderer.on('editor-keydown', (event, key) => {
+        console.log(event);
+        let _key = key;
+        _key['preventDefault'] = ()=>{return;};
+        editor.value.handleKeyDown(_key);
+      });
     });
 
     return {

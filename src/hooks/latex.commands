@@ -10,6 +10,8 @@
 \subsection
 \subsubsection
 \paragraph
+\newline
+\clearpage
 #
 \input
 \include

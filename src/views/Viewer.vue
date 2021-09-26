@@ -64,7 +64,6 @@ export default {
         numpages.value = pdfDoc_.numPages;
         reload.value = !reload.value;
         db();
-        fitH();
       }, function (reason) {
         // PDF loading error
         alert('Error ' + reason);
@@ -107,11 +106,12 @@ export default {
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
       load();
+      fitH();
     });
 
     watch(
       () => store.viewer.basepath,
-      () => {load();}
+      () => {load();fitH();}
     );
   
     return {
