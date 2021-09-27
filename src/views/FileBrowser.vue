@@ -4,12 +4,13 @@
     <app-button icon="fa-folder-plus" title="New Folder" @click="new_dir"/>
     <app-button icon="fa-plus" title="New File" @click="new_file"/>
     <app-button icon="fa-caret-left" title="Close browser" 
+      style="position: absolute; right: 0"
       @click="clicked"/>
   </Toolbar>
   <div class="file-tree"
     @mousemove="moveMiniCell">
     <TreeCell v-for="(value,key) in ft" 
-      :key="value['path']" 
+      :key="value['path']"
       :path="value['path']"
       :content="value['content']" 
       :name="key"

@@ -16,8 +16,8 @@ function KeyDown(key, ctrlKey = false, shiftKey = false) {
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    minWidth: 800,
+    width: 1000,
+    minWidth: 1000,
     height: 600,
     minHeight: 600,
     webPreferences: {
@@ -57,7 +57,8 @@ function createWindow() {
   menu.append(new MenuItem({
     label: 'File',
     submenu: [
-      isMac ? { role: 'close' } : { role: 'quit' }
+      isMac ? { role: 'close' } : { role: 'quit' },
+      {role: 'toggleDevTools'}
     ],
     visible: true,
   }));
