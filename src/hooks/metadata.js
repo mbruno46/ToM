@@ -134,6 +134,9 @@ export function MetaData() {
         });
       });
       return r;
+    },
+    getProjectDir() {
+      return meta.dir;
     }
   }
 }

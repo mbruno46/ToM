@@ -1,31 +1,37 @@
 <template>
   <Toolbar>
     <app-button icon="fa-folder-open" title="Open Folder" @click="open_folder"/>
-    <app-button icon="fa-plus" title="New File"/>
+    <app-button icon="fa-folder-plus" title="New Folder" @click="new_dir"/>
+    <app-button icon="fa-plus" title="New File" @click="new_file"/>
     <app-button icon="fa-caret-left" title="Close browser" 
       @click="clicked"/>
   </Toolbar>
-  <div class="file-tree">
+  <div class="file-tree"
+    @mousemove="moveMiniCell">
     <TreeCell v-for="(value,key) in ft" 
       :key="value['path']" 
       :path="value['path']"
       :content="value['content']" 
       :name="key"
       :depth="value['depth']"
-      :isDir="value['isDir']"/>
+      :isDir="value['isDir']"
+    />
   </div>
+  <input-popup ref="input_popup" @refresh_filetree="reload"/>
+  <mini-cell :visible="minicell.visible" :x="minicell.x" :y="minicell.y"/>
 </template>
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
 import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
-// import {FileTree} from '@/hooks/filetree.js'
+import InputPopup from '@/components/InputPopup.vue';
 import store from '@/hooks/store'
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
 
 import {MetaData} from '@/hooks/metadata.js';
+import MiniCell from '../components/MiniCell.vue';
 var meta = MetaData();
 
 const {ipcRenderer} = window.require('electron');
@@ -76,10 +82,13 @@ export default {
   components: {
     TreeCell,
     Toolbar,
-    AppButton
+    AppButton,
+    InputPopup,
+    MiniCell,
   },
   setup() {
     const ft = ref({});
+    const minicell = ref({visible: false, x:0, y:0});
     let dir = null;
 
     const debounce_open_folder = debouncer(_open_folder, 20);
@@ -105,9 +114,20 @@ export default {
       debounce_open_folder();
     }
 
+    function reload() {
+      ft.value = readDir(dir);
+      meta.init(dir);
+    }
+
+    watchEffect(()=>{
+      if (store.browser.file=='#moved#') reload();
+    })
+
     return {
       ft,
       open_folder,
+      reload,
+      minicell,
     }
   },
   methods: {
@@ -117,6 +137,21 @@ export default {
     browser_visible() {
       return store.browser.visible;
     },
+    new_file() {
+      this.$refs.input_popup.activate(true);
+    },
+    new_dir() {
+      this.$refs.input_popup.activate(false);
+    },
+    moveMiniCell(event) {
+      if (store.browser.moving) {
+        this.minicell.visible = true;
+        this.minicell.x = event.clientX;
+        this.minicell.y = event.clientY;
+      } else {
+        this.minicell.visible = false;
+      }
+    }
   }
 }
 </script>

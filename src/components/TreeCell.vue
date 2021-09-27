@@ -2,7 +2,9 @@
   <div ref="cell" class="cell" treecell-selected="false">
     <span :class="'tag icon ' + setIcon(isDir, name) + ' ' + (isMain ? 'main':'')"
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
-      @click="clicked(path, name)"
+      @mousedown="mouseDown(path, name)"
+      @mouseover="mouseOver"
+      @mouseup="mouseUp(path)"
       >
       {{name}}
     </span>
@@ -13,7 +15,8 @@
         :content="value['content']" 
         :name="key"
         :depth="value['depth']"
-        :isDir="value['isDir']"/>
+        :isDir="value['isDir']"
+      />
     </div>
   </div>
 </template>
@@ -36,6 +39,8 @@ export default {
   },
   setup(props) {
     const isMain = ref(false);
+    const minicell = ref({visible: false, x: 0, y:0});
+
     if (utils.getExtension(props.name) == 'tex') {
       if (utils.isMainTexFile(props.path)) {
         store.viewer.basepath = props.path.substring(0, props.path.lastIndexOf('.tex'));
@@ -45,10 +50,11 @@ export default {
 
     return {
       isMain,
+      minicell,
     }
   },
   methods: {
-    clicked(path, name) {
+    mouseDown(path, name) {
       let el = this.$refs.cell;
       let _el = document.querySelector('[treecell-selected="true"]');
       if (_el != null) {
@@ -72,7 +78,20 @@ export default {
             store.editor.read = true;
           }
         }
+        store.browser.moving = true;
+        store.browser.file = path;
       }
+    },
+    mouseUp(path) {
+      if (store.browser.moving) {
+        if (this.isDir) utils.mv(store.browser.file, path);
+        else {
+          let p = path;
+          utils.mv(store.browser.file, p.substring(0,p.lastIndexOf('/')));
+        }
+        store.browser.file = '#moved#';
+      }
+      store.browser.moving = false;
     },
     setIcon(isDir, name) {
       if (isDir) {
@@ -96,6 +115,7 @@ export default {
   flex-flow: column;
   width: max-content;
   min-width: 100%;
+  cursor: pointer;
 }
 
 .tag {

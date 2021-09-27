@@ -1,4 +1,5 @@
 const fs = window.require('fs');
+const pathlib = window.require('path');
 const { exec } = window.require('child_process');
 
 export function getParentByAttr(element, attr) {
@@ -20,6 +21,19 @@ export function loadTextFile(fname) {
 
 export function saveTextFile(fname, content) {
   fs.writeFileSync(fname, content, 'utf-8');
+}
+
+export function mkdir(dir) {
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+export function mv(src, dst) {
+  let name = pathlib.basename(src);
+  fs.rename(src, pathlib.join(dst, name), function (err) {
+    if (err) throw err
+  });
 }
 
 export function isMainTexFile(fname) {
@@ -96,6 +110,8 @@ export default {
   getExtension,
   loadTextFile,
   saveTextFile,
+  mkdir,
+  mv,
   isMainTexFile,
   compileTex,
   debouncer,
