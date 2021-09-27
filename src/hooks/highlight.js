@@ -1,4 +1,5 @@
 import latex_cmd_src from 'raw-loader!@/hooks/latex.commands';
+import latex_math_src from 'raw-loader!@/hooks/latex.math';
 import latex_env_src from 'raw-loader!@/hooks/latex.environments';
 import {MetaData} from '@/hooks/metadata.js';
 import {getAllowedExts} from '@/hooks/utils.js';
@@ -16,6 +17,7 @@ function parse_latex_src(data) {
 }
 var cmds = parse_latex_src(latex_cmd_src);
 var envs = parse_latex_src(latex_env_src);
+var math = parse_latex_src(latex_math_src);
 
 function genericHighlighter(rules) {
   // we replace white space with &nbsp; only in text, not  inside <span style..>
@@ -40,16 +42,12 @@ function genericHighlighter(rules) {
 }
 
 function init_latex() {
-  let re = ''
-  for (var cmd of cmds) {
-    re += `\\${cmd}`
-    if (cmd != cmds[cmds.length-1]) {
-      re += '|'
-    }
-  }
-
+  let re = cmds[0];
+  for (var i=1;i<cmds.length;i++) re += `|\\${cmds[i]}`
+  
   var rules = new Map([
     [/(%.*)/g, '<span class="highlight-comment">$1</span>'],
+    [/\$(.*?)\$/g, '<span class="highlight-math">$$$1$$</span>'],
     [new RegExp(`(${re})\\[(.*?)\\]{(.*?)}`,'g'),
       '$1[<span class="highlight-square-bracket">$2</span>]{<span class="highlight-curly-bracket">$3</span>}'],
     [new RegExp(`(${re}){(.*?)}`,'g'),'$1{<span class="highlight-curly-bracket">$2</span>}'],
@@ -89,7 +87,7 @@ export function AutoComplete() {
       return {active: false};
     }
     let bracket = word.lastIndexOf('{');
-    var list = cmds;
+    var list = null;
     // if open bracket { 
     if (bracket>=0) {
       var before = word.substring(0, bracket);
@@ -113,7 +111,7 @@ export function AutoComplete() {
       }
     }
     else {
-      list = cmds;
+      list = cmds.concat(math);
     }
 
     var suggestions = (word=="") ? list : _filter(list, word);

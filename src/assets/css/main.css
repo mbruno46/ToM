@@ -48,6 +48,10 @@ https://github.com/kkga/spacegray
   color: var(--pink);
 }
 
+.highlight-math {
+  color: var(--red);
+}
+
 .highlight-comment * {
   color: inherit;
 }
