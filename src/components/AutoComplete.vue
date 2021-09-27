@@ -39,7 +39,9 @@ export default {
     });
 
     function launch(text, x, y) {
+      console.log('launched', text);
       let suggestion = ac.check(text);
+      console.log(suggestion);
       if (suggestion.active) {
         suggestions.value = suggestion.suggestions;
         current.value = 0;

@@ -80,12 +80,13 @@ export function AutoComplete() {
   }
 
   function check(text) {
+    // prevent suggestions if not in the form ...\command
+    if (!text.match(/\\(\w+)$/)) return {active: false};
     // isolate last word
-    var word = text.match(/(\S*)$/)[1]; //substring(text.lastIndexOf(" ")+1);
-    // prevent suggestions if only backslash typed, or empty text
-    if ((word=="")||(word=="\\")||(text=="")) {
-      return {active: false};
-    }
+    var word = '\\' + text.match(/\\(\w*)$/)[1]; //substring(text.lastIndexOf(" ")+1);
+    // if ((word=="")||(word=="\\")||(text=="")) {
+    //   return {active: false};
+    // }
     let bracket = word.lastIndexOf('{');
     var list = null;
     // if open bracket { 
