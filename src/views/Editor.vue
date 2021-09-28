@@ -135,10 +135,12 @@ export default {
 .editor-container {
   width: 100%;
   height: calc(100% - var(--toolbar-height));
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: scroll;
   background-color: var(--bg1);
   position: relative;
+  /* vertical-align: middle; */
+  /* word-wrap: keep-all; */
 }
 
 span {

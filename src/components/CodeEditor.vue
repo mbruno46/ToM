@@ -81,6 +81,14 @@ function Selection(editor, lines) {
     }
   }
 
+  function caret() {
+    let r0 = s.getRangeAt(0);
+    var rect = {left: 0, top: 0};
+    var ofs = editor.getBoundingClientRect();
+    if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
+    return {index: anchor.index, x: rect.left - ofs.x, y: rect.top - ofs.y};
+  }
+
   return {
     reset() {
       anchor = {index: 0, pos:0}
@@ -96,7 +104,21 @@ function Selection(editor, lines) {
       shifter(focus, (nf==null) ? na : nf);
     },
     restore() {
+      s.removeAllRanges();
       s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);        
+    },
+    caret,
+    scrollToSelection() {
+      let c = caret();
+      var p = editor.parentElement;
+      function scroll(ref, sc, max) {
+        if (ref>sc + max) sc = ref-max;
+        else {
+          if (ref<sc) sc = ref;
+        }
+        return (sc<0) ? 0 : sc;
+      }
+      p.scrollTo(scroll(c.x, p.scrollLeft, p.offsetWidth), scroll(c.y, p.scrollTop, p.offsetHeight));
     },
     isCollapsed() {
       return (anchor.index==focus.index) && (anchor.pos==focus.pos);
@@ -116,13 +138,6 @@ function Selection(editor, lines) {
         t += '\n' + lines[o[1]].substring(0,o[3]);
         return t;
       }
-    },
-    caret() {
-      let r0 = s.getRangeAt(0);
-      var rect = {left: 0, top: 0};
-      var ofs = editor.getBoundingClientRect();
-      if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
-      return {index: anchor.index, x: rect.left - ofs.x, y: rect.top - ofs.y};
     },
   }
 }
@@ -215,6 +230,7 @@ export default {
 
       var observer = new MutationObserver(()=>{
         s.restore();
+        s.scrollToSelection();
         let c = s.caret();
         ac.value.launch(lines.value[c.index], c.x, c.y);
         meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
