@@ -5,6 +5,8 @@
 #
 \frac
 \dfrac
+\overline
+\bar
 #
 \displaystyle
 #
@@ -109,4 +111,7 @@
 \boxtimes
 \equiv
 \cong
+#
+\quad
+\qquad
 #

@@ -119,7 +119,7 @@ export function MetaData() {
       // return files.filter(f => pathlib.extname(f) == ext);
       var r = [];
       meta.files.forEach(f => {
-        console.log(f);
+        console.log(f, exts, exts.includes(pathlib.extname(f)));
         if (exts.includes(pathlib.extname(f))) {
           r.push(f.substring(meta.dir.length));
         }

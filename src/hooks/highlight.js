@@ -80,44 +80,39 @@ export function AutoComplete() {
   }
 
   function check(text) {
-    // prevent suggestions if not in the form ...\command
-    if (!text.match(/\\(\w+)$/)) return {active: false};
-    // isolate last word
-    var word = '\\' + text.match(/\\(\w*)$/)[1]; //substring(text.lastIndexOf(" ")+1);
-    // if ((word=="")||(word=="\\")||(text=="")) {
-    //   return {active: false};
-    // }
-    let bracket = word.lastIndexOf('{');
-    var list = null;
-    // if open bracket { 
-    if (bracket>=0) {
-      var before = word.substring(0, bracket);
-      word = word.substring(bracket+1);
-      if (before.match(/\\ref/g)) {
+    var word, list;
+    // prevent suggestions if not in the form ...\command[opts]{args
+    if (text.match(/(\\\w+)$/)) {
+      word = text.match(/(\\\w+)$/)[1];
+      list = cmds.concat(math);
+    } else if (text.match(/\\\w+(?:\[[^\]]+\])?{([^}]*)$/)) {
+      let m = text.match(/(\\\w+)(?:\[[^\]]+\])?{([^}]*)$/);
+      var before = m[1];
+      word = m[2];
+      if (before.match(/\\ref$/g)) {
         list = meta.getAllLabels();
-      } else if (before.match(/\\cite/g)){
+      } else if (before.match(/\\cite$/g)){
         list = meta.getAllBibReferences();
-      } else if (before.match(/(\\begin|\\end)/g)) {
+      } else if (before.match(/(\\begin|\\end)$/g)) {
         list = envs;
-      } else if (before.match(/(\\input|\\include)/g)){
+      } else if (before.match(/(\\input|\\include)$/g)){
         list = meta.getAllFiles(['.tex']);
-      } else if (before.match(/\\bibliography/g)){
+      } else if (before.match(/\\bibliography$/g)){
         list = meta.getAllFiles(['.bib']);
-      } else if (before.match(/\\includegraphics/g)){
+      } else if (before.match(/\\includegraphics$/g)){
         list = meta.getAllFiles(getAllowedExts('figure'));
       } else if (before.match(/\\cite/g)){
         list = meta.getAllBibReferences();
       } else {
         list = meta.getAllLabels().concat(meta.getAllBibReferences());
-      }
-    }
-    else {
-      list = cmds.concat(math);
+      }      
+    } else {
+      return {active: false};
     }
 
     var suggestions = (word=="") ? list : _filter(list, word);
     return {
-      filter: word, 
+      filter: word, //before + ((s[2]) ? s[2] : '') + ((s[3]) ? s[3] : ''), 
       suggestions: suggestions, 
       active: (suggestions.length>0)
     };

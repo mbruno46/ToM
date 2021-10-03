@@ -86,7 +86,7 @@ function Selection(editor, lines) {
     var rect = {left: 0, top: 0};
     var ofs = editor.getBoundingClientRect();
     if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
-    return {index: anchor.index, x: rect.left - ofs.x, y: rect.top - ofs.y};
+    return {index: anchor.index, pos: anchor.pos, x: rect.left - ofs.x, y: rect.top - ofs.y};
   }
 
   return {
@@ -105,7 +105,11 @@ function Selection(editor, lines) {
     },
     restore() {
       s.removeAllRanges();
-      s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);        
+      s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);
+      // editor.children[anchor.index].scrollIntoView();
+      // editor.scrollIntoView();
+      // editor.children.forEach(c => {c.scrollIntoView();});
+      // editor.children[focus.index].scrollIntoView();
     },
     caret,
     scrollToSelection() {
@@ -230,9 +234,10 @@ export default {
 
       var observer = new MutationObserver(()=>{
         s.restore();
-        s.scrollToSelection();
+        // s.scrollToSelection();
+        // editor.value.scrollIntoView();
         let c = s.caret();
-        ac.value.launch(lines.value[c.index], c.x, c.y);
+        ac.value.launch(lines.value[c.index].substring(0,c.pos), c.x, c.y);
         meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
       });
       observer.observe(editor.value, {
@@ -347,7 +352,7 @@ export default {
 
     function autoComplete(word) {
       let c = s.anchor();
-      var text = lines.value[c.index];
+      var text = lines.value[c.index].substring(0,c.pos);
       for (var i=word.length;i>0;i--) {
         if (text.substring(text.length-i)==word.substring(0,i)) {
           insertTextAtCaret(word.substring(i));

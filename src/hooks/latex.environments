@@ -6,6 +6,9 @@ table
 tabular
 figure
 #
+frame
+columns
+#
 equation
 eqnarray
 array
