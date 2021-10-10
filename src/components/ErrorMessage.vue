@@ -1,25 +1,13 @@
 <template>
-  <div ref="div">
+  <div v-html="msg">
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
 
 export default {
   props: {
     msg: String,
-  },
-  setup(props) {
-    const div = ref(null);
-
-    onMounted(()=>{
-      div.value.innerHTML = props.msg;
-    })
-
-    return {
-      div,
-    }
   },
 }
 </script>
