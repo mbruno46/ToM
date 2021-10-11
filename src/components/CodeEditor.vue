@@ -83,9 +83,10 @@ function Selection(editor, lines) {
 
   function caret() {
     let r0 = s.getRangeAt(0);
-    var rect = {left: 0, top: 0};
+    var rect = {left: 0, top: s.baseNode.parentNode.getBoundingClientRect().top};
     var ofs = editor.getBoundingClientRect();
     if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
+    console.log(r0, r0.getClientRects()[0]);
     return {index: anchor.index, pos: anchor.pos, x: rect.left - ofs.x, y: rect.top - ofs.y};
   }
 
@@ -106,15 +107,12 @@ function Selection(editor, lines) {
     restore() {
       s.removeAllRanges();
       s.setBaseAndExtent(editor.children[anchor.index].firstChild, anchor.pos, editor.children[focus.index].firstChild, focus.pos);
-      // editor.children[anchor.index].scrollIntoView();
-      // editor.scrollIntoView();
-      // editor.children.forEach(c => {c.scrollIntoView();});
-      // editor.children[focus.index].scrollIntoView();
     },
     caret,
     scrollToSelection() {
       let c = caret();
       var p = editor.parentElement;
+      var ofs = p.getBoundingClientRect();
       function scroll(ref, sc, max) {
         if (ref>sc + max) sc = ref-max;
         else {
@@ -122,7 +120,7 @@ function Selection(editor, lines) {
         }
         return (sc<0) ? 0 : sc;
       }
-      p.scrollTo(scroll(c.x, p.scrollLeft, p.offsetWidth), scroll(c.y, p.scrollTop, p.offsetHeight));
+      p.scrollTo(scroll(c.x+24, p.scrollLeft, p.offsetWidth), scroll(c.y+24, p.scrollTop, p.offsetHeight));
     },
     isCollapsed() {
       return (anchor.index==focus.index) && (anchor.pos==focus.pos);
@@ -234,8 +232,8 @@ export default {
 
       var observer = new MutationObserver(()=>{
         s.restore();
-        // s.scrollToSelection();
-        // editor.value.scrollIntoView();
+        s.scrollToSelection();
+
         let c = s.caret();
         ac.value.launch(lines.value[c.index].substring(0,c.pos), c.x, c.y);
         meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
@@ -486,6 +484,7 @@ export default {
   position: absolute;
   pointer-events: none;
   z-index: 2;
+  padding-right: 4rem;
 }
 
 .render > .line:before {
@@ -513,6 +512,7 @@ export default {
   caret-color: var(--selected);
   position: absolute;
   z-index: 1;
+  padding-right: 4rem;
 }
 
 </style>

@@ -76,7 +76,7 @@ export function HighlightError() {
 
 export function AutoComplete() {
   function _filter(list, word) {
-    return list.filter(e => e.substring(0,word.length).toUpperCase()==word.toUpperCase())
+    return list.filter(e => e.substring(0,word.length)==word)
   }
 
   function check(text) {
@@ -111,6 +111,13 @@ export function AutoComplete() {
     }
 
     var suggestions = (word=="") ? list : _filter(list, word);
+    // no need to suggest if input already matches suggestion
+    if (suggestions.length==1) {
+      if (suggestions[0]==word) {
+        return {active: false}
+      }
+    }
+
     return {
       filter: word, //before + ((s[2]) ? s[2] : '') + ((s[3]) ? s[3] : ''), 
       suggestions: suggestions, 
