@@ -112,7 +112,6 @@ function Selection(editor, lines) {
     scrollToSelection() {
       let c = caret();
       var p = editor.parentElement;
-      var ofs = p.getBoundingClientRect();
       function scroll(ref, sc, max) {
         if (ref>sc + max) sc = ref-max;
         else {
@@ -209,10 +208,12 @@ function History() {
   }
 }
 
+
 var s = null;
 var ntabs = 4;
 var h = History();
 var user_typing = {timer: null, time: 250};
+var finder = {word: '', index: 0, pos: 0};
 
 export default {
   name: 'CodeEditor',
@@ -242,7 +243,7 @@ export default {
         subtree: true,
         childList: true,
         characterData: true,
-      })
+      });
     });
 
 
@@ -466,6 +467,33 @@ export default {
       var text = this.lines[0];
       for (var i=1;i<this.lines.length;i++) text += `\n${this.lines[i]}`;
       return text;
+    },
+    findNext(word) {
+      if (word != finder.word) {
+        finder.index = 0;
+        finder.pos = 0;
+        finder.word = word;
+      }
+      for (var idx=finder.index;idx<this.lines.length;idx++) {
+        let _pos = this.lines[idx].substring(finder.pos).indexOf(word);
+        if (_pos<0) {
+          finder.pos = 0;
+        }
+        else {
+          finder.index = idx;
+          finder.pos += _pos;
+          s.set({index: finder.index, pos: finder.pos}, {
+            index: finder.index, pos: finder.pos + word.length})
+          s.restore();
+          s.scrollToSelection();
+          finder.pos += word.length;
+          break;
+        }
+      }
+      if (idx==this.lines.length) {
+        finder.index=0;
+        finder.pos=0;
+      }
     }
   }
 }

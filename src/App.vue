@@ -23,7 +23,7 @@
       </div>
     </div>
   </div>
-  <Footer/>
+  <Footer @find="find($event)"/>
 </template>
 
 <script>
@@ -77,6 +77,9 @@ export default {
       store.loader.value = true;
       this.$refs.editor.save();
       this.$refs.viewer.compile();
+    },
+    find(word) {
+      this.$refs.editor.find(word);
     }
   }
 }

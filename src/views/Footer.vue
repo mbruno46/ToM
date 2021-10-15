@@ -1,8 +1,8 @@
 <template>
   <toolbar>
     <div class="vert" style="padding: 0 1rem;">
-      <input class="finder" placeholder="find"/>
-      <app-button icon="fa-search" title="Find"/>
+      <input ref="word" class="finder" placeholder="find"/>
+      <app-button icon="fa-search" title="Find" @click="find"/>
     </div>
     <div class="vert" style="position: absolute; right: 0;">
       <loader />
@@ -22,8 +22,14 @@ export default {
     AppButton,
     Loader,
   },
+  emits: ['find'],
   setup() {
   },
+  methods: {
+    find() {
+      this.$emit('find',this.$refs.word.value);
+    }
+  }
 }
 </script>
 
@@ -41,6 +47,10 @@ export default {
   white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
+}
+
+.finder:focus {
+  color: var(--selected);
 }
 
 .vert {

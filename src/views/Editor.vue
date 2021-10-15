@@ -44,6 +44,9 @@ export default {
     browser_visible: function() {
       return store.browser.visible;
     },
+    find(word) {
+      this.$refs.editor.findNext(word);
+    }
   },
   setup() {
     const editor = ref(null);
