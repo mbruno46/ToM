@@ -1,19 +1,60 @@
 {
   "name": "ToM",
+  "productName": "ToM",
   "description": "TeX on Me",
   "version": "0.1.0",
   "private": true,
+  "keywords": [
+    "note-taking",
+    "LaTex"
+  ],
+  "author": {
+    "name": "Mattia Bruno",
+    "email": "38449948+mbruno46@users.noreply.github.com"
+  },
+  "homepage": "https://mbruno46.github.io/ToM/",
+  "bugs": {
+    "url": "https://github.com/mbruno46/ToM/issues"
+  },
+  "license": "GPL-3.0-only",
+  "main": "dist/app.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build:vue": "vue-cli-service build",
+    "build:vue": "vue-cli-service build && cp app.js ./dist",
     "lint": "vue-cli-service lint",
     "electron:vue": "vue-cli-service serve & NODE_ENV=DEV electron app.js",
-    "electron": "NODE_ENV=DEV electron app.js"
+    "electron": "NODE_ENV=DEV electron app.js",
+    "electron:build:test": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "release": "electron-builder --publish onTagOrDraft"
+  },
+  "build": {
+    "appId": "com.electron.tom",
+    "copyright": "Copyright © 2021 ${author}",
+    "files": [
+      "dist"
+    ],
+    "directories": {
+      "output": "release-builds"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.productivity",
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility",
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
+    }
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "core-js": "^3.6.5",
-    "electron": "^14.0.0",
     "pdfjs-dist": "^2.9.359",
     "raw-loader": "^4.0.2",
     "vue": "^3.0.0"
@@ -24,6 +65,8 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
+    "electron": "^14.0.0",
+    "electron-builder": "^22.13.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0"
   },

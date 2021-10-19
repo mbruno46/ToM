@@ -30,7 +30,7 @@ function createWindow() {
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:8080'
-      : `file://${process.cwd()}/dist/index.html`
+      : `file://${path.join(__dirname, 'index.html')}`
   );
   // Open the DevTools.
   if (isDev) {

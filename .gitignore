@@ -2,6 +2,7 @@
 node_modules
 /dist
 /dummy
+/release-builds
 
 # local env files
 .env.local
