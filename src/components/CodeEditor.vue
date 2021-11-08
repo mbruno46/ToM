@@ -2,10 +2,10 @@
   <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
     @keydown="handleKeyDown"
     >
-    <Line v-for="(val, index) in lines" :key="index" :text="val"/>
+    <Line v-for="(val) in lines" :key="val" :text="val"/>
   </div>
   <div class="render">
-    <Line v-for="(val, index) in lines" :key="index" :text="val" :highlight="true" />
+    <Line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
   </div>
   <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
 </template>
@@ -13,9 +13,10 @@
 <script>
 import Line from './Line.vue';
 import { onMounted, ref, watch } from 'vue';
+import AutoComplete from './AutoComplete.vue'
+
 import utils from '@/hooks/utils.js';
 import store from '@/hooks/store'
-import AutoComplete from './AutoComplete.vue'
 import {MetaData} from '@/hooks/metadata.js';
 var meta = MetaData();
 
