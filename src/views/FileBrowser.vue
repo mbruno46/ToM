@@ -3,6 +3,7 @@
     <app-button icon="fa-folder-open" title="Open Folder" @click="open_folder"/>
     <app-button icon="fa-folder-plus" title="New Folder" @click="new_dir"/>
     <app-button icon="fa-plus" title="New File" @click="new_file"/>
+    <app-button icon="fa-sync-alt" title="Refresh" @click="reload"/>
     <app-button icon="fa-caret-left" title="Close browser" 
       style="position: absolute; right: 0"
       @click="clicked"/>
@@ -116,8 +117,10 @@ export default {
     }
 
     function reload() {
-      ft.value = readDir(dir);
-      meta.init(dir);
+      if (dir!=null) {
+        ft.value = readDir(dir);
+        meta.init(dir);
+      }
     }
 
     watchEffect(()=>{
