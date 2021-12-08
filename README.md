@@ -1,24 +1,13 @@
 # editor
 
-## Project setup
-```
-npm install
-```
-
 ### Compiles and hot-reloads for development
 ```
 npm run serve
+npm run electron
 ```
 
-### Compiles and minifies for production
+### Build
 ```
-npm run build
+npm run build:vue
+npm run pack/dist
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
