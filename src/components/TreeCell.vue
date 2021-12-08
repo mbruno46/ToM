@@ -3,7 +3,6 @@
     <span :class="'tag icon ' + setIcon(isDir, name) + ' ' + (isMain ? 'main':'')"
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
       @mousedown="mouseDown(path, name)"
-      @mouseover="mouseOver"
       @mouseup="mouseUp(path)"
       >
       {{name}}
@@ -39,7 +38,6 @@ export default {
   },
   setup(props) {
     const isMain = ref(false);
-    const minicell = ref({visible: false, x: 0, y:0});
 
     if (utils.getExtension(props.name) == 'tex') {
       if (utils.isMainTexFile(props.path)) {
@@ -50,7 +48,6 @@ export default {
 
     return {
       isMain,
-      minicell,
     }
   },
   methods: {

@@ -247,7 +247,6 @@ export default {
       });
     });
 
-
     function insertTextAtCaret(text) {
       h.addRedo(()=>{insertTextAtCaret(text);})
 
@@ -461,8 +460,14 @@ export default {
       this.focus();
       s.reset();
       h.reset();
-      this.lines = [];
-      text_lines.forEach(line => {this.lines.push(line);})
+      this.clean();
+      // debouncing leaves time to vue to empty the lines first and reload them
+      // otherwise the :key="val" above creates conflicts 
+      let db = utils.debouncer(()=>{
+        this.lines = [];
+        text_lines.forEach(line => {this.lines.push(line);})
+      }, 100);
+      db();
     },
     getText() {
       var text = this.lines[0];
