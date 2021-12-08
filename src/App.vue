@@ -1,10 +1,10 @@
 <template>
   <div class="main-panel">
-    <div :class="'container transition ' + (browser_visible ? 'width-30' : 'width-0')">
+    <div :class="'container transition ' + (browser_visible ? 'width-25' : 'width-0')">
       <file-browser />
     </div>
     <div ref="panel"
-      :class="'transition ' + (browser_visible ? 'width-70' : 'width-100')"
+      :class="'transition ' + (browser_visible ? 'width-75' : 'width-100')"
       style="height: 100; display:flex; flex-flow:row;"
       @mousemove="resize"
       @mouseup="stopResizing"
@@ -117,12 +117,12 @@ export default {
   width: 0px;
 }
 
-.width-30 {
-  width: 30%;
+.width-25 {
+  width: 25%;
 }
 
-.width-70 {
-  width: 70%;
+.width-75 {
+  width: 75%;
 }
 
 .width-100 {
