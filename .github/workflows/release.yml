@@ -1,0 +1,31 @@
+name: Release ToM
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, npm
+        uses: actions/setup-node@v1
+        with:
+          node-version: 11
+
+      - name: Install dependecies
+        run: |
+          npm install
+          
+      - name: Build and Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run build:vue
+          npm run release
