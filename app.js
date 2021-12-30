@@ -54,12 +54,14 @@ function createWindow() {
     }] : []),
   ]);
 
+  let _submenu = [
+    isMac ? { role: 'close' } : { role: 'quit' }
+  ]
+  if (isDev) _submenu.push({role: 'toggleDevTools'});
+
   menu.append(new MenuItem({
     label: 'File',
-    submenu: [
-      isMac ? { role: 'close' } : { role: 'quit' },
-      {role: 'toggleDevTools'}
-    ],
+    submenu: _submenu,
     visible: true,
   }));
 
@@ -103,7 +105,7 @@ function createWindow() {
         },
       },
       {role: 'selectAll'},
-      {role: 'reload'},
+      // isDev ? {role: 'reload'} : {},
     ],
     visible: true,
   }))
@@ -140,28 +142,3 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
       event.returnValue = dir[0];
     });
 });
-
-// const electron = require('electron')
-// const app = electron.app
-// const BrowserWindow = electron.BrowserWindow
-
-// let url
-// if (process.env.NODE_ENV === 'DEV') {
-//   url = 'http://localhost:8080/'
-// } else {
-//   url = `file://${process.cwd()}/dist/index.html`
-// }
-
-// app.on('ready', () => {
-//   let window = new BrowserWindow({
-//     width: 800, 
-//     height: 600,
-//     webPreferences: {
-//       nodeIntegration: true,
-//       nodeIntegrationInWorker: true,
-//       enableRemoteModule: true,
-//     }
-//   })
-//   window.loadURL(url);
-//   window.webContents.openDevTools();
-// })
