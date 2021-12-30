@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/mbruno46/ToM/issues"
   },
-  "license": "GPL-3.0-only",
+  "license": "MIT",
   "main": "dist/app.js",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -36,6 +36,7 @@
       "dist"
     ],
     "directories": {
+      "buildResources": "build",
       "output": "release-builds"
     },
     "mac": {
