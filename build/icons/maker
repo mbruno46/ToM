@@ -3,7 +3,7 @@
 OUTPUT="tmp.iconset"
 mkdir $OUTPUT
 
-for size in 16 32 48 64 128 256 512 1024
+for size in 16 32 64 128 256 512 1024
 do
 	sips -z $size $size "${size}x${size}.png" --out "${OUTPUT}/icon_${size}x${size}.png"
 done
