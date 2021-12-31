@@ -142,3 +142,7 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
       event.returnValue = dir[0];
     });
 });
+
+ipcMain.on('get-userData-path', (event, arg) => {
+  event.returnValue = app.getPath("userData");
+});
