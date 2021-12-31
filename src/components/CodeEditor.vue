@@ -1,13 +1,15 @@
 <template>
-  <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
-    @keydown="handleKeyDown"
-    >
-    <Line v-for="(val) in lines" :key="val" :text="val"/>
+  <div>
+    <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
+      @keydown="handleKeyDown"
+      >
+      <Line v-for="(val) in lines" :key="val" :text="val"/>
+    </div>
+    <div class="render">
+      <Line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
+    </div>
+    <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
   </div>
-  <div class="render">
-    <Line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
-  </div>
-  <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
 </template>
 
 <script>

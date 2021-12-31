@@ -6,7 +6,7 @@
     </div>
     <div class="vert" style="position: absolute; right: 0;">
       <loader />
-      <app-button icon="fa-cog" title="Settings" style="float: right"/>
+      <app-button icon="fa-cog" title="Settings" style="float: right" @click="open_pref"/>
     </div>
   </toolbar>
 </template>
@@ -15,6 +15,7 @@
 import Toolbar from '@/components/Toolbar.vue';
 import AppButton from '../components/AppButton.vue';
 import Loader from '../components/Loader.vue';
+import store from '@/hooks/store.js';
 
 export default {
   components: {
@@ -28,6 +29,9 @@ export default {
   methods: {
     find() {
       this.$emit('find',this.$refs.word.value);
+    },
+    open_pref() {
+      store.preferences.show = true;
     }
   }
 }

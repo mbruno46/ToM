@@ -11,13 +11,15 @@
     <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
   </Toolbar>
   <div class="editor-container">
-    <code-editor ref="editor"/>
+    <settings-panel ref="settings" :style="show_prefs ? '' : 'display:none'" />
+    <code-editor ref="editor" :style="show_prefs ? 'display:none' : ''"/>
   </div>
 </template>
 
 <script>
 import Toolbar from '@/components/Toolbar.vue';
 import CodeEditor from '@/components/CodeEditor.vue';
+import SettingsPanel  from '@/components/SettingsPanel.vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 import { ref, onMounted, watchEffect, computed } from 'vue';
@@ -33,6 +35,7 @@ export default {
     Toolbar,
     CodeEditor,
     AppButton,
+    SettingsPanel,
   },
   methods: {
     focus: function() {
@@ -52,6 +55,7 @@ export default {
     const editor = ref(null);
     const filename = computed(()=>{return store.editor.name;})
     const changed = computed(()=>{return store.editor.changed;})
+    const show_prefs = computed(()=>{return store.preferences.show;})
 
     var autosave_timer = null;
     
@@ -102,6 +106,7 @@ export default {
       changed,
       editor,
       save,
+      show_prefs,
     }
   },
 }

@@ -4,7 +4,13 @@ const editor = reactive({read: true, path: '', name: '', changed: false, clean: 
 const browser = reactive({visible: true, moving: false, file: ''});
 const viewer = reactive({basepath: '', aspect_ratio: 1, refresh: false});
 const loader = ref(false);
-const preferences = reactive({autosave: 5000});
+const preferences = reactive({
+  show: false,
+  latex: {
+    cmd: 'latexmk -pdf',
+    opts: ' -silent -gg'
+  },
+  autosave: 5000});
 
 export default {
   editor,

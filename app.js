@@ -105,7 +105,7 @@ function createWindow() {
         },
       },
       {role: 'selectAll'},
-      // isDev ? {role: 'reload'} : {},
+      isDev ? {role: 'reload'} : {},
     ],
     visible: true,
   }))
