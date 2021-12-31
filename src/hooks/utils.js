@@ -1,6 +1,7 @@
 const fs = window.require('fs');
 const pathlib = window.require('path');
 const { exec } = window.require('child_process');
+import store from '@/hooks/store.js';
 
 export function getParentByAttr(element, attr) {
   if (element.hasAttribute(attr)) {
@@ -46,7 +47,8 @@ export function isMainTexFile(fname) {
 
 export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  var cmd = `cd ${workdir}; latexmk -pdf -silent -gg ${basename}.tex`;
+  // var cmd = `cd ${workdir}; latexmk -pdf -silent -gg ${basename}.tex`;
+  var cmd = `cd ${workdir}; ${store.preferences.latex.cmd} ${store.preferences.latex.opts} ${basename}.tex`;
   
   exec(cmd, (err, stdout, stderr) => {
     console.log(stdout);
