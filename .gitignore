@@ -3,6 +3,7 @@ node_modules
 /dist
 /dummy
 /release-builds
+package-lock.json
 
 # local env files
 .env.local
