@@ -1,4 +1,4 @@
-name: Release ToM
+name: Build ToM
 
 on: [push]
 
