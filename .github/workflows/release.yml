@@ -31,7 +31,7 @@ jobs:
           npm run release
       
       - name: Documentation
-        if: matrix.os == ubuntu-latest
+        if: matrix.os == 'ubuntu-latest'
         uses: mbruno46/websmith.js@main
         with:
           config: './doc/config.json'
