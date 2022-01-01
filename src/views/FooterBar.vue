@@ -5,7 +5,7 @@
       <app-button icon="fa-search" title="Find" @click="find"/>
     </div>
     <div class="vert" style="position: absolute; right: 0;">
-      <loader />
+      <loading-throbber />
       <app-button icon="fa-cog" title="Settings" style="float: right" @click="open_pref"/>
     </div>
   </tool-bar>
@@ -14,14 +14,14 @@
 <script>
 import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '../components/AppButton.vue';
-import Loader from '../components/Loader.vue';
+import LoadingThrobber from '../components/LoadingThrobber.vue';
 import store from '@/hooks/store.js';
 
 export default {
   components: {
     ToolBar,
     AppButton,
-    Loader,
+    LoadingThrobber,
   },
   emits: ['find'],
   setup() {

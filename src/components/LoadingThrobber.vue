@@ -7,6 +7,7 @@ import store from '@/hooks/store.js';
 import { computed } from 'vue';
 
 export default {
+  name: "loading-throbber",
   setup() {
     const show = computed(() => {return store.loader.value;})
     return {
