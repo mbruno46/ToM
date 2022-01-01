@@ -4,6 +4,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "tool-bar",
+}
+</script>
+
 <style scoped>
 .toolbar {
   width: 100%;

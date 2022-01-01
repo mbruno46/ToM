@@ -8,9 +8,8 @@
 import highlight from '@/hooks/highlight.js';
 import { onMounted, ref, watch } from 'vue';
 
-
-
 export default {
+  name: "editor-line",
   props: {
     text: {
       type: String,
