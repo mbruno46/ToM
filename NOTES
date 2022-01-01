@@ -1,0 +1,4 @@
+NOTES:
+  - "electron-updater": "4.3.9" is required to avoid error: fs/promises dependency not found
+  - stopped tracking package-lock.json due to problem with Github finding security vulnerabitilies 
+    in software not used by main program, but only by node environment.

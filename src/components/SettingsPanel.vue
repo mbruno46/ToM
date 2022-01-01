@@ -12,25 +12,51 @@
       <app-button icon="fa-window-close" title="Cancel" style="float: right" @click="cancel"/>
       <app-button icon="fa-check-square" title="Apply" style="float: right" @click="apply"/>
     </div>
+    <div class="row">
+      <span class="label" style="margin-left: 2rem">Updates</span>
+      <div class="row">
+        <span class="label">Current version {{version}}</span>
+      </div>
+      <div class="row">
+        <button class="btn label" @click="updater">{{update.msg}}</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import AppButton from '../components/AppButton.vue';
 import store from '@/hooks/store.js';
 import preferences from '@/hooks/preferences.js';
+const {ipcRenderer} = window.require('electron');
 
-import { computed } from '@vue/reactivity';
+import { computed, ref } from '@vue/reactivity';
 
 export default {
-  components: {
-    AppButton,
-  },
   setup() {
     const layout = computed(() => {return preferences.get();})
+    const update = ref({
+      status: 0, 
+      msg: 'Check for updates',
+    });
+
+    ipcRenderer.on('update-available', function(event, msg) {
+      update.value.status = 1;
+      update.value.msg = 'Install updates';
+      console.log(event, msg);
+    });
+
+    ipcRenderer.on('update-not-available', function(event, msg) {
+      update.value.status = 2;
+      update.value.msg = 'Already up-to-date';
+      console.log(event, msg);
+    });
+
+    const version = ref(ipcRenderer.sendSync('get-version'));
 
     return {
       layout,
+      update,
+      version,
     }
   },
   methods: {
@@ -46,6 +72,20 @@ export default {
     },
     cancel() {
       store.preferences.show = false;
+    },
+    updater() {
+      if (this.update.status==0) {
+        this.update.msg = 'Checking ...';
+        ipcRenderer.send('check-for-updates');
+      }
+      else if (this.update.status==1) {
+        this.update.msg = 'Downloading and installing ...'
+        ipcRenderer.send('install-update');
+      }
+      else if (this.update.status==2) {
+        this.update.status=0;
+        this.update.msg = 'Check for updates';
+      }
     }
   }
 }
@@ -67,11 +107,30 @@ export default {
 .row {
   width: 100%;
   margin: 0.5rem 0 0.5rem 0;
+  justify-content: center;
 }
 
 .label {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+.btn {
+  font: inherit;
+  color: inherit;
+  background-color: inherit;
+  border: none;
+  text-decoration:none;
+  outline: none;
+  display: inline-block;
+  align-items: center;
+}
+.btn:hover {
+  color: var(--selected);
+  background-color: var(--dark-blue);
+}
+.btn:active {
+  color: var(--selected);
 }
 
 .input {

@@ -1,9 +1,16 @@
 const path = require('path');
 const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
 const dialog = require('electron').dialog;
+const log = require('electron-log');
+const {autoUpdater} = require("electron-updater");
 
 const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
+
+autoUpdater.autoDownload = false
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 function KeyDown(key, ctrlKey = false, shiftKey = false) {
   return {
@@ -13,9 +20,11 @@ function KeyDown(key, ctrlKey = false, shiftKey = false) {
   }
 }
 
+let mainWindow;
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1000,
     minWidth: 1000,
     height: 600,
@@ -58,6 +67,7 @@ function createWindow() {
     isMac ? { role: 'close' } : { role: 'quit' }
   ]
   if (isDev) _submenu.push({role: 'toggleDevTools'});
+  _submenu.push({role: 'toggleDevTools'});
 
   menu.append(new MenuItem({
     label: 'File',
@@ -105,7 +115,14 @@ function createWindow() {
         },
       },
       {role: 'selectAll'},
-      isDev ? {role: 'reload'} : {},
+      {type: 'separator'},
+      isDev ? {role: 'reload'} : {
+        label: 'Compile',
+        accelerator: 'CommandOrControl+R',
+        click: () => {
+          mainWindow.webContents.send('editor-keydown', KeyDown('r', ctrlKey=true));
+        },
+      },
     ],
     visible: true,
   }))
@@ -122,8 +139,9 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+  });
 });
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -143,6 +161,44 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
     });
 });
 
-ipcMain.on('get-userData-path', (event, arg) => {
+ipcMain.on('get-userData-path', (event) => {
   event.returnValue = app.getPath("userData");
 });
+
+ipcMain.on('get-version', (event) => {
+  event.returnValue = app.getVersion();
+});
+
+autoUpdater.on('update-available', (info) => {
+  log.info('update is available');
+  log.info(info);
+  mainWindow.webContents.send('update-available', info);
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  mainWindow.webContents.send('update-not-available', info);
+});
+
+ipcMain.on('check-for-updates', () => {
+  autoUpdater.checkForUpdates();
+  log.info('check complete');
+});
+
+ipcMain.on('install-update', () => {
+  autoUpdater.downloadUpdate();
+  dialog.showMessageBox({
+    title: 'Install Updates',
+    message: 'Updates downloaded, application will be quit for update...'
+  }).then(() => {
+    setImmediate(() => autoUpdater.quitAndInstall())
+  });
+});
+
+autoUpdater.on('error', (error) => {
+  mainWindow.webContents.send('update-not-available', error);
+  // dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
+})
+
+
+
+

@@ -15,17 +15,18 @@ let defaults = {
     'Interval [ms]': 5000,
   }
 }
+let userpref = {};
 
 function refresh() {
   store.preferences.autosave = parseInt(preferences['Autosave']['Interval [ms]']);
 }
 
 if (fs.existsSync(file)) {
-  defaults = JSON.parse(fs.readFileSync(file, {encoding: "utf8"}));
+  userpref = JSON.parse(fs.readFileSync(file, {encoding: "utf8"}));
 }
 const preferences = reactive({});
 for (var key in defaults) {
-  preferences[key] = defaults[key];
+  preferences[key] = (key in userpref) ? userpref[key] : defaults[key];
 }
 refresh();
 
