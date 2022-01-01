@@ -1,7 +1,7 @@
 {
   "title": "ToM - TeX on Me",
   "build": "./build",
-  "assets": ["./assets", "./themes/default/assets", "./themes/cosmo/assets"],
+  "assets": ["./assets", "../websmith.js/themes/default/assets", "../websmith.js/themes/cosmo/assets"],
   "navbar": {
     "name": "ToM",
     "items": [{
@@ -9,7 +9,7 @@
       "name": "Home"
     }]
   },
-  "layouts": "./themes/default/layouts",
+  "layouts": "../websmith.js/themes/default/layouts",
   "pages": [
     {
       "name": "index.html",
