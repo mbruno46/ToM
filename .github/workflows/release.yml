@@ -18,7 +18,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-
+      
+      - name: Documentation
+        if: matrix.os == 'ubuntu-latest'
+        uses: mbruno46/websmith.js@main
+        with:
+          config: './doc/config.json'
+          build: './doc/build'
+          
       - name: Install dependecies
         run: |
           npm install
@@ -29,10 +36,3 @@ jobs:
         run: |
           npm run build:vue
           npm run release
-      
-      - name: Documentation
-        if: matrix.os == 'ubuntu-latest'
-        uses: mbruno46/websmith.js@main
-        with:
-          config: './doc/config.json'
-          build: './doc/build'
