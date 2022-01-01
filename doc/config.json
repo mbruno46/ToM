@@ -1,0 +1,23 @@
+{
+  "title": "ToM - TeX on Me",
+  "build": "./build",
+  "assets": ["./assets", "./themes/default/assets", "./themes/cosmo/assets"],
+  "navbar": {
+    "name": "ToM",
+    "items": [{
+      "link": "index.html",
+      "name": "Home"
+    }]
+  },
+  "layouts": "./themes/default/layouts",
+  "pages": [
+    {
+      "name": "index.html",
+      "desc": "An intuitive TeX editor with a modern interface for the everyday physicist.",
+      "logo": "assets/img/logo.png",
+      "body": "index.md",
+      "layout": "home"
+    }
+  ],
+  "footer": "Copyright © 2021 Mattia Bruno."
+}

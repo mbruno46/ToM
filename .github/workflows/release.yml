@@ -29,3 +29,10 @@ jobs:
         run: |
           npm run build:vue
           npm run release
+      
+      - name: Documentation
+        if: matrix.os == ubuntu-latest
+        uses: mbruno46/websmith.js@main
+        with:
+          config: './doc/config.json'
+          build: './doc/build'
