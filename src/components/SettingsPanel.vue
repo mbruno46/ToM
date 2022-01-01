@@ -12,6 +12,7 @@
       <app-button icon="fa-window-close" title="Cancel" style="float: right" @click="cancel"/>
       <app-button icon="fa-check-square" title="Apply" style="float: right" @click="apply"/>
     </div>
+
     <div class="row">
       <span class="label" style="margin-left: 2rem">Updates</span>
       <div class="row">
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import AppButton from '@/components/AppButton.vue';
 import store from '@/hooks/store.js';
 import preferences from '@/hooks/preferences.js';
 const {ipcRenderer} = window.require('electron');
@@ -32,6 +34,9 @@ const {ipcRenderer} = window.require('electron');
 import { computed, ref } from '@vue/reactivity';
 
 export default {
+  components: {
+    AppButton,
+  },
   setup() {
     const layout = computed(() => {return preferences.get();})
     const update = ref({
