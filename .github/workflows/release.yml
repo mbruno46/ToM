@@ -29,10 +29,13 @@ jobs:
       - name: Install dependecies
         run: |
           npm install
-          
-      - name: Build and Release
+
+      - name: Build
+        run: |
+          npm run build:vue
+
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run build:vue
           npm run release
