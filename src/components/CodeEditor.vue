@@ -3,17 +3,17 @@
     <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
       @keydown="handleKeyDown"
       >
-      <Line v-for="(val) in lines" :key="val" :text="val"/>
+      <editor-line v-for="(val) in lines" :key="val" :text="val"/>
     </div>
     <div class="render">
-      <Line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
+      <editor-line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
     </div>
     <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
   </div>
 </template>
 
 <script>
-import Line from './Line.vue';
+import EditorLine from './EditorLine.vue';
 import { onMounted, ref, watch } from 'vue';
 import AutoComplete from './AutoComplete.vue'
 
@@ -221,7 +221,7 @@ var finder = {word: '', index: 0, pos: 0};
 export default {
   name: 'CodeEditor',
   components: {
-    Line,
+    EditorLine,
     AutoComplete,
   },
   setup() {

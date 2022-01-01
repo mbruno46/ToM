@@ -1,11 +1,11 @@
 <template>
-  <toolbar>
+  <tool-bar>
     <app-button icon="fa-sync-alt" title="Refresh" @click="$emit('sync')"/>
     <app-button icon="fa-search-plus" title="Zoom in" @click="zoomIn"/>
     <app-button icon="fa-search-minus" title="Zoom out" @click="zoomOut"/>
     <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
     <app-button icon="fa-arrows-alt-h" title="Fit horizontal" @click="fitH"/>
-  </toolbar>
+  </tool-bar>
   <div ref="viewer" class="pdf-viewer" :style="error ? 'display:none' : ''">
     <PDFPage v-for="index in numpages" 
       :key="index" 
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar.vue';
+import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '@/components/AppButton.vue';
 import PDFPage from '@/components/PDFPage.vue';
 import { ref, onMounted, watch } from 'vue';
@@ -37,7 +37,7 @@ var h = HighlightError();
 
 export default {
   components: {
-    Toolbar,
+    ToolBar,
     AppButton,
     PDFPage,
     ErrorMessage,

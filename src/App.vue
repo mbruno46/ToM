@@ -12,24 +12,24 @@
       <div class="container" 
         :style="`width: calc(${width.editor}*(100% - 4px))`"
         @click="this.$refs.editor.focus()">
-        <editor ref="editor"/>
+        <app-editor ref="editor"/>
       </div>
       <div class="container resizer"
         @mousedown="startResizing"
       />
       <div class="container"
         :style="`width: calc(${width.viewer}*(100% - 4px))`">
-        <viewer ref="viewer" @sync="sync"/>
+        <app-viewer ref="viewer" @sync="sync"/>
       </div>
     </div>
   </div>
-  <Footer @find="find($event)"/>
+  <footer-bar @find="find($event)"/>
 </template>
 
 <script>
-import Editor from '@/views/Editor.vue';
-import Viewer from '@/views/Viewer.vue';
-import Footer from '@/views/Footer.vue';
+import AppEditor from '@/views/AppEditor.vue';
+import AppViewer from '@/views/AppViewer.vue';
+import FooterBar from '@/views/FooterBar.vue';
 import FileBrowser from '@/views/FileBrowser.vue';
 import store from '@/hooks/store'
 import { computed, ref } from '@vue/reactivity';
@@ -41,10 +41,10 @@ var width = 0;
 export default {
   name: 'App',
   components: {
-    Editor,
-    Footer,
+    AppEditor,
+    FooterBar,
     FileBrowser,
-    Viewer,
+    AppViewer,
   },
   setup() {
     const browser_visible = computed(()=>{return store.browser.visible;});

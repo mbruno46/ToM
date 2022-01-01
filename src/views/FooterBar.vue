@@ -1,5 +1,5 @@
 <template>
-  <toolbar>
+  <tool-bar>
     <div class="vert" style="padding: 0 1rem;">
       <input ref="word" class="finder" placeholder="find"/>
       <app-button icon="fa-search" title="Find" @click="find"/>
@@ -8,18 +8,18 @@
       <loader />
       <app-button icon="fa-cog" title="Settings" style="float: right" @click="open_pref"/>
     </div>
-  </toolbar>
+  </tool-bar>
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar.vue';
+import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '../components/AppButton.vue';
 import Loader from '../components/Loader.vue';
 import store from '@/hooks/store.js';
 
 export default {
   components: {
-    Toolbar,
+    ToolBar,
     AppButton,
     Loader,
   },

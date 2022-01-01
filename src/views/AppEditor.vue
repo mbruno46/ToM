@@ -1,5 +1,5 @@
 <template>
-  <Toolbar>
+  <tool-bar>
     <app-button icon="fa-caret-right" title="Show browser" 
       :style="(browser_visible() ? 'display: none' : '')"
       class="caret"
@@ -9,7 +9,7 @@
       :style="(changed ? '' : 'display: none')"
       @click="save"/>
     <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
-  </Toolbar>
+  </tool-bar>
   <div class="editor-container">
     <settings-panel ref="settings" :style="show_prefs ? '' : 'display:none'" />
     <code-editor ref="editor" :style="show_prefs ? 'display:none' : ''"/>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar.vue';
+import ToolBar from '@/components/ToolBar.vue';
 import CodeEditor from '@/components/CodeEditor.vue';
 import SettingsPanel  from '@/components/SettingsPanel.vue';
 import store from '@/hooks/store.js';
@@ -32,7 +32,7 @@ const {ipcRenderer} = window.require('electron');
 
 export default {
   components: {
-    Toolbar,
+    ToolBar,
     CodeEditor,
     AppButton,
     SettingsPanel,

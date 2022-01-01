@@ -1,5 +1,5 @@
 <template>
-  <Toolbar>
+  <tool-bar>
     <app-button icon="fa-folder-open" title="Open Folder" @click="open_folder"/>
     <app-button icon="fa-folder-plus" title="New Folder" @click="new_dir"/>
     <app-button icon="fa-plus" title="New File" @click="new_file"/>
@@ -7,7 +7,7 @@
     <app-button icon="fa-caret-left" title="Close browser" 
       style="position: absolute; right: 0"
       @click="clicked"/>
-  </Toolbar>
+  </tool-bar>
   <div class="file-tree"
     @mousemove="moveMiniCell">
     <TreeCell v-for="(value,key) in ft" 
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar.vue';
+import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
 import InputPopup from '@/components/InputPopup.vue';
@@ -83,7 +83,7 @@ function readDir(path, depth=0) {
 export default {
   components: {
     TreeCell,
-    Toolbar,
+    ToolBar,
     AppButton,
     InputPopup,
     MiniCell,
