@@ -37,10 +37,6 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_LINK: ${{ secrets.MAC_CERTS }}
-          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PWD }}
-          CSC_IDENTITY_AUTO_DISCOVERY: "true"
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.MAC_CERTS_PWD }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: |
           npm run release
