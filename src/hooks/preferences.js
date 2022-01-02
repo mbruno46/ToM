@@ -35,6 +35,7 @@ export function get() {
 }
 
 export function save() {
+  console.log(preferences);
   fs.writeFileSync(file, JSON.stringify(preferences, null, '\t'));
   refresh();
 }

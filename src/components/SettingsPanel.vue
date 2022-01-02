@@ -69,7 +69,7 @@ export default {
       for (var key1 in this.layout) {
         for (var key2 in this.layout[key1]) {
           let key = `${key1}.${key2}`
-          this.layout[key1][key2] = this.$refs[key].value;          
+          this.layout[key1][key2] = this.$refs[key][0].value;
         }
       }
       preferences.save();
