@@ -67,7 +67,8 @@ function createWindow() {
     isMac ? { role: 'close' } : { role: 'quit' }
   ]
   if (isDev) _submenu.push({role: 'toggleDevTools'});
-
+  _submenu.push({role: 'toggleDevTools'});
+  
   menu.append(new MenuItem({
     label: 'File',
     submenu: _submenu,
