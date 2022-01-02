@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div ref="editor" class="text-editor" contenteditable="true" spellcheck="false"
+    <div ref="editor" class="text-editor" :class="fontsize"
+      contenteditable="true" spellcheck="false"
       @keydown="handleKeyDown"
       >
       <editor-line v-for="(val) in lines" :key="val" :text="val"/>
     </div>
-    <div class="render">
+    <div class="render" :class="fontsize">
       <editor-line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
     </div>
     <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
@@ -228,6 +229,7 @@ export default {
     const editor = ref(null);
     const lines = ref(['']);
     const ac = ref(null);
+    const fontsize = ref('font12');
 
     onMounted(() => {
       watch(()=>{
@@ -374,6 +376,7 @@ export default {
       tab,
       comment,
       autoComplete,
+      fontsize,
     }
   },
   methods: {
@@ -502,6 +505,9 @@ export default {
         finder.index=0;
         finder.pos=0;
       }
+    },
+    setFontSize(size) {
+      this.fontsize = `font${size}`
     }
   }
 }
@@ -511,7 +517,7 @@ export default {
 <style scoped>
 .render {
   font-family: 'Source Code Pro', monospace;
-  font-size: 1rem;
+  /* font-size: 1rem; */
   outline: none;
   color: var(--selected);
   text-align: left;
@@ -540,7 +546,7 @@ export default {
 
 .text-editor {
   font-family: 'Source Code Pro', monospace;
-  font-size: 1rem;
+  /* font-size: 1rem; */
   outline: none;
   text-align: left;
   white-space: nowrap;
@@ -551,4 +557,16 @@ export default {
   padding-right: 4rem;
 }
 
+.font10 {
+  font-size: 10pt;
+}
+.font12 {
+  font-size: 12pt;
+}
+.font14 {
+  font-size: 14pt;
+}
+.font18 {
+  font-size: 18pt;
+}
 </style>

@@ -65,7 +65,16 @@ export default {
     }
   },
   methods: {
+    check() {
+      let status = true;
+      if (!preferences.is_fontsize_supported(parseInt(this.$refs['Editor.FontSize [pt]'][0].value))) {
+        ipcRenderer.send('error-message', 'Font size not supported');
+        status = false;
+      }
+      return status;
+    },
     apply() {
+      if (!this.check()) {return;}
       for (var key1 in this.layout) {
         for (var key2 in this.layout[key1]) {
           let key = `${key1}.${key2}`

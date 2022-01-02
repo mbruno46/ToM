@@ -165,6 +165,10 @@ ipcMain.on('get-userData-path', (event) => {
   event.returnValue = app.getPath("userData");
 });
 
+ipcMain.on('error-message', (event, error) => {
+  dialog.showErrorBox('Error: ', error == null ? "unknown" : error)
+});
+
 ipcMain.on('get-version', (event) => {
   event.returnValue = app.getVersion();
 });

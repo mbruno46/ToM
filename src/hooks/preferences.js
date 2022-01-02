@@ -11,6 +11,9 @@ let defaults = {
     'Command': 'latexmk -pdf',
     'Options': ' -silent -gg',
   },
+  'Editor': {
+    'FontSize [pt]': 12,
+  },
   'Autosave': {
     'Interval [ms]': 5000,
   }
@@ -19,6 +22,7 @@ let userpref = {};
 
 function refresh() {
   store.preferences.autosave = parseInt(preferences['Autosave']['Interval [ms]']);
+  store.preferences.fontsize = parseInt(preferences['Editor']['FontSize [pt]']);
 }
 
 if (fs.existsSync(file)) {
@@ -40,7 +44,12 @@ export function save() {
   refresh();
 }
 
+function is_fontsize_supported(size) {
+  return [10, 12, 14, 18].includes(size);
+}
+
 export default {
   get,
   save,
+  is_fontsize_supported,
 }

@@ -70,6 +70,7 @@ export default {
     onMounted(() => {
       watchEffect(() => {
         if (store.editor.read) {
+          save();
           editor.value.refreshEditor(
             utils.loadTextFile(store.editor.path)
           );
@@ -92,6 +93,9 @@ export default {
         } else {
           clearInterval(autosave_timer);
         }
+      });
+      watchEffect(() => {
+        editor.value.setFontSize(store.preferences.fontsize);
       });
       ipcRenderer.on('editor-keydown', (event, key) => {
         console.log(event);
