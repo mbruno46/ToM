@@ -54,7 +54,12 @@ export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {
-      callback_err(loadTextFile(`${basename}.log`));
+      let log = `${basename}.log`;
+      let msg = [stderr, '\n', '\n'];
+      if (fs.existsSync(log)) {
+        msg = msg.concat(loadTextFile(`${basename}.log`));
+      }
+      callback_err(msg);
     } else {
       callback();
     }

@@ -95,11 +95,12 @@ export default {
       store.loader.value = false;
     }, 500);
 
-    function compile() {
+    function compile(callback = ()=>{}) {
       utils.compileTex(store.viewer.basepath, 
       ()=>{
         error.value = false;
         load();
+        callback();
       },
       (msg)=>{
         error.value = true;

@@ -1,7 +1,7 @@
 <template>
   <div class="main-panel">
     <div :class="'container transition ' + (browser_visible ? 'width-25' : 'width-0')">
-      <file-browser />
+      <file-browser ref="file_browser"/>
     </div>
     <div ref="panel"
       :class="'transition ' + (browser_visible ? 'width-75' : 'width-100')"
@@ -76,7 +76,7 @@ export default {
     sync() {
       store.loader.value = true;
       this.$refs.editor.save();
-      this.$refs.viewer.compile();
+      this.$refs.viewer.compile(this.$refs.file_browser.reload);
     },
     find(word) {
       this.$refs.editor.find(word);
