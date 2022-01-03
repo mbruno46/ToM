@@ -23,6 +23,10 @@ let userpref = {};
 function refresh() {
   store.preferences.autosave = parseInt(preferences['Autosave']['Interval [ms]']);
   store.preferences.fontsize = parseInt(preferences['Editor']['FontSize [pt]']);
+  store.preferences.latex = {
+    cmd: preferences['LaTeX']['Command'], 
+    opts: preferences['LaTeX']['Options']
+  };
 }
 
 if (fs.existsSync(file)) {

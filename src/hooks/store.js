@@ -4,7 +4,7 @@ const editor = reactive({read: true, path: '', name: '', changed: false, clean: 
 const browser = reactive({visible: true, moving: false, file: ''});
 const viewer = reactive({basepath: '', aspect_ratio: 1, refresh: false});
 const loader = ref(false);
-const preferences = reactive({show: false, autosave: 0, fontsize: 12});
+const preferences = reactive({show: false, autosave: 0, fontsize: 12, latex: {}});
 
 export default {
   editor,
