@@ -11,11 +11,21 @@ found [here](https://github.com/mbruno46/ToM/releases/latest).
     distribution and moving the `ToM.app` to the preferred location, e.g. `$HOME/Applications`.
 
   * Any version of MacOS will prevent the usage of ToM, since its author is not an
-    official Apple Developer. To be able to use ToM open 
-    `System preferences -> Security and privacy` and click on `open anyway`
-    as illustrated below.
+    official Apple Developer. To be able to use ToM the user can
+    
+    - shell: open a terminal and type
 
-  <img src="assets/img/apple_settings.png" alt="Apple settings" style="width: 100%;">
+```bash
+# if ToM was installed globally with dmg file
+xattr -dr com.apple.quarantine /Applications/ToM.app
+# if ToM was installed locally in HOME folder
+xattr -dr com.apple.quarantine ~/Applications/ToM.app
+```
+
+    - GUI: open `System preferences -> Security and privacy` and click on `open anyway`
+      as illustrated below.
+
+  <img src="assets/img/apple_settings.png" alt="Apple settings" style="width: 100%; max-width: 600px">
 
   * If you run in *compilation errors* make sure to open ToM preferences and
     properly set the latex command, for example by specifying the full path

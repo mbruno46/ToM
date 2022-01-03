@@ -188,19 +188,6 @@ ipcMain.on('check-for-updates', () => {
   log.info('check complete');
 });
 
-ipcMain.on('install-update', () => {
-  autoUpdater.downloadUpdate();
-});
-
-autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox({
-    title: 'Install Updates',
-    message: 'Updates downloaded, application will be quit for update...'
-  }).then(() => {
-    setImmediate(() => autoUpdater.quitAndInstall())
-  })
-})
-
 autoUpdater.on('error', (error) => {
   mainWindow.webContents.send('update-not-available', error);
   // dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
