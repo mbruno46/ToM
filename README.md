@@ -7,6 +7,8 @@
 An intuitive TeX editor with a modern interface for the everyday physicist.
 
 - **Website:** https://mbruno46.github.io/ToM/
+- **Source code:** https://github.com/mbruno46/ToM/
+- **Bug reports:** https://github.com/mbruno46/ToM/issues
 
 ### Authors
 
