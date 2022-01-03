@@ -15,7 +15,7 @@ found [here](https://github.com/mbruno46/ToM/releases/latest).
     `System preferences -> Security and privacy` and click on `open anyway`
     as illustrated below.
 
-  ![Apple settings](assets/img/apple_settings.png)
+  <img src="assets/img/apple_settings.png" alt="Apple settings" style="width: 100%;">
 
   * If you run in *compilation errors* make sure to open ToM preferences and
     properly set the latex command, for example by specifying the full path
