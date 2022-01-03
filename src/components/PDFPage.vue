@@ -5,45 +5,33 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from 'vue';
+import { ref } from 'vue';
 import store from '@/hooks/store.js';
 
 export default {
   props: {
-    num: Number,
-    pdfproxy: Object,
     width: Number,
-    reload: Boolean,
   },
-  setup(props) {
+  setup() {
     const canvas = ref(null);
 
-    function load() {
-      // Fetch the page
-      props.pdfproxy.getPage(props.num).then(function(page) {
-        var scale = 5.0;
-        var viewport = page.getViewport({scale: scale});
+    function load(page) {
+      var scale = 5.0;
+      var viewport = page.getViewport({scale: scale});
 
-        // Prepare canvas using PDF page dimensions
-        var context = canvas.value.getContext('2d');
-        canvas.value.width = viewport.width;
-        canvas.value.height = viewport.height;
-        store.viewer.aspect_ratio = viewport.width / viewport.height;
-        
-        // Render PDF page into canvas context
-        var renderContext = {
-          canvasContext: context,
-          viewport: viewport
-        };
-        page.render(renderContext);
-      });
+      // Prepare canvas using PDF page dimensions
+      var context = canvas.value.getContext('2d');
+      canvas.value.width = viewport.width;
+      canvas.value.height = viewport.height;
+      store.viewer.aspect_ratio = viewport.width / viewport.height;
+      
+      // Render PDF page into canvas context
+      var renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      page.render(renderContext);      
     }
-
-    onMounted(() => {
-      load();
-    })
-
-    watch(() => props.reload, () => {load();});
 
     return {
       canvas,

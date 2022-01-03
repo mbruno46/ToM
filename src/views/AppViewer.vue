@@ -10,9 +10,8 @@
     <PDFPage v-for="index in numpages" 
       :key="index" 
       :num="index" 
-      :pdfproxy="pdf"
       :width="width"
-      :reload="reload"/>
+      :ref="setPages"/>
   </div>
   <div class="pdf-viewer" :style="error ? '' : 'display:none'">
     <error-message v-for="(txt, index) in errmsg" :key="index" :msg="txt"/>
@@ -23,14 +22,14 @@
 import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '@/components/AppButton.vue';
 import PDFPage from '@/components/PDFPage.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onBeforeUpdate } from 'vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 import {HighlightError} from '@/hooks/highlight.js';
+import ErrorMessage from '../components/ErrorMessage.vue';
 
 const pdfjsLib = window.require('pdfjs-dist');
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry'
-import ErrorMessage from '../components/ErrorMessage.vue';
 const fs = window.require('fs');
 
 var h = HighlightError();
@@ -45,12 +44,20 @@ export default {
   emits: ['sync'],
   setup() {
     const numpages = ref(null);
-    const pdf = ref(null);
     const width = ref(0);
     const viewer = ref(null);
-    const reload = ref(false);
     const error = ref(false);
     const errmsg = ref([]);
+
+    let pages = []
+    const setPages = el => {
+      if (el) {
+        pages.push(el)
+      }
+    }
+    onBeforeUpdate(() => {
+      pages = [];
+    });
 
     function load() {
       var path = store.viewer.basepath + '.pdf';
@@ -59,14 +66,14 @@ export default {
         return;
       }
       var data = fs.readFileSync(path, null);
-      pdfjsLib.getDocument(data).promise.then((pdfDoc_) => {
-        pdf.value = pdfDoc_;
-        numpages.value = pdfDoc_.numPages;
-        reload.value = !reload.value;
-        db();
-      }, function (reason) {
-        // PDF loading error
-        alert('Error ' + reason);
+      pdfjsLib.getDocument(data).promise.then((pdfDoc) => {
+        numpages.value = pdfDoc.numPages;
+
+        for (let i = 0; i < numpages.value; i++) {
+          pdfDoc.getPage(i+1).then(function(page) {
+            pages[i].load(page);
+          });
+        }
       });
     }
 
@@ -116,23 +123,19 @@ export default {
   
     return {
       load,
+      setPages,
       numpages,
-      pdf,
       width,
       viewer,
       zoomIn,
       zoomOut,
       fitV,
       fitH,
-      reload,
       error,
       errmsg,
       compile,
     }
   },
-  methods: {
-    
-  }
 }
 </script>
 
