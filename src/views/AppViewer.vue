@@ -74,6 +74,7 @@ export default {
             pages[i].load(page);
           });
         }
+        db();
       });
     }
 
@@ -92,7 +93,7 @@ export default {
 
     let db = utils.debouncer(function() {      
       store.loader.value = false;
-    }, 1500);
+    }, 500);
 
     function compile() {
       utils.compileTex(store.viewer.basepath, 
