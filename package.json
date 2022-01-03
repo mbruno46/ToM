@@ -2,7 +2,7 @@
   "name": "tom",
   "productName": "ToM",
   "description": "TeX on Me",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "keywords": [
     "note-taking",
