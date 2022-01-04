@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
 const dialog = require('electron').dialog;
 const log = require('electron-log');
 const {autoUpdater} = require("electron-updater");
+const { exec } = require('child_process');
 
 const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
@@ -193,6 +194,44 @@ autoUpdater.on('error', (error) => {
   // dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
 })
 
+ipcMain.on('install-update', () => {
+  if (isMac) {
+    cmd = (!isDev) ? `bash ${path.join(process.resourcesPath, './scripts/macos-installer.sh')}` : 'bash ./scripts/macos-installer.sh';
+    var child = exec(cmd, {env: {
+      ...process.env
+    }}, (err, stdout, stderr) => {
+      log.info(stdout);
+      if (err != null) {
+        log.error(stderr);
+        return;
+      } 
+    });
+        
+    child.on('close', () => {
 
+      dialog.showMessageBox({
+        title: 'Updates installed',
+        message: 'Application will be quit'
+      }).then(() => {
+        setImmediate(() => app.quit());
+      });
+    })
+  } else {
+    autoUpdater.downloadUpdate();
+  }
+});
+
+autoUpdater.on('update-downloaded', () => {
+  dialog.showMessageBox({
+    title: 'Install Updates',
+    message: 'Updates downloaded, application will be quit for update...'
+  }).then(() => {
+    setImmediate(() => autoUpdater.quitAndInstall())
+  })
+})
+
+ipcMain.on('getPlatform', (event) => {
+  event.returnValue = process.platform;
+})
 
 

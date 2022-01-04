@@ -1,6 +1,7 @@
 const fs = window.require('fs');
 const pathlib = window.require('path');
 const { exec } = window.require('child_process');
+const {ipcRenderer} = window.require('electron');
 import store from '@/hooks/store.js';
 
 export function getParentByAttr(element, attr) {
@@ -47,10 +48,19 @@ export function isMainTexFile(fname) {
 
 export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  // var cmd = `cd ${workdir}; latexmk -pdf -silent -gg ${basename}.tex`;
-  var cmd = `cd ${workdir}; ${store.preferences.latex.cmd} ${store.preferences.latex.opts} ${basename}.tex`;
-  
-  exec(cmd, (err, stdout, stderr) => {
+  var precmd = ""
+  // app not signed so PATH is not set in macos
+  if (ipcRenderer.sendSync('getPlatform')=='darwin') {
+    precmd += "eval $(/usr/libexec/path_helper);"
+    precmd += "if [ -f $HOME/.bash_profile ]; then source $HOME/.bash_profile$HOME/.bash_profile; fi;"
+  }
+  var cmd = `${precmd} cd ${workdir}; ${store.preferences.latex.cmd} ${store.preferences.latex.opts} ${basename}.tex`;
+
+  exec(cmd, {
+    env: {
+      ...process.env
+    }
+  }, (err, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {

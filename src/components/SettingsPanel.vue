@@ -30,7 +30,6 @@ import AppButton from '@/components/AppButton.vue';
 import store from '@/hooks/store.js';
 import preferences from '@/hooks/preferences.js';
 const {ipcRenderer} = window.require('electron');
-const shell = window.require('electron').shell;
 
 import { computed, ref } from '@vue/reactivity';
 
@@ -91,10 +90,12 @@ export default {
     updater() {
       if (this.update.status==0) {
         this.update.msg = 'Checking ...';
+        // ipcRenderer.send('install-update');
         ipcRenderer.send('check-for-updates');
       }
       else if (this.update.status==1) {
-        shell.openExternal('https://github.com/mbruno46/ToM/releases/latest');
+        this.update.msg = 'Downloading and installing ...'
+        ipcRenderer.send('install-update');
       }
       else if (this.update.status==2) {
         this.update.status=0;

@@ -2,7 +2,7 @@
   "name": "tom",
   "productName": "ToM",
   "description": "TeX on Me",
-  "version": "0.2.3",
+  "version": "0.2.1",
   "private": true,
   "keywords": [
     "note-taking",
@@ -20,7 +20,7 @@
   "main": "dist/app.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build:vue": "vue-cli-service build && cp app.js ./dist",
+    "build": "vue-cli-service build && cp app.js ./dist && cp -r scripts ./dist",
     "lint": "vue-cli-service lint",
     "electron:vue": "vue-cli-service serve & NODE_ENV=DEV electron app.js",
     "electron": "NODE_ENV=DEV electron app.js",
@@ -35,6 +35,7 @@
     "files": [
       "dist"
     ],
+    "extraResources": "scripts",
     "directories": {
       "buildResources": "build",
       "output": "release-builds"
@@ -48,7 +49,6 @@
     ],
     "mac": {
       "target": [
-        "dmg",
         "zip"
       ],
       "category": "public.app-category.productivity",
