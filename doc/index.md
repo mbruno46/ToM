@@ -7,12 +7,23 @@ found [here](https://github.com/mbruno46/ToM/releases/latest).
 
 ### MacOS
 
-ToM can be installed globally using the `dmg` file or locally by unpacking the `zip`
-distribution and moving the `ToM.app` folder to the preferred location, e.g. `$HOME/Applications`.
+Note: the author of ToM is not an official Apple Developer. By installing
+ToM you accept this risk.
 
-Any version of MacOS will prevent the usage of ToM, since its author is not an
-official Apple Developer. To be able to use ToM, 
-open `System preferences -> Security and privacy` and click on `Open Anyway`
+To install ToM in the `$HOME/Applications` folder run the following command
+in a terminal
+
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/macos-installer.sh)
+```
+
+For a manual installation the latest version should be downloaded in `zip` format from the
+GitHub release page. After unzipping the content, copy the extracted `ToM.App` folder to
+the desired location.
+
+At this point, any version of MacOS will prevent the usage of ToM, since its author is not an
+official Apple Developer. To be able to use ToM, open `ToM.app` which will fail;
+then go to `System preferences -> Security and privacy` and click on `Open Anyway` 
 as illustrated below.
 
 <img src="assets/img/apple_settings.png" alt="Apple settings" style="width: 100%; max-width: 600px">
@@ -20,19 +31,11 @@ as illustrated below.
 Alternatively, open a terminal and type
 
 ```bash
-# if ToM was installed globally with dmg file
-xattr -dr com.apple.quarantine /Applications/ToM.app
-# if ToM was installed locally in HOME folder
-xattr -dr com.apple.quarantine ~/Applications/ToM.app
+xattr -dr com.apple.quarantine /custom/path/to/ToM.app
 ```
 
 ### Updates
 
 The user can verify if new updates are available in the settings panel of the app.
-Once new updates are downloaded, install them as usual (either from the `dmg` 
-file or with manual installation) and follow the same procedure above.
-
-
-If you run in *compilation errors* make sure to open ToM preferences and
-properly set the latex command, for example by specifying the full path
-of the `pdflatex` or `latexmk` executables in your system.
+By clicking on download and install the app will close and will be automatically
+updated.
