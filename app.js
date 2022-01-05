@@ -1,5 +1,5 @@
 const path = require('path');
-const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem, shell } = require('electron');
 const dialog = require('electron').dialog;
 const log = require('electron-log');
 const {autoUpdater} = require("electron-updater");
@@ -63,16 +63,34 @@ function createWindow() {
       ]
     }] : []),
   ]);
-
-  let _submenu = [
-    isMac ? { role: 'close' } : { role: 'quit' }
-  ]
-  if (isDev) _submenu.push({role: 'toggleDevTools'});
-  _submenu.push({role: 'toggleDevTools'});
   
   menu.append(new MenuItem({
     label: 'File',
-    submenu: _submenu,
+    submenu: [
+      {
+        label: 'New File',
+        accelerator: 'CommandOrControl+N',
+        click: () => {
+          mainWindow.webContents.send('filebrowser-command', 'new_file');
+        },        
+      },
+      {
+        label: 'New Folder',
+        click: () => {
+          mainWindow.webContents.send('filebrowser-command', 'new_dir');
+        },        
+      },
+      {type: 'separator'},
+      {
+        label: 'Open project',
+        accelerator: 'CommandOrControl+O',
+        click: () => {
+          mainWindow.webContents.send('filebrowser-command', 'open_folder');
+        },
+      },
+      {type: 'separator'},
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ],
     visible: true,
   }));
 
@@ -107,7 +125,7 @@ function createWindow() {
         click: () => {
           mainWindow.webContents.send('editor-keydown', KeyDown('c', ctrlKey=true));
         },
-      },      
+      },
       {
         label: 'Paste',
         accelerator: 'CommandOrControl+Shift+V',
@@ -115,8 +133,16 @@ function createWindow() {
           mainWindow.webContents.send('editor-keydown', KeyDown('v', ctrlKey=true));
         },
       },
-      {role: 'selectAll'},
       {type: 'separator'},
+      {
+        label: 'Find',
+        accelerator: 'CommandOrControl+Shift+F',
+        click: () => {
+          mainWindow.webContents.send('focus_finder');
+        },
+      },
+      {type: 'separator'},
+      {role: 'selectAll'},
       isDev ? {role: 'reload'} : {
         label: 'Compile',
         accelerator: 'CommandOrControl+R',
@@ -126,8 +152,64 @@ function createWindow() {
       },
     ],
     visible: true,
-  }))
+  }));
 
+  menu.append(new MenuItem({
+    label: "View",
+    submenu: [
+      {
+        label: 'Zoom In',
+        accelerator: 'CommandOrControl+numadd',
+        click: () => {
+          mainWindow.webContents.send('viewer-command', 'zoomIn');
+        },
+      },
+      {
+        label: 'Zoom Out',
+        accelerator: 'CommandOrControl+numsub',
+        click: () => {
+          mainWindow.webContents.send('viewer-command', 'zoomOut');
+        },
+      },
+      {
+        label: 'Fit Vertically',
+        // accelerator: 'CommandOrControl+Plus',
+        click: () => {
+          mainWindow.webContents.send('viewer-command', 'fitV');
+        },
+      },
+      {
+        label: 'Fit Horizontally',
+        // accelerator: 'CommandOrControl+Plus',
+        click: () => {
+          mainWindow.webContents.send('viewer-command', 'fitH');
+        },
+      },
+
+    ]
+  }));
+
+  menu.append(new MenuItem({role: 'windowMenu'}));
+
+  menu.append(new MenuItem({
+    label: 'Help',
+    submenu: [
+      {
+        label: 'Documentation',
+        click: () => {
+          shell.openExternal('https://mbruno46.github.io/ToM/');
+        }
+      },
+      {
+        label: 'Source code',
+        click: () => {
+          shell.openExternal('https://github.com/mbruno46/ToM');
+        }        
+      },
+      {type: 'separator'},
+      {role: 'toggleDevTools'},
+    ]
+  }));
   Menu.setApplicationMenu(menu);
 }
 
@@ -140,6 +222,21 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.ctrlKey) {
+      if (event.key=="n") {
+        mainWindow.webContents.send('filebrowser-command', 'new_file');
+      } else if (event.key=="o") {
+        mainWindow.webContents.send('filebrowser-command', 'open_folder');
+      }
+      if (event.code==107) {
+        mainWindow.webContents.send('viewer-command', 'zoomIn');
+      } else if (event.code==109) {
+        mainWindow.webContents.send('viewer-command', 'zoomOut');
+      }
+    }
   });
 });
 
@@ -172,6 +269,20 @@ ipcMain.on('error-message', (event, error) => {
 
 ipcMain.on('get-version', (event) => {
   event.returnValue = app.getVersion();
+});
+
+ipcMain.on('fire_contextmenu', (event, name, orig, isDir) => {
+  let menu = Menu.buildFromTemplate([
+    {
+      label: 'Rename',
+      click: () => {mainWindow.webContents.send('contextmenu_rename', name);}
+    },
+    {
+      label: 'Delete',
+      click: () => {mainWindow.webContents.send('contextmenu_remove', orig, isDir);}
+    }
+  ]);
+  menu.popup();
 });
 
 autoUpdater.on('update-available', (info) => {

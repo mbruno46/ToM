@@ -17,6 +17,8 @@ import AppButton from '../components/AppButton.vue';
 import LoadingThrobber from '../components/LoadingThrobber.vue';
 import store from '@/hooks/store.js';
 
+const {ipcRenderer} = window.require('electron');
+
 export default {
   components: {
     ToolBar,
@@ -33,6 +35,11 @@ export default {
     open_pref() {
       store.preferences.show = true;
     }
+  },
+  mounted() {
+    ipcRenderer.on('focus_finder', () => {
+      this.$refs.word.focus();
+    });
   }
 }
 </script>
@@ -54,6 +61,8 @@ export default {
 }
 
 .finder:focus {
+  /* border: 2px solid var(--dark-blue); */
+  background-color: var(--dark-blue);
   color: var(--selected);
 }
 

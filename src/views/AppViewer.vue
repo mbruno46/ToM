@@ -32,6 +32,8 @@ const pdfjsLib = window.require('pdfjs-dist');
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry'
 const fs = window.require('fs');
 
+const {ipcRenderer} = window.require('electron');
+
 var h = HighlightError();
 
 export default {
@@ -138,6 +140,12 @@ export default {
       compile,
     }
   },
+  mounted() {
+    ipcRenderer.on('viewer-command', (event, key) => {
+      console.log(event);
+      this[key]();
+    });
+  }
 }
 </script>
 

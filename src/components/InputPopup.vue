@@ -20,6 +20,7 @@ var meta = MetaData();
 const pathlib = window.require('path');
 
 var isDir = false;
+var orig = '';
 
 export default {
   components: {
@@ -36,22 +37,31 @@ export default {
     }
   },
   methods: {
-    activate(file = true) {
+    activate(file = true, _orig = '') {
       this.active = true;
-      this.fname = '';
+      this.fname = _orig;
       isDir = !file;
+      orig = _orig;
     },
     ok() {
       let dst = pathlib.join(meta.getProjectDir(), this.fname);
       if (isDir) {
-        utils.mkdir(dst);
+        if (orig == '') {
+          utils.mkdir(dst);
+        } else {
+          utils.rename(pathlib.join(meta.getProjectDir(), orig), dst);
+        }
       }
       else {
         if (!utils.getAllowedExts('latex').includes(pathlib.extname(this.fname))) {
           alert('Invalid file format');
           return;
         }
-        utils.saveTextFile(dst, '');
+        if (orig == '') {
+          utils.saveTextFile(dst, '');
+        } else {
+          utils.rename(pathlib.join(meta.getProjectDir(), orig), dst);
+        }
       }
       this.active = false;
       this.$emit('refresh_filetree');

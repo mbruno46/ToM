@@ -38,6 +38,28 @@ export function mv(src, dst) {
   });
 }
 
+export function rename(src, dst) {
+  fs.rename(src, dst, function (err) {
+    if (err) throw err
+  });
+}
+
+export function remove(src, isDir) {
+  if (isDir) {
+    fs.rmdir(src, {recursive: true}, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  } else {
+    fs.unlink(src, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+}
+
 export function isMainTexFile(fname) {
   var data = fs.readFileSync(fname, 'utf-8');
   if (data.match(/^\s*(%.*)?\s*\\documentclass/)) {
@@ -129,6 +151,8 @@ export default {
   saveTextFile,
   mkdir,
   mv,
+  rename,
+  remove,
   isMainTexFile,
   compileTex,
   debouncer,

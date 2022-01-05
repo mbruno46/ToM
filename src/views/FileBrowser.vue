@@ -17,6 +17,8 @@
       :name="key"
       :depth="value['depth']"
       :isDir="value['isDir']"
+      @rename="rename(value['path'])"
+      @remove="remove(value['path'],value['isDir'])"
     />
   </div>
   <input-popup ref="input_popup" @refresh_filetree="reload"/>
@@ -29,6 +31,7 @@ import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
 import InputPopup from '@/components/InputPopup.vue';
 import store from '@/hooks/store'
+import { remove } from '@/hooks/utils';
 import { ref, watchEffect } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
 
@@ -147,6 +150,13 @@ export default {
     new_dir() {
       this.$refs.input_popup.activate(false);
     },
+    rename(orig) {
+      this.$refs.input_popup.activate(true, orig);
+    },
+    remove(orig, isDir) {
+      remove(orig, isDir);
+      this.reload();
+    },
     moveMiniCell(event) {
       if (store.browser.moving) {
         this.minicell.visible = true;
@@ -156,6 +166,19 @@ export default {
         this.minicell.visible = false;
       }
     },
+  },
+  mounted() {
+    ipcRenderer.on('filebrowser-command', (event, key) => {
+      console.log(event);
+      this[key]();
+    });
+    ipcRenderer.on('contextmenu_rename', (_, arg) => {
+      this.$refs.input_popup.activate(true, arg);
+    });
+    ipcRenderer.on('contextmenu_remove', (_, orig, isDir) => {
+      remove(orig, isDir);
+      this.reload();
+    });
   }
 }
 </script>

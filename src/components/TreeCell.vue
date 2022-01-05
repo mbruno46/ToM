@@ -4,6 +4,7 @@
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
       @mousedown="mouseDown(path, name)"
       @mouseup="mouseUp(path)"
+      @contextmenu="fire_contextmenu"
       >
       {{name}}
     </span>
@@ -26,6 +27,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 import { ref } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
+
+// const {remote} = window.require('electron');
+// const {Menu} = remote;
+// import {Menu} from 'electron';
+const {ipcRenderer} = window.require('electron');
+// var menu;
 
 export default {
   name: "TreeCell",
@@ -96,6 +103,10 @@ export default {
       } else {
         return utils.getExtension(name);
       }
+    },
+    fire_contextmenu() {    
+      store.browser.moving = false;
+      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir);
     }
   }
 }
