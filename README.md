@@ -17,11 +17,16 @@ Copyright (C) 2021, Mattia Bruno
 
 ## Installation
 
-### MacOS
+### MacOS, Linux
 
 To install ToM on your system open a terminal and type
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/macos-installer.sh)
+# MacOS
+curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/installer.sh | bash -s -- zip
+# Debian
+curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/installer.sh | bash -s -- deb
+# Red-Hat
+curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/installer.sh | bash -s -- rpm
 ```
 
 *Note: the authors are not an official Apple Developers and as a consequence

@@ -14,7 +14,7 @@ To install ToM in the `$HOME/Applications` folder run the following command
 in a terminal
 
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/macos-installer.sh)
+curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/installer.sh | bash -s -- zip
 ```
 
 For a manual installation the latest version should be downloaded in `zip` format from the

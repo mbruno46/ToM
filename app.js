@@ -161,7 +161,7 @@ autoUpdater.on('error', (error) => {
 
 ipcMain.on('install-update', () => {
   if (isMac) {
-    cmd = (!isDev) ? `bash ${path.join(process.resourcesPath, './scripts/macos-installer.sh')}` : 'bash ./scripts/macos-installer.sh';
+    cmd = (!isDev) ? `bash ${path.join(process.resourcesPath, './scripts/installer.sh')} zip` : 'bash ./scripts/installer.sh zip';
     var child = exec(cmd, {env: {
       ...process.env
     }}, (err, stdout, stderr) => {

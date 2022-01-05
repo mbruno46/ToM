@@ -90,7 +90,6 @@ export default {
     updater() {
       if (this.update.status==0) {
         this.update.msg = 'Checking ...';
-        // ipcRenderer.send('install-update');
         ipcRenderer.send('check-for-updates');
       }
       else if (this.update.status==1) {
