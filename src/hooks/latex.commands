@@ -1,5 +1,10 @@
 \documentclass
 \usepackage
+\author
+\title
+\date
+\today
+\maketitle
 #
 \begin
 \end
