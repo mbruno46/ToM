@@ -1,10 +1,20 @@
 <template>
   <tool-bar>
-    <app-button icon="fa-sync-alt" title="Refresh" @click="$emit('sync')"/>
-    <app-button icon="fa-search-plus" title="Zoom in" @click="zoomIn"/>
-    <app-button icon="fa-search-minus" title="Zoom out" @click="zoomOut"/>
-    <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
-    <app-button icon="fa-arrows-alt-h" title="Fit horizontal" @click="fitH"/>
+    <div class='grid'>
+      <div>
+        <app-button icon="fa-sync-alt" title="Refresh" @click="$emit('sync')"/>  
+      </div>
+      <div style="text-align: center;">
+        <app-button icon="fa-search-plus" title="Zoom in" @click="zoomIn"/>
+        <app-button icon="fa-search-minus" title="Zoom out" @click="zoomOut"/>
+        <app-button icon="fa-arrows-alt-v" title="Fit vertical" @click="fitV"/>
+        <app-button icon="fa-arrows-alt-h" title="Fit horizontal" @click="fitH"/>
+      </div>
+      <div>
+        <app-button icon="fas fa-question" title="Help"
+          @click="open_menu_help"/>  
+      </div>      
+    </div>
   </tool-bar>
   <div ref="viewer" class="pdf-viewer" :style="error ? 'display:none' : ''">
     <PDFPage v-for="index in numpages" 
@@ -140,6 +150,11 @@ export default {
       compile,
     }
   },
+  methods: {
+    open_menu_help() {
+      ipcRenderer.send('fire_helpmenu');
+    }
+  },
   mounted() {
     ipcRenderer.on('viewer-command', (event, key) => {
       console.log(event);
@@ -157,5 +172,11 @@ export default {
   flex-flow: column;
   overflow-x: scroll;
   overflow-y: scroll;
+}
+
+.grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: max-content 1fr max-content;
 }
 </style>
