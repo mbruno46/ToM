@@ -242,7 +242,9 @@ export default {
 
         let c = s.caret();
         ac.value.launch(lines.value[c.index].substring(0,c.pos), c.x, c.y);
-        meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
+        if (store.editor.name != '') {
+          meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
+        }
       });
       observer.observe(editor.value, {
         subtree: true,

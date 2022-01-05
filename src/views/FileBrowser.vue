@@ -176,6 +176,7 @@ export default {
       this.$refs.input_popup.activate(true, arg);
     });
     ipcRenderer.on('contextmenu_remove', (_, orig, isDir) => {
+      store.reset_editor();
       remove(orig, isDir);
       this.reload();
     });

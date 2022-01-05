@@ -28,11 +28,7 @@ import { ref } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
 
-// const {remote} = window.require('electron');
-// const {Menu} = remote;
-// import {Menu} from 'electron';
 const {ipcRenderer} = window.require('electron');
-// var menu;
 
 export default {
   name: "TreeCell",
@@ -78,6 +74,7 @@ export default {
         if ((e == 'tex') || (e=='bib')) {
           if (store.editor.name != name) {
             store.editor.name = name;
+            store.editor.previous = store.editor.path;
             store.editor.path = path;
             store.editor.read = true;
           }

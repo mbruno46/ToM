@@ -7,7 +7,7 @@
     <app-button icon="fa-save" title="Save"
       class="save"
       :style="(changed ? '' : 'display: none')"
-      @click="save"/>
+      @click="save()"/>
     <span :class="'label ' + (changed ? 'changed' : '')">{{filename}}</span>
   </tool-bar>
   <div class="editor-container">
@@ -59,9 +59,9 @@ export default {
 
     var autosave_timer = null;
     
-    function save() {
-      if ((store.editor.path != '') && (store.editor.changed)) {
-        utils.saveTextFile(store.editor.path, editor.value.getText());
+    function save(path = store.editor.path) {
+      if (path != '') {
+        utils.saveTextFile(path, editor.value.getText());
         store.editor.changed = false;
         meta.parseFile(store.editor.name);
       }
@@ -70,7 +70,7 @@ export default {
     onMounted(() => {
       watchEffect(() => {
         if (store.editor.read) {
-          save();
+          save(store.editor.previous);
           editor.value.refreshEditor(
             utils.loadTextFile(store.editor.path)
           );
