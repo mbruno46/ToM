@@ -33,6 +33,7 @@ jobs:
       - name: Build
         run: |
           npm run build
+          npm run post-build
 
       - name: Release
         env:

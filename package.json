@@ -20,7 +20,8 @@
   "main": "dist/app.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && cp app.js ./dist",
+    "build": "vue-cli-service build",
+    "post-build": "cp app.js menu.js ./dist",
     "lint": "vue-cli-service lint",
     "electron:vue": "vue-cli-service serve & NODE_ENV=DEV electron app.js",
     "electron": "NODE_ENV=DEV electron app.js",

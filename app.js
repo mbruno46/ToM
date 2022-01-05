@@ -5,7 +5,7 @@ const log = require('electron-log');
 const {autoUpdater} = require("electron-updater");
 const { exec } = require('child_process');
 
-const menu = require('./src/menu');
+const menu = require('./menu');
 
 const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
