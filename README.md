@@ -24,7 +24,9 @@ To install ToM on your system open a terminal and type
 bash <(curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/macos-installer.sh)
 ```
 
-*Note*: the author is not an official Apple Developer and the
-app is not signed.
+*Note: the authors are not an official Apple Developers and as a consequence
+the app is not signed. Since this app is free software, the authors believe
+that paying an annual fee to Apple to be official developers is a bit of a joke.
+The command above will automatically accept ToM as a non-signed app in your system.*
 
 Alternatively download the lastest release from [here](https://github.com/mbruno46/ToM/releases/)

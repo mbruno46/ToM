@@ -7,7 +7,7 @@ found [here](https://github.com/mbruno46/ToM/releases/latest).
 
 ### MacOS
 
-Note: the author of ToM is not an official Apple Developer. By installing
+Note: the authors of ToM are not official Apple Developers. By installing
 ToM you accept this risk.
 
 To install ToM in the `$HOME/Applications` folder run the following command
