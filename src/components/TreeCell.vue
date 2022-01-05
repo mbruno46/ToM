@@ -106,7 +106,8 @@ export default {
     },
     fire_contextmenu() {    
       store.browser.moving = false;
-      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir);
+      let open = utils.getAllowedExts('figure').includes('.'+utils.getExtension(this.name));
+      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir, open);
     }
   }
 }

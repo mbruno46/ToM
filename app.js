@@ -271,17 +271,27 @@ ipcMain.on('get-version', (event) => {
   event.returnValue = app.getVersion();
 });
 
-ipcMain.on('fire_contextmenu', (event, name, orig, isDir) => {
-  let menu = Menu.buildFromTemplate([
-    {
-      label: 'Rename',
-      click: () => {mainWindow.webContents.send('contextmenu_rename', name);}
-    },
-    {
-      label: 'Delete',
-      click: () => {mainWindow.webContents.send('contextmenu_remove', orig, isDir);}
+ipcMain.on('fire_contextmenu', (event, name, orig, isDir, open) => {
+  let contextmenu = []
+  if (open) {
+    if (isMac) {
+      contextmenu.push({
+        label: 'Preview',
+        click: () => {exec(`open -a Preview ${orig}`);}
+      })
+      contextmenu.push({type: 'separator'});
     }
-  ]);
+  }
+  contextmenu.push({
+    label: 'Rename',
+    click: () => {mainWindow.webContents.send('contextmenu_rename', name);}
+  })
+  contextmenu.push({
+    label: 'Delete',
+    click: () => {mainWindow.webContents.send('contextmenu_remove', orig, isDir);}
+  });
+
+  let menu = Menu.buildFromTemplate(contextmenu);
   menu.popup();
 });
 
