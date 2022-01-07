@@ -77,6 +77,7 @@ export default {
             store.editor.previous = store.editor.path;
             store.editor.path = path;
             store.editor.read = true;
+            store.editor.changed = false;
           }
         }
         store.browser.moving = true;

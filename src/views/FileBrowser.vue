@@ -4,7 +4,7 @@
     <app-button icon="fa-folder-plus" title="New Folder" @click="new_dir"/>
     <app-button icon="fa-plus" title="New File" @click="new_file"/>
     <app-button icon="fa-sync-alt" title="Refresh" @click="reload"/>
-    <app-button icon="fa-caret-left" title="Close browser" 
+    <app-button icon="fa-caret-left" title="Hide browser" 
       :style="'position: absolute; right: 0'"
       @click="clicked"/>
   </tool-bar>
@@ -31,7 +31,7 @@ import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
 import InputPopup from '@/components/InputPopup.vue';
 import store from '@/hooks/store'
-import { remove } from '@/hooks/utils';
+import { remove, terminal } from '@/hooks/utils';
 import { ref, watchEffect } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
 
@@ -148,13 +148,6 @@ export default {
     new_dir() {
       this.$refs.input_popup.activate(false);
     },
-    rename(orig) {
-      this.$refs.input_popup.activate(true, orig);
-    },
-    remove(orig, isDir) {
-      remove(orig, isDir);
-      this.reload();
-    },
     moveMiniCell(event) {
       if (store.browser.moving) {
         this.minicell.visible = true;
@@ -170,7 +163,12 @@ export default {
       console.log(event);
       this[key]();
     });
+    ipcRenderer.on('contextmenu_preview', (_, arg) => {
+      console.log('preview',store.preferences.preview,arg);
+      terminal(`${store.preferences.preview} ${arg}`);
+    });
     ipcRenderer.on('contextmenu_rename', (_, arg) => {
+      store.reset_editor();
       this.$refs.input_popup.activate(true, arg);
     });
     ipcRenderer.on('contextmenu_remove', (_, orig, isDir) => {

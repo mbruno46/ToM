@@ -1,7 +1,10 @@
 const fs = window.require('fs');
 const pathlib = window.require('path');
 const { exec } = window.require('child_process');
+
 const {ipcRenderer} = window.require('electron');
+export var platform = ipcRenderer.sendSync('get-platform');
+
 import store from '@/hooks/store.js';
 
 export function getParentByAttr(element, attr) {
@@ -60,6 +63,23 @@ export function remove(src, isDir) {
   }
 }
 
+
+export function terminal(cmd, callback = ()=>{}) {
+  var precmd = ''
+  if (platform == 'darwin') {
+    precmd += "eval $(/usr/libexec/path_helper);"
+    precmd += "if [ -f $HOME/.bash_profile ]; then source $HOME/.bash_profile$HOME/.bash_profile; fi;"
+  }
+  console.log(platform, precmd)
+  exec(`${precmd} ${cmd}`, {
+    env: {
+      ...process.env
+    }
+  }, (err, stdout, stderr) => {
+    callback(err, stdout, stderr);
+  });
+}
+
 export function isMainTexFile(fname) {
   var data = fs.readFileSync(fname, 'utf-8');
   if (data.match(/^\s*(%.*)?\s*\\documentclass/)) {
@@ -70,19 +90,8 @@ export function isMainTexFile(fname) {
 
 export function compileTex(basename, callback = ()=>{}, callback_err = ()=>{}) {
   var workdir = basename.substring(0,basename.lastIndexOf('/'));
-  var precmd = ""
-  // app not signed so PATH is not set in macos
-  if (ipcRenderer.sendSync('getPlatform')=='darwin') {
-    precmd += "eval $(/usr/libexec/path_helper);"
-    precmd += "if [ -f $HOME/.bash_profile ]; then source $HOME/.bash_profile$HOME/.bash_profile; fi;"
-  }
-  var cmd = `${precmd} cd ${workdir}; ${store.preferences.latex.cmd} ${store.preferences.latex.opts} ${basename}.tex`;
-
-  exec(cmd, {
-    env: {
-      ...process.env
-    }
-  }, (err, stdout, stderr) => {
+  var cmd = `cd ${workdir}; ${store.preferences.latex.cmd} ${store.preferences.latex.opts} ${basename}.tex`;
+  terminal(cmd, (err, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
     if (err != null) {

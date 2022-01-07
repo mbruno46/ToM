@@ -15,14 +15,6 @@ autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
-function KeyDown(key, ctrlKey = false, shiftKey = false) {
-  return {
-    ctrlKey,
-    shiftKey,
-    key,
-  }
-}
-
 let mainWindow;
 
 function createWindow() {
@@ -118,13 +110,11 @@ ipcMain.on('fire_helpmenu', () => {
 ipcMain.on('fire_contextmenu', (event, name, orig, isDir, open) => {
   let contextmenu = []
   if (open) {
-    if (isMac) {
-      contextmenu.push({
-        label: 'Preview',
-        click: () => {exec(`open -a Preview ${orig}`);}
-      })
-      contextmenu.push({type: 'separator'});
-    }
+    contextmenu.push({
+      label: 'Preview',
+      click: () => {mainWindow.webContents.send('contextmenu_preview', orig);}
+    });
+    contextmenu.push({type: 'separator'});
   }
   contextmenu.push({
     label: 'Rename',
@@ -195,8 +185,6 @@ autoUpdater.on('update-downloaded', () => {
   })
 })
 
-ipcMain.on('getPlatform', (event) => {
+ipcMain.on('get-platform', (event) => {
   event.returnValue = process.platform;
-})
-
-
+});

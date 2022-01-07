@@ -3,6 +3,7 @@ const {ipcRenderer} = window.require('electron');
 const fs = window.require('fs');
 const pathlib = window.require('path');
 import store from '@/hooks/store.js';
+import {platform} from '@/hooks/utils.js';
 
 let file = pathlib.join(ipcRenderer.sendSync('get-userData-path'), 'preferences.dat');
 
@@ -13,6 +14,9 @@ let defaults = {
   },
   'Editor': {
     'FontSize [pt]': 12,
+  },
+  'Preview': {
+    'Command': (platform === 'darwin') ? 'Open -a Preview' : 'okular',
   },
   'Autosave': {
     'Interval [ms]': 5000,
@@ -27,6 +31,7 @@ function refresh() {
     cmd: preferences['LaTeX']['Command'], 
     opts: preferences['LaTeX']['Options']
   };
+  store.preferences.preview = preferences['Preview']['Command'];
 }
 
 if (fs.existsSync(file)) {

@@ -3,6 +3,14 @@ const { app, Menu, MenuItem, shell } = require('electron');
 const isMac = process.platform === 'darwin';
 let isDev = (process.env.NODE_ENV === 'DEV');
 
+function KeyDown(key, ctrlKey = false, shiftKey = false) {
+  return {
+    ctrlKey,
+    shiftKey,
+    key,
+  }
+}
+
 const template = [
   ...(isMac ? [{
     label: app.name,
@@ -98,6 +106,28 @@ template.push(new MenuItem({
         focusedWindow.webContents.send('focus_finder');
       },
     },
+    {type: 'separator'},
+    {
+      label: 'Indent',
+      accelerator: 'Tab',
+      click: (item, focusedWindow) => {
+        focusedWindow.webContents.send('editor-keydown', KeyDown('Tab'));
+      },
+    },
+    {
+      label: 'Dedent',
+      accelerator: 'Shift+Tab',
+      click: (item, focusedWindow) => {
+        focusedWindow.webContents.send('editor-keydown', KeyDown('Tab', ctrlKey=false, shiftKey=true));
+      },
+    },
+    {
+      label: 'Toggle Comment',
+      accelerator: 'CommandOrControl+/',
+      click: (item, focusedWindow) => {
+        focusedWindow.webContents.send('editor-keydown', KeyDown('/', ctrlKey=true));
+      },
+    },    
     {type: 'separator'},
     {role: 'selectAll'},
     isDev ? {role: 'reload'} : {
