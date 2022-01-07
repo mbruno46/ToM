@@ -11,6 +11,10 @@
     {
       "link": "getstarted.html",
       "name": "Getting started"
+    },
+    {
+      "link": "settings.html",
+      "name": "Settings"
     }]
   },
   "layouts": "../websmith.js/themes/default/layouts",
@@ -25,6 +29,11 @@
     {
       "name": "getstarted.html",
       "body": "getstarted.md",
+      "layout": "layout"
+    },
+    {
+      "name": "settings.html",
+      "body": "settings.md",
       "layout": "layout"
     }
   ],
