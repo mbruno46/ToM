@@ -7,6 +7,10 @@
     "items": [{
       "link": "index.html",
       "name": "Home"
+    },
+    {
+      "link": "getstarted.html",
+      "name": "Getting started"
     }]
   },
   "layouts": "../websmith.js/themes/default/layouts",
@@ -17,6 +21,11 @@
       "logo": "assets/img/logo.png",
       "body": "index.md",
       "layout": "home"
+    },
+    {
+      "name": "getstarted.html",
+      "body": "getstarted.md",
+      "layout": "layout"
     }
   ],
   "footer": "Copyright © 2021 Mattia Bruno."
