@@ -10,7 +10,7 @@ expected to contain the `\documentclass` command.
 
 A tree view of the relevant files inside the current project.
 
-<img src="assets/img/browser.png" alt="Browser" style="width: 100%; max-width: 600px">
+<img src="assets/img/browser.png" alt="Browser" style="width: 100%; max-width: 800px">
 
 ### Buttons
 
@@ -23,26 +23,26 @@ A tree view of the relevant files inside the current project.
 
 By right-clicking an item in the browser the user can open a context menu
 
-<img src="assets/img/browser_context_menu.png" alt="Context Menu" style="width: 100%; max-width: 600px">
+<img src="assets/img/browser_context_menu.png" alt="Context Menu" style="width: 100%; max-width: 400px">
 
  * `Preview`: images such as pdf or png files are opened in the Preview program
- * `Rename`, `Delete`: renames or delete the selected file
+ * `Rename`, `Delete`: renames or deletes the selected file
 
  ## The Editor
 
  The main editor to modify `.tex` or `.bib` files.
 
-<img src="assets/img/editor.png" alt="Editor" style="width: 100%; max-width: 600px">
+<img src="assets/img/editor.png" alt="Editor" style="width: 100%; max-width: 800px">
 
 ### Features
 
   * available shortcuts can be inspected by checking the `Edit` menu.
   * when the file is edited a `*` appears in the top toolbar together with a save button
-  * autosaving is enabled and the time interval can be set in the preference
+  * autosaving is enabled and the time interval can be set in the preferences
 
 ### Autocompletion
 
-When the user types an autocompletion menu automatically appears at the location
+When the user types, an autocompletion menu may automatically appear at the location
 of the cursor. The suggestions include 
 
   * LaTeX commands, such as `\begin` when the user types `\b`
@@ -52,11 +52,13 @@ of the cursor. The suggestions include
   * labels extracted from the `.tex` files when the user types `\ref{`
   * article tags extracted from all `.bib` files when the user types `\cite{`
 
+<img src="assets/img/editor.png" alt="Editor" style="width: 100%; max-width: 800px">
+
 ## The PDF Viewer
 
 The main PDF document is display here.
 
-<img src="assets/img/viewer.png" alt="Viewer" style="width: 100%; max-width: 600px">
+<img src="assets/img/viewer.png" alt="Viewer" style="width: 100%; max-width: 800px">
 
 ### Buttons
 
@@ -70,11 +72,19 @@ The main PDF document is display here.
 
 The lower toolbar with a few additional features
 
-<img src="assets/img/footer.png" alt="Footer" style="width: 100%; max-width: 600px">
+<img src="assets/img/footer.png" alt="Footer" style="width: 100%; max-width: 800px">
 
   * **Find**: type the text you want to find in the opened `.tex` file and press the `Find` button.
   The editor will automatically scroll to the first istance, which will be selected.
   Successive clicks of the `Find` button will iterate over the additional instances.
 
   * **Preferences**: the settings panel is opened from the `Settings` button.
+
+## Resizer
+
+By moving the mouse in between the editor and the viewer, a vertical gray bar
+shows up and by dragging it, it is possible to resize the editor and the
+viewer.
+
+<img src="assets/img/screenshot2.png" alt="Footer" style="width: 100%; max-width: 800px">
 

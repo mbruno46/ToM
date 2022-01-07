@@ -1,3 +1,6 @@
+
+<img src="assets/img/screenshot.png" alt="Browser" style="width: 100%; max-width: 800px">
+
 ***
 
 ## Installation
