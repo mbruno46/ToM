@@ -48,12 +48,7 @@ export function save() {
   refresh();
 }
 
-function is_fontsize_supported(size) {
-  return [10, 12, 14, 18].includes(size);
-}
-
 export default {
   get,
   save,
-  is_fontsize_supported,
 }

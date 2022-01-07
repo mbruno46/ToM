@@ -70,10 +70,10 @@ export default {
   methods: {
     check() {
       let status = true;
-      if (!preferences.is_fontsize_supported(parseInt(this.$refs['Editor.FontSize [pt]'][0].value))) {
-        ipcRenderer.send('error-message', 'Font size not supported');
-        status = false;
-      }
+      // if (!preferences.is_fontsize_supported(parseInt(this.$refs['Editor.FontSize [pt]'][0].value))) {
+      //   ipcRenderer.send('error-message', 'Font size not supported');
+      //   status = false;
+      // }
       return status;
     },
     apply() {

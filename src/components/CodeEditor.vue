@@ -1,15 +1,15 @@
 <template>
   <div :style="style">
-    <div ref="editor" class="text-editor" :class="fontsize"
+    <div ref="editor" class="text-editor"
       contenteditable="true" spellcheck="false"
       @keydown="handleKeyDown"
       >
       <editor-line v-for="(val) in lines" :key="val" :text="val"/>
     </div>
-    <div class="render" :class="fontsize">
+    <div ref="render" class="render">
       <editor-line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
     </div>
-    <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
+    <auto-complete ref="ac" @autocomplete-choice="autoComplete" :fontsize="fontsize"/>
     <div ref="filler" class="filler" />
   </div>
 </template>
@@ -124,6 +124,7 @@ function Selection(editor, lines) {
         }
         return (sc<0) ? 0 : sc;
       }
+      console.log(p);
       p.scrollTo(scroll(c.x+24, p.scrollLeft, p.offsetWidth), scroll(c.y+24, p.scrollTop, p.offsetHeight));
     },
     isCollapsed() {
@@ -235,11 +236,6 @@ export default {
     const ac = ref(null);
     const fontsize = ref('font12');
     const filler = ref(null);
-
-    // watch(editor, ()=>{
-    //   // editor_height.value = editor.value.offsetHeight;
-    //   console.log(editor.value.offsetHeight);
-    // });
 
     onMounted(() => {
       watch(()=>{
@@ -522,7 +518,9 @@ export default {
       }
     },
     setFontSize(size) {
-      this.fontsize = `font${size}`
+      this.$refs.editor.style.fontSize = `${size}pt`
+      this.$refs.render.style.fontSize = `${size}pt`
+      this.$refs.ac.setFontSize(size);
     },
   },
 }
@@ -533,7 +531,7 @@ export default {
 .filler {
   position: relative;
   width:100%;
-  height: calc(100vh - 2*var(--toolbar-height));
+  height: calc(100vh - 2*var(--toolbar-height) - 2rem);
 }
 
 .render {
@@ -576,18 +574,5 @@ export default {
   position: absolute;
   z-index: 1;
   padding-right: 4rem;
-}
-
-.font10 {
-  font-size: 10pt;
-}
-.font12 {
-  font-size: 12pt;
-}
-.font14 {
-  font-size: 14pt;
-}
-.font18 {
-  font-size: 18pt;
 }
 </style>

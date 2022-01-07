@@ -1,6 +1,6 @@
 <template>
   <div ref="panel" class="panel" v-show="active"
-    :style="`left: ${pos.x}; top: ${pos.y};`"
+    :style="`left: ${pos.x}; top: ${pos.y};`" :class="fontsize"
     @keydown="handleKeyDown">
     <span class="entry" v-for="(val, idx) in suggestions" 
       :key="idx" :class="`entry ` + ((current == idx) ? 'selected':'')"
@@ -17,6 +17,7 @@ import {AutoComplete} from '@/hooks/highlight'
 var ac = AutoComplete();
 var char_width = 0;
 var char_height = 0;
+var font_size;
 
 export default {
   emits: ['autocomplete-choice'],
@@ -32,6 +33,7 @@ export default {
       let e = document.getElementsByClassName('text-editor')[0];
       s.classList.add('span-char-width');
       s.textContent = 'test string';
+      s.style.fontSize = `${font_size}pt`
       e.appendChild(s);
       char_width = s.offsetWidth / 11;
       char_height = s.offsetHeight / 1;
@@ -47,7 +49,7 @@ export default {
 
         let n = suggestion.filter.length;
         pos.value.x = `calc(${x}px - ${n*char_width}px - 0.2rem)`;
-        pos.value.y = `calc(${y}px + 1.2rem)`;
+        pos.value.y = `calc(${y}px + ${1.2*font_size}pt)`;
       } else {
         active.value = false;
       }
@@ -97,6 +99,10 @@ export default {
         this.active = false;
       }
 
+    },
+    setFontSize(size) {
+      font_size = size;
+      this.$refs.panel.style.fontSize = `${size}pt`
     }
   }
 }
@@ -105,7 +111,7 @@ export default {
 <style scoped>
 .panel {
   font-family: 'Source Code Pro', monospace;
-  font-size: 1rem;
+  /* font-size: 1rem; */
   background-color: var(--bg0);
   border: 1px solid var(--fg);
   margin: 0;
@@ -134,7 +140,7 @@ export default {
 
 .span-char-width {
   font-family: 'Source Code Pro', monospace;
-  font-size: 1rem;
+  /* font-size: 1rem; */
   padding: 0;
   margin: 0;
   position: absolute;
