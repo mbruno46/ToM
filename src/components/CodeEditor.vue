@@ -116,16 +116,16 @@ function Selection(editor, lines) {
     caret,
     scrollToSelection() {
       let c = caret();
-      var p = editor.parentElement;
+      var p = editor.parentElement.parentElement;
       function scroll(ref, sc, max) {
         if (ref>sc + max) sc = ref-max;
         else {
           if (ref<sc) sc = ref;
+          if (ref<max) sc = 0;
         }
         return (sc<0) ? 0 : sc;
       }
-      console.log(p);
-      p.scrollTo(scroll(c.x+24, p.scrollLeft, p.offsetWidth), scroll(c.y+24, p.scrollTop, p.offsetHeight));
+      p.scrollTo(scroll(c.x, p.scrollLeft, p.offsetWidth), scroll(c.y+24, p.scrollTop, p.offsetHeight));
     },
     isCollapsed() {
       return (anchor.index==focus.index) && (anchor.pos==focus.pos);
