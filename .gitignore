@@ -2,6 +2,8 @@
 node_modules
 /dist
 /dummy
+/dummy2
+bup
 /release-builds
 package-lock.json
 

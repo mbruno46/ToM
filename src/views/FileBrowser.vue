@@ -102,9 +102,7 @@ export default {
       let sel = ipcRenderer.sendSync('open-folder-dialog');      
 
       if ((sel != null) && (dir != sel)) {
-        store.editor.clean = true;
-        store.editor.name = '';
-        store.editor.changed = false;
+        store.reset_editor();
         ft.value = readDir(sel);
         dir = sel;
         meta.init(dir);
