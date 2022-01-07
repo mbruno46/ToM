@@ -32,7 +32,7 @@
 import ToolBar from '@/components/ToolBar.vue';
 import AppButton from '@/components/AppButton.vue';
 import PDFPage from '@/components/PDFPage.vue';
-import { ref, onMounted, watch, onBeforeUpdate } from 'vue';
+import { ref, onMounted, onBeforeUpdate, watchEffect } from 'vue';
 import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 import {HighlightError} from '@/hooks/highlight.js';
@@ -71,8 +71,8 @@ export default {
       pages = [];
     });
 
+    var path;
     function load() {
-      var path = store.viewer.basepath + '.pdf';
       if (!fs.existsSync(path)) {
         db();
         return;
@@ -126,14 +126,13 @@ export default {
 
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
-      load();
-      fitH();
-    });
 
-    watch(
-      () => store.viewer.basepath,
-      () => {load();fitH();}
-    );
+      watchEffect(() => {
+        path = store.viewer.basepath + '.pdf';
+        load();
+        fitH();
+      })
+    });
   
     return {
       load,

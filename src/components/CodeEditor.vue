@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="style">
     <div ref="editor" class="text-editor" :class="fontsize"
       contenteditable="true" spellcheck="false"
       @keydown="handleKeyDown"
@@ -10,6 +10,7 @@
       <editor-line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
     </div>
     <auto-complete ref="ac" @autocomplete-choice="autoComplete"/>
+    <div ref="filler" class="filler" />
   </div>
 </template>
 
@@ -225,11 +226,20 @@ export default {
     EditorLine,
     AutoComplete,
   },
+  props: {
+    style: String,
+  },
   setup() {
     const editor = ref(null);
     const lines = ref(['']);
     const ac = ref(null);
     const fontsize = ref('font12');
+    const filler = ref(null);
+
+    // watch(editor, ()=>{
+    //   // editor_height.value = editor.value.offsetHeight;
+    //   console.log(editor.value.offsetHeight);
+    // });
 
     onMounted(() => {
       watch(()=>{
@@ -245,6 +255,8 @@ export default {
         if (store.editor.name != '') {
           meta.parseTeXLine(store.editor.name, c.index, lines.value[c.index]);
         }
+
+        filler.value.style.top = editor.value.offsetHeight + 'px';
       });
       observer.observe(editor.value, {
         subtree: true,
@@ -369,6 +381,7 @@ export default {
 
     return {
       editor,
+      filler,
       lines,
       ac,
       insertTextAtCaret,
@@ -510,13 +523,19 @@ export default {
     },
     setFontSize(size) {
       this.fontsize = `font${size}`
-    }
-  }
+    },
+  },
 }
 </script>
 
 
 <style scoped>
+.filler {
+  position: relative;
+  width:100%;
+  height: calc(100vh - 2*var(--toolbar-height));
+}
+
 .render {
   font-family: 'Source Code Pro', monospace;
   /* font-size: 1rem; */

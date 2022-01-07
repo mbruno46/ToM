@@ -5,7 +5,7 @@
     <app-button icon="fa-plus" title="New File" @click="new_file"/>
     <app-button icon="fa-sync-alt" title="Refresh" @click="reload"/>
     <app-button icon="fa-caret-left" title="Close browser" 
-      style="position: absolute; right: 0"
+      :style="'position: absolute; right: 0'"
       @click="clicked"/>
   </tool-bar>
   <div class="file-tree"

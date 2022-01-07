@@ -6,7 +6,7 @@
     </div>
     <div class="vert" style="position: absolute; right: 0;">
       <loading-throbber />
-      <app-button icon="fa-cog" title="Settings" style="float: right" @click="open_pref"/>
+      <app-button icon="fa-cog" title="Settings" :style="'float: right;'" @click="toggle_pref"/>
     </div>
   </tool-bar>
 </template>
@@ -32,8 +32,8 @@ export default {
     find() {
       this.$emit('find',this.$refs.word.value);
     },
-    open_pref() {
-      store.preferences.show = true;
+    toggle_pref() {
+      store.preferences.show = !store.preferences.show;
     }
   },
   mounted() {

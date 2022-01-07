@@ -7,6 +7,9 @@
 \dfrac
 \overline
 \bar
+\tilde
+\widetilde
+\vec
 #
 \displaystyle
 #
@@ -111,6 +114,12 @@
 \boxtimes
 \equiv
 \cong
+#
+\langle
+\rangle
+\vert
+\dagger
+\star
 #
 \quad
 \qquad

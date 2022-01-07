@@ -1,5 +1,5 @@
 <template>
-  <div class="panel" >
+  <div class="panel" :style="style">
     <div v-for="(val1, key1) in layout" :key="key1" class="row">
       <span class="label" style="margin-left: 2rem">{{key1}}</span>
       <div v-for="(val2, key2) in layout[key1]" :key="key1 + '.' + key2" class="row">
@@ -8,9 +8,9 @@
       </div>
     </div>
 
-    <div class="row">
-      <app-button icon="fa-window-close" title="Cancel" style="float: right" @click="cancel"/>
-      <app-button icon="fa-check-square" title="Apply" style="float: right" @click="apply"/>
+    <div class="row" style="text-align: right" >
+      <app-button icon="fa-check-square" title="Apply" @click="apply"/>
+      <app-button icon="fa-window-close" title="Cancel" @click="cancel"/>
     </div>
 
     <div class="row">
@@ -36,6 +36,9 @@ import { computed, ref } from '@vue/reactivity';
 export default {
   components: {
     AppButton,
+  },
+  props: {
+    style: String,
   },
   setup() {
     const layout = computed(() => {return preferences.get();})

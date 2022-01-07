@@ -13,6 +13,7 @@
   <div class="editor-container">
     <settings-panel ref="settings" :style="show_prefs ? '' : 'display:none'" />
     <code-editor ref="editor" :style="show_prefs ? 'display:none' : ''"/>
+    <!-- <div style="position: relative; width: 100%; height:90%;"/> -->
   </div>
 </template>
 
@@ -151,6 +152,8 @@ export default {
   overflow-y: scroll;
   background-color: var(--bg1);
   position: relative;
+  display: flex;
+  flex-flow: column;
   /* vertical-align: middle; */
   /* word-wrap: keep-all; */
 }
