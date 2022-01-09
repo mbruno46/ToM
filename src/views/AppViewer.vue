@@ -37,6 +37,7 @@ import store from '@/hooks/store.js';
 import utils from '@/hooks/utils.js';
 import {HighlightError} from '@/hooks/highlight.js';
 import ErrorMessage from '../components/ErrorMessage.vue';
+import {syncTex} from '@/hooks/synctex.js';
 
 const pdfjsLib = window.require('pdfjs-dist');
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry'
@@ -131,7 +132,10 @@ export default {
         path = store.viewer.basepath + '.pdf';
         load();
         fitH();
-      })
+        let sync = syncTex(store.viewer.basepath + '.synctex');
+        console.log(sync.pdf2tex(1, 300,720));
+      });
+
     });
   
     return {

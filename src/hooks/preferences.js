@@ -10,7 +10,7 @@ let file = pathlib.join(ipcRenderer.sendSync('get-userData-path'), 'preferences.
 let defaults = {
   'LaTeX': {
     'Command': 'latexmk -pdf',
-    'Options': ' -silent -gg',
+    'Options': ' -silent -gg -synctex=-1',
   },
   'Editor': {
     'FontSize [pt]': 12,
