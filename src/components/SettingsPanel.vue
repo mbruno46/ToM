@@ -9,6 +9,7 @@
     </div>
 
     <div class="row" style="text-align: right" >
+      <app-button icon="fa-undo" title="Reset defaults" @click="reset"/>
       <app-button icon="fa-check-square" title="Apply" @click="apply"/>
       <app-button icon="fa-window-close" title="Cancel" @click="cancel"/>
     </div>
@@ -103,6 +104,9 @@ export default {
         this.update.status=0;
         this.update.msg = 'Check for updates';
       }
+    },
+    reset() {
+      preferences.reset();
     }
   }
 }

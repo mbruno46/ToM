@@ -53,7 +53,14 @@ export function save() {
   refresh();
 }
 
+export function reset() {
+  for (var key in defaults) {
+    preferences[key] = defaults[key];
+  }
+}
+
 export default {
   get,
   save,
+  reset
 }
