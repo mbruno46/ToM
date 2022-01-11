@@ -20,7 +20,7 @@ export default {
 
     function load(page) {
       var viewport = page.getViewport({scale: scale});
-
+      console.log(viewport.width/ scale, viewport.height/scale, )
       // Prepare canvas using PDF page dimensions
       var context = canvas.value.getContext('2d');
       canvas.value.width = viewport.width;
@@ -43,7 +43,7 @@ export default {
   methods: {
     sync_pdf_tex(event) {
       var rect = this.$refs.canvas.getBoundingClientRect();
-      var r = this.width / this.$refs.canvas.width * scale;
+      var r = rect.width / this.$refs.canvas.width * scale;
       var x = (event.clientX - rect.left) / r;
       var y = (event.clientY - rect.top) / r;
       this.$emit('sync_pdf_tex', {x: x, y: y});
