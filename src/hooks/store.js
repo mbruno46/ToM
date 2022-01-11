@@ -8,10 +8,21 @@ const editor = reactive({
   changed: false, 
   clean: false
 });
-const browser = reactive({visible: true, moving: false, file: ''});
+
+const browser = reactive({
+  visible: true, 
+  moving: 0, 
+  file: '',
+  selected: {
+    path: '',
+    name: ''
+  }
+});
+
 const viewer = reactive({basepath: '', aspect_ratio: 1, refresh: false});
 const loader = ref(false);
 const preferences = reactive({show: false, autosave: 0, fontsize: 12, latex: {}});
+
 
 function reset_editor() {
   editor.read = true;

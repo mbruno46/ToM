@@ -22,7 +22,7 @@
     />
   </div>
   <input-popup ref="input_popup" @refresh_filetree="reload"/>
-  <mini-cell :visible="minicell.visible" :x="minicell.x" :y="minicell.y"/>
+  <mini-cell :x="minicell.x" :y="minicell.y"/>
 </template>
 
 <script>
@@ -93,7 +93,7 @@ export default {
   },
   setup() {
     const ft = ref({});
-    const minicell = ref({visible: false, x:0, y:0});
+    const minicell = ref({x:0, y:0});
     let dir = null;
 
     const debounce_open_folder = debouncer(_open_folder, 20);
@@ -125,7 +125,7 @@ export default {
     }
 
     watchEffect(()=>{
-      if (store.browser.file=='#moved#') reload();
+      if (store.browser.selected.path=='#moved#') reload();
     })
 
     return {
@@ -149,13 +149,11 @@ export default {
       this.$refs.input_popup.activate(false);
     },
     moveMiniCell(event) {
-      if (store.browser.moving) {
-        this.minicell.visible = true;
+      if (store.browser.moving > 0) {
+        store.browser.moving = 2;
         this.minicell.x = event.clientX;
         this.minicell.y = event.clientY;
-      } else {
-        this.minicell.visible = false;
-      }
+      } 
     },
   },
   mounted() {

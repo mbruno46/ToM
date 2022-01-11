@@ -1,5 +1,5 @@
 <template>
-  <div v-show="(visible && visible2)" class="minicell" :style="`left: ${x}px; top: ${y}px`">
+  <div v-show="(visible)" class="minicell" :style="`left: ${x}px; top: ${y}px`">
     {{name}}
   </div>
 </template>
@@ -12,21 +12,19 @@ import { computed } from '@vue/reactivity'
 
 export default {
   props: {
-    visible: Boolean,
     x: Number,
     y: Number,
   },
   setup() {
     const name = computed(()=>{
-      let n = store.browser.file;
-      return n.substring(n.lastIndexOf('/')+1);
+      return store.browser.selected.name;
     });
 
-    const visible2 = computed(()=>{return store.browser.moving});
+    const visible = computed(()=>{return store.browser.moving==2});
 
     return {
       name,
-      visible2
+      visible
     }
   },
 }

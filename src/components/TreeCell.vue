@@ -1,6 +1,6 @@
 <template>
-  <div ref="cell" class="cell" treecell-selected="false">
-    <span :class="'tag icon ' + setIcon(isDir, name) + ' ' + (isMain ? 'main':'')"
+  <div ref="cell" class="cell">
+    <span :class="'tag icon ' + setIcon(isDir, name) + ' ' + (isMain ? 'main':'') + ' ' + (isSelected ? 'selected' : '')"
       :style="'padding-left: ' + (0.5 + depth) +  'rem'" 
       @mousedown="mouseDown(path, name)"
       @mouseup="mouseUp(path)"
@@ -16,6 +16,7 @@
         :name="key"
         :depth="value['depth']"
         :isDir="value['isDir']"
+        @flatten_parent="isNested = true"
       />
     </div>
   </div>
@@ -24,7 +25,7 @@
 <script>
 import '@fortawesome/fontawesome-free/js/all.min.js'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import utils from '@/hooks/utils.js'
 import store from '@/hooks/store.js'
 
@@ -39,8 +40,11 @@ export default {
     depth: Number,
     isDir: Boolean,
   },
+  emits: ['flatten_parent'],
   setup(props) {
     const isMain = ref(false);
+    const isSelected = ref(false);
+    const isNested = ref(true);
 
     if (utils.getExtension(props.name) == 'tex') {
       if (utils.isMainTexFile(props.path)) {
@@ -51,25 +55,51 @@ export default {
 
     return {
       isMain,
+      isSelected,
+      isNested,
     }
   },
   methods: {
     mouseDown(path, name) {
-      let el = this.$refs.cell;
-      let _el = document.querySelector('[treecell-selected="true"]');
-      if (_el != null) {
-        _el.children[0].classList.remove('selected');
-        _el.setAttribute('treecell-selected','false');
-      }
-        
-      el.children[0].classList.add('selected');
-      el.setAttribute('treecell-selected','true');
+      store.browser.selected.path = path;
+      store.browser.selected.name = name;
 
       if (this.isDir) {
-        el.children[1].classList.toggle('nested');
-        el.children[0].classList.toggle('dir');
-        el.children[0].classList.toggle('dir-open');
+        this.isNested = !this.isNested;
       } else {
+        store.browser.moving = 1;
+        // store.browser.file = path;
+      }  
+    },
+    mouseUp(path) {
+      if (store.browser.moving == 2) {
+        if (this.isDir) utils.mv(store.browser.selected.path, path);
+        else {
+          let p = path;
+          utils.mv(store.browser.selected.path, p.substring(0,p.lastIndexOf('/')));
+        }
+        store.browser.selected.path = '#moved#';
+      }
+      store.browser.moving = 0;
+    },
+    setIcon(isDir, name) {
+      if (isDir) {
+        return this.isNested ? 'dir' : 'dir-open';
+      } else {
+        return utils.getExtension(name);
+      }
+    },
+    fire_contextmenu() {    
+      store.browser.moving = 0;
+      let open = utils.getAllowedExts('figure').includes('.'+utils.getExtension(this.name));
+      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir, open);
+    },
+    handleSelection() {
+      let name = store.browser.selected.name;
+      let path = store.browser.selected.path;
+
+      if (!this.isDir) {
+        // this.$emit('flatten_parent');
         let e = utils.getExtension(name);
         if ((e == 'tex') || (e=='bib')) {
           if (store.editor.name != name) {
@@ -80,34 +110,33 @@ export default {
             store.editor.changed = false;
           }
         }
-        store.browser.moving = true;
-        store.browser.file = path;
       }
-    },
-    mouseUp(path) {
-      if (store.browser.moving) {
-        if (this.isDir) utils.mv(store.browser.file, path);
-        else {
-          let p = path;
-          utils.mv(store.browser.file, p.substring(0,p.lastIndexOf('/')));
-        }
-        store.browser.file = '#moved#';
-      }
-      store.browser.moving = false;
-    },
-    setIcon(isDir, name) {
-      if (isDir) {
-        return 'dir';
-      } else {
-        return utils.getExtension(name);
-      }
-    },
-    fire_contextmenu() {    
-      store.browser.moving = false;
-      let open = utils.getAllowedExts('figure').includes('.'+utils.getExtension(this.name));
-      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir, open);
     }
-  }
+  },
+  mounted() {
+    watchEffect(()=>{
+      if (store.browser.selected.path == this.path) {
+        this.isSelected = true;
+        this.handleSelection();
+      } else{
+        this.isSelected = false;
+      }   
+    });
+    watchEffect(()=>{
+      let el = this.$refs.cell;
+      if (this.isDir) {
+        if (this.isNested) {
+          el.children[1].classList.add('nested');
+          el.children[0].classList.add('dir');
+          el.children[0].classList.remove('dir-open');
+        } else {
+          el.children[1].classList.remove('nested');
+          el.children[0].classList.remove('dir');
+          el.children[0].classList.add('dir-open');
+        }
+      }
+    })
+  },
 }
 </script>
 
