@@ -19,6 +19,10 @@ export function getExtension(file) {
   return file.substring(file.lastIndexOf('.')+1);
 }
 
+export function getName(path) {
+  return pathlib.basename(path);
+}
+
 export function loadTextFile(fname) {
   if (fname == "") {return [""];}
   return fs.readFileSync(fname, 'utf-8').split(/\r?\n/);
@@ -63,6 +67,13 @@ export function remove(src, isDir) {
   }
 }
 
+export function exists(src) {
+  return fs.existsSync(src);
+}
+
+export function resolve_path(p) {
+  return pathlib.resolve(p);
+}
 
 export function terminal(cmd, callback = ()=>{}) {
   var precmd = ''
@@ -156,12 +167,15 @@ export function copyObject(obj) {
 export default {
   getParentByAttr,
   getExtension,
+  getName,
   loadTextFile,
   saveTextFile,
   mkdir,
   mv,
   rename,
   remove,
+  exists,
+  resolve_path,
   isMainTexFile,
   compileTex,
   debouncer,

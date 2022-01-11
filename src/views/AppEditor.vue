@@ -50,6 +50,9 @@ export default {
     },
     find(word) {
       this.$refs.editor.findNext(word);
+    },
+    focusLine(idx) {
+      this.$refs.editor.focusLine(idx);
     }
   },
   setup() {

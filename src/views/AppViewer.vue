@@ -21,7 +21,8 @@
       :key="index" 
       :num="index" 
       :width="width"
-      :ref="setPages"/>
+      :ref="setPages"
+      @sync_pdf_tex="sync_pdf_tex(index, $event)"/>
   </div>
   <div class="pdf-viewer" :style="error ? '' : 'display:none'">
     <error-message v-for="(txt, index) in errmsg" :key="index" :msg="txt"/>
@@ -45,6 +46,7 @@ const fs = window.require('fs');
 
 const {ipcRenderer} = window.require('electron');
 
+var sync;
 var h = HighlightError();
 
 export default {
@@ -113,6 +115,7 @@ export default {
       ()=>{
         error.value = false;
         load();
+        load_synctex();
         callback();
       },
       (msg)=>{
@@ -125,6 +128,15 @@ export default {
       });
     }
 
+    function load_synctex() {
+      let fname = store.viewer.basepath + '.synctex';
+      if (fs.existsSync(fname)) {
+        sync = syncTex(fname);
+      } else {
+        sync = null;
+      }
+    }
+
     onMounted(() => {
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
 
@@ -132,8 +144,7 @@ export default {
         path = store.viewer.basepath + '.pdf';
         load();
         fitH();
-        let sync = syncTex(store.viewer.basepath + '.synctex');
-        console.log(sync.pdf2tex(1, 300,720));
+        load_synctex();
       });
 
     });
@@ -156,6 +167,18 @@ export default {
   methods: {
     open_menu_help() {
       ipcRenderer.send('fire_helpmenu');
+    },
+    sync_pdf_tex(i ,e) {
+      if (sync==null) {return;}
+
+      let s = sync.pdf2tex(i, e.x, e.y);
+      // check if file open in editor is already target; if not open it
+      if (store.editor.path != s.file) {
+        store.browser.selected.path = s.file;
+        store.browser.selected.name = utils.getName(s.file);
+      }
+      // emit focusLine
+      this.$emit('focus-line', s.line);
     }
   },
   mounted() {

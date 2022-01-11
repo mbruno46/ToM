@@ -4,6 +4,9 @@
       <input ref="word" class="finder" placeholder="find"/>
       <app-button icon="fa-search" title="Find" @click="find"/>
     </div>
+    <div class="vert">
+      <app-button icon="fa-exchange-alt" title="Sync"/>
+    </div>
     <div class="vert" style="position: absolute; right: 0;">
       <loading-throbber />
       <app-button icon="fa-cog" title="Settings" :style="'float: right;'" @click="toggle_pref"/>

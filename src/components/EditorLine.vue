@@ -1,5 +1,5 @@
 <template>
-  <div ref="line" class="line">
+  <div ref="line" class="line" :class="(focus) ? 'focus' : ''">
     <br>
   </div>
 </template>
@@ -19,6 +19,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    focus: Boolean,
   },
   setup(props) {
     const line = ref(null);

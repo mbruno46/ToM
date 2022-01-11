@@ -7,7 +7,12 @@
       <editor-line v-for="(val) in lines" :key="val" :text="val"/>
     </div>
     <div ref="render" class="render">
-      <editor-line v-for="(val) in lines" :key="val" :text="val" :highlight="true" />
+      <editor-line v-for="(val, idx) in lines" 
+        :key="val" 
+        :text="val" 
+        :highlight="true" 
+        :focus="idx == focus_line"
+      />
     </div>
     <auto-complete ref="ac" @autocomplete-choice="autoComplete" :fontsize="fontsize"/>
     <div ref="filler" class="filler" />
@@ -236,6 +241,7 @@ export default {
     const ac = ref(null);
     const fontsize = ref('font12');
     const filler = ref(null);
+    const focus_line = ref(0);
 
     onMounted(() => {
       watch(()=>{
@@ -245,7 +251,7 @@ export default {
       var observer = new MutationObserver(()=>{
         s.restore();
         s.scrollToSelection();
-
+        
         let c = s.caret();
         ac.value.launch(lines.value[c.index].substring(0,c.pos), c.x, c.y);
         if (store.editor.name != '') {
@@ -379,6 +385,7 @@ export default {
       editor,
       filler,
       lines,
+      focus_line,
       ac,
       insertTextAtCaret,
       deleteTextAtCaret,
@@ -471,6 +478,12 @@ export default {
       if (prevent) {
         event.preventDefault();
       }
+      
+      let focus_db = utils.debouncer(() => {
+        s.save();
+        this.focus_line = s.focus().index;
+      }, 50);
+      focus_db();
     },
     refreshEditor(text_lines) {
       this.focus();
@@ -517,6 +530,12 @@ export default {
         finder.pos=0;
       }
     },
+    focusLine(idx) {
+      s.set({index: idx-1, pos: 0});
+      s.restore();
+      s.scrollToSelection();
+      this.focus_line = s.focus().index;
+    },
     setFontSize(size) {
       this.$refs.editor.style.fontSize = `${size}pt`
       this.$refs.render.style.fontSize = `${size}pt`
@@ -550,7 +569,7 @@ export default {
 
 .render > .line:before {
   background-color: var(--bg1);
-  color: var(--selected);
+  color: var(--fg);
   content: counter(div);
   counter-increment: div;
   position: absolute;
@@ -561,6 +580,10 @@ export default {
   width: 4rem;
   padding-right: 0.5rem;
   text-align: right;
+}
+
+.render > .focus:before {
+  color: var(--selected);
 }
 
 .text-editor {

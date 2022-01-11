@@ -1,6 +1,6 @@
-import { loadTextFile } from './utils.js';
+import { loadTextFile, resolve_path } from './utils.js';
 
-const unit = 65781.76;
+const unit = Math.pow(2,16); //65781.76;
 const tag = '(\\d+)'
 const link = '(\\d),(\\d+)(?:,(\\d+))?'
 const point = '(-?\\d+),(-?\\d+)'
@@ -62,7 +62,7 @@ export function syncTex(path) {
   function parseBlock() {
     let type = getBlockType();
     if (type=='unknown') {idx++; return {type: type};}
-
+    
     let tmp = extract(regex.blocks[type]);
     idx++;
 
@@ -127,7 +127,7 @@ export function syncTex(path) {
     });
 
     let e = extract(regex.input);
-    if (e) {header.input.push({id: e[0], path: e[1]});}
+    if (e) {header.input.push({id: e[0], path: resolve_path(e[1])});}
 
     let page_id = extract(regex.page.open);
     idx++;
@@ -150,8 +150,8 @@ export function syncTex(path) {
   function getXY(block,x,y) {
     let in_block = 0;
 
-    if ((x>=block.left) && (x<block.left+block.width)) {in_block++;}
-    if ((y>=block.bottom) && (y<block.bottom+block.height)) {in_block++;}
+    if ((x>=block.left+header.offset.x) && (x<block.left+block.width+header.offset.x)) {in_block++;}
+    if ((y<=block.bottom+header.offset.y) && (y>block.bottom-block.height+header.offset.y)) {in_block++;}
 
     block.blocks.forEach(b => {
       if ((b.type=='vbox')||(b.type=='hbox')) {getXY(b, x, y);}
@@ -172,8 +172,15 @@ export function syncTex(path) {
     pages,
     pdf2tex(page, x, y) {
       tex.set = false;
+      tex.file = '';
+      tex.line = 0;
+
       let p = getId(pages, page);
       getXY(p.block, x ,y);
+
+      if (tex.file=='') {
+        return {file: '', line: 0}
+      }
 
       let i = getId(header.input, tex.file);
       return {

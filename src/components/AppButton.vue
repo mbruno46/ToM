@@ -1,6 +1,6 @@
 <template>
     <button class="btn" :title="title" :style="style">
-        <i class="fa fa-lg" :class="icon"></i>
+      <i class="fa fa-lg" :class="icon"></i>
     </button>
 </template>
 
@@ -27,7 +27,6 @@ export default {
   background-color: inherit;
   color: var(--text);
   border: none;
-  /* border-bottom: 1px solid var(--text); */
   text-decoration:none;
   outline: none;
   display: inline-block;

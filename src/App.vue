@@ -19,7 +19,7 @@
       />
       <div class="container"
         :style="`width: calc(${width.viewer}*(100% - 4px))`">
-        <app-viewer ref="viewer" @sync="sync"/>
+        <app-viewer ref="viewer" @sync="sync" @focus-line="focusLine($event)"/>
       </div>
     </div>
   </div>
@@ -80,6 +80,9 @@ export default {
     },
     find(word) {
       this.$refs.editor.find(word);
+    },
+    focusLine(idx) {
+      this.$refs.editor.focusLine(idx);
     }
   }
 }

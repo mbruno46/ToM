@@ -1,6 +1,6 @@
 <template>
   <div class="page-div" :style="`width: ${width}px;`">
-    <canvas ref="canvas" class="page-canvas"/>
+    <canvas ref="canvas" class="page-canvas" @dblclick="sync_pdf_tex"/>
   </div>
 </template>
 
@@ -8,15 +8,17 @@
 import { ref } from 'vue';
 import store from '@/hooks/store.js';
 
+var scale = 5.0;
+
 export default {
   props: {
     width: Number,
   },
+  emits: ['sync_pdf_tex'],
   setup() {
     const canvas = ref(null);
 
     function load(page) {
-      var scale = 5.0;
       var viewport = page.getViewport({scale: scale});
 
       // Prepare canvas using PDF page dimensions
@@ -38,6 +40,15 @@ export default {
       load
     }
   },
+  methods: {
+    sync_pdf_tex(event) {
+      var rect = this.$refs.canvas.getBoundingClientRect();
+      var r = this.width / this.$refs.canvas.width * scale;
+      var x = (event.clientX - rect.left) / r;
+      var y = (event.clientY - rect.top) / r;
+      this.$emit('sync_pdf_tex', {x: x, y: y});
+    }
+  }
 }
 </script>
 
@@ -46,11 +57,11 @@ export default {
   text-align: center;
   padding-top: 8px;
   padding-bottom: 8px;
+  padding-left: 4%;
+  padding-right: 4%;
 }
 
 .page-canvas{
-  width: 96%;
-  padding-left: 2%;
-  padding-right: 2%;
+  width: 100%;
 }
 </style>

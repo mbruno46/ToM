@@ -12,7 +12,6 @@ const editor = reactive({
 const browser = reactive({
   visible: true, 
   moving: 0, 
-  file: '',
   selected: {
     path: '',
     name: ''
@@ -23,6 +22,14 @@ const viewer = reactive({basepath: '', aspect_ratio: 1, refresh: false});
 const loader = ref(false);
 const preferences = reactive({show: false, autosave: 0, fontsize: 12, latex: {}});
 
+function editor_load(path, name) {
+  editor.read = true;
+  editor.previous = editor.path;
+  editor.path = path;
+  editor.name = name;
+  editor.changed = false;
+  editor.clean = true;
+}
 
 function reset_editor() {
   editor.read = true;
@@ -40,4 +47,5 @@ export default {
   loader,
   preferences,
   reset_editor,
+  editor_load,
 }
