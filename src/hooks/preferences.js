@@ -10,7 +10,8 @@ let file = pathlib.join(ipcRenderer.sendSync('get-userData-path'), 'preferences.
 let defaults = {
   'LaTeX': {
     'Command': 'latexmk -pdf',
-    'Options': ' -silent -gg -synctex=-1',
+    'Options': ' -silent -gg',
+    'SyncTeX [-1,0]': '-1',
   },
   'Editor': {
     'FontSize [pt]': 12,
@@ -29,7 +30,7 @@ function refresh() {
   store.preferences.fontsize = parseInt(preferences['Editor']['FontSize [pt]']);
   store.preferences.latex = {
     cmd: preferences['LaTeX']['Command'], 
-    opts: preferences['LaTeX']['Options']
+    opts: `${preferences['LaTeX']['Options']} -synctex=${preferences['LaTeX']['SyncTeX [-1,0]']}`
   };
   store.preferences.preview = preferences['Preview']['Command'];
 }
