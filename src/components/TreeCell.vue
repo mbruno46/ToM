@@ -16,7 +16,7 @@
         :name="key"
         :depth="value['depth']"
         :isDir="value['isDir']"
-        @flatten_parent="isNested = true"
+        @flatten_parent="isNested = false; $emit('flatten_parent');"
       />
     </div>
   </div>
@@ -68,7 +68,6 @@ export default {
         this.isNested = !this.isNested;
       } else {
         store.browser.moving = 1;
-        // store.browser.file = path;
       }  
     },
     mouseUp(path) {
@@ -99,7 +98,7 @@ export default {
       let path = store.browser.selected.path;
 
       if (!this.isDir) {
-        // this.$emit('flatten_parent');
+        this.$emit('flatten_parent');
         let e = utils.getExtension(name);
         if ((e == 'tex') || (e=='bib')) {
           if (store.editor.name != name) {
@@ -107,7 +106,7 @@ export default {
           }
         }
       }
-    }
+    },
   },
   mounted() {
     watchEffect(()=>{
