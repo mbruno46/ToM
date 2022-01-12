@@ -3,6 +3,8 @@
     <div ref="editor" class="text-editor"
       contenteditable="true" spellcheck="false"
       @keydown="handleKeyDown"
+      @focus="setFocusLine"
+      @click="setFocusLine"
       >
       <editor-line v-for="(val) in lines" :key="val" :text="val"/>
     </div>
@@ -479,6 +481,9 @@ export default {
         event.preventDefault();
       }
       
+      this.setFocusLine();
+    },
+    setFocusLine() {
       let focus_db = utils.debouncer(() => {
         s.save();
         this.focus_line = s.focus().index;
