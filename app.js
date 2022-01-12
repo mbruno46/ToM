@@ -66,21 +66,6 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.whenReady().then(() => {
-  // Register shortcut listener.
-  globalShortcut.register('CommandOrControl+N', () => {
-    mainWindow.webContents.send('filebrowser-command', 'new_file');
-  });
-  globalShortcut.register('CommandOrControl+O', () => {
-    mainWindow.webContents.send('filebrowser-command', 'open_folder');
-  });
-  globalShortcut.register('CommandOrControl+numadd', () => {
-    mainWindow.webContents.send('viewer-command', 'zoomIn');
-  });
-  globalShortcut.register('CommandOrControl+numsub', () => {
-    mainWindow.webContents.send('viewer-command', 'zoomOut');
-  });
-})
 
 ipcMain.on('open-folder-dialog', (event, arg) => {
   dialog.showOpenDialog({

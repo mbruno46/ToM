@@ -79,21 +79,21 @@ template.push(new MenuItem({
     {type: 'separator'},
     {
       label: 'Cut',
-      accelerator: 'CommandOrControl+Shift+X',
+      accelerator: 'CommandOrControl+X',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('editor-keydown', KeyDown('x', ctrlKey=true));
       },
     },      
     {
       label: 'Copy',
-      accelerator: 'CommandOrControl+Shift+C',
+      accelerator: 'CommandOrControl+C',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('editor-keydown', KeyDown('c', ctrlKey=true));
       },
     },
     {
       label: 'Paste',
-      accelerator: 'CommandOrControl+Shift+V',
+      accelerator: 'CommandOrControl+V',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('editor-keydown', KeyDown('v', ctrlKey=true));
       },
@@ -101,7 +101,7 @@ template.push(new MenuItem({
     {type: 'separator'},
     {
       label: 'Find',
-      accelerator: 'CommandOrControl+Shift+F',
+      accelerator: 'CommandOrControl+F',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('focus_finder');
       },
@@ -161,14 +161,14 @@ template.push(new MenuItem({
     },
     {
       label: 'Fit Vertically',
-      // accelerator: 'CommandOrControl+Plus',
+      accelerator: 'CommandOrControl+[',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('viewer-command', 'fitV');
       },
     },
     {
       label: 'Fit Horizontally',
-      // accelerator: 'CommandOrControl+Plus',
+      accelerator: 'CommandOrControl+]',
       click: (item, focusedWindow) => {
         focusedWindow.webContents.send('viewer-command', 'fitH');
       },
@@ -182,17 +182,18 @@ template.push(new MenuItem({role: 'windowMenu'}));
 
 let helpmenu = [
   {
-    label: 'Documentation',
+    label: 'ToM documentation',
     click: () => {
       shell.openExternal('https://mbruno46.github.io/ToM/');
     }
   },
   {
-    label: 'Source code',
+    label: 'ToM source code',
     click: () => {
       shell.openExternal('https://github.com/mbruno46/ToM');
     }        
   },
+  {type: 'separator'},
   {
     label: 'LaTeX documentation',
     click: () => {
