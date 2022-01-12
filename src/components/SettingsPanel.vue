@@ -71,10 +71,10 @@ export default {
   methods: {
     check() {
       let status = true;
-      // if (!preferences.is_fontsize_supported(parseInt(this.$refs['Editor.FontSize [pt]'][0].value))) {
-      //   ipcRenderer.send('error-message', 'Font size not supported');
-      //   status = false;
-      // }
+      if (!['-1','0'].includes(this.$refs['LaTeX.SyncTeX [-1,0]'][0].value)) {
+        ipcRenderer.send('error-message', 'SyncTeX option not supported');
+        status = false;
+      }
       return status;
     },
     apply() {
