@@ -56,7 +56,7 @@ export default {
     PDFPage,
     ErrorMessage,
   },
-  emits: ['sync'],
+  emits: ['sync','focus_line'],
   setup() {
     const numpages = ref(null);
     const width = ref(0);
@@ -178,7 +178,7 @@ export default {
         store.browser.selected.name = utils.getName(s.file);
       }
       // emit focusLine
-      this.$emit('focus-line', s.line);
+      this.$emit('focus_line', s.line);
     }
   },
   mounted() {

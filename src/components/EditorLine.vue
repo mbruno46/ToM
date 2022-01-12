@@ -6,7 +6,7 @@
 
 <script>
 import highlight from '@/hooks/highlight.js';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 
 export default {
   name: "editor-line",
@@ -25,7 +25,7 @@ export default {
     const line = ref(null);
 
     onMounted(()=>{
-      watch(()=>{
+      watchEffect(()=>{
         var tt = "<br>";
         if (props.text!="") {
           if (props.highlight) tt = highlight.LaTeXHighlighter(props.text);

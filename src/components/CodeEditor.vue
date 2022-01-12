@@ -21,7 +21,7 @@
 
 <script>
 import EditorLine from './EditorLine.vue';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import AutoComplete from './AutoComplete.vue'
 
 import utils from '@/hooks/utils.js';
@@ -244,7 +244,7 @@ export default {
     const focus_line = ref(0);
 
     onMounted(() => {
-      watch(()=>{
+      watchEffect(()=>{
         s = Selection(editor.value, lines.value);
       });
 

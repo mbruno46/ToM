@@ -1,6 +1,6 @@
 <template>
   <div ref="panel" class="panel" v-show="active"
-    :style="`left: ${pos.x}; top: ${pos.y};`" :class="fontsize"
+    :style="`left: ${pos.x}; top: ${pos.y};`"
     @keydown="handleKeyDown">
     <span class="entry" v-for="(val, idx) in suggestions" 
       :key="idx" :class="`entry ` + ((current == idx) ? 'selected':'')"

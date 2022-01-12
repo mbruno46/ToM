@@ -11,7 +11,7 @@
     >
       <div class="container" 
         :style="`width: calc(${width.editor}*(100% - 4px))`"
-        @click="this.$refs.editor.focus()">
+        @click="$refs.editor.focus()">
         <app-editor ref="editor"/>
       </div>
       <div class="container resizer"
@@ -19,11 +19,11 @@
       />
       <div class="container"
         :style="`width: calc(${width.viewer}*(100% - 4px))`">
-        <app-viewer ref="viewer" @sync="sync" @focus-line="focusLine($event)"/>
+        <app-viewer ref="viewer" @sync="sync" @focus_line="$refs.editor.focusLine($event)"/>
       </div>
     </div>
   </div>
-  <footer-bar @find="find($event)"/>
+  <footer-bar @find="$refs.editor.find($event)"/>
 </template>
 
 <script>
@@ -78,12 +78,6 @@ export default {
       this.$refs.editor.save();
       this.$refs.viewer.compile(this.$refs.file_browser.reload);
     },
-    find(word) {
-      this.$refs.editor.find(word);
-    },
-    focusLine(idx) {
-      this.$refs.editor.focusLine(idx);
-    }
   }
 }
 </script>
