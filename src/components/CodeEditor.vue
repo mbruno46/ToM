@@ -98,7 +98,6 @@ function Selection(editor, lines) {
     var rect = {left: 0, top: s.baseNode.parentNode.getBoundingClientRect().top};
     var ofs = editor.getBoundingClientRect();
     if (r0.getClientRects().length>0) rect = r0.getClientRects()[0];
-    console.log(r0, r0.getClientRects()[0]);
     return {index: anchor.index, pos: anchor.pos, x: rect.left - ofs.x, y: rect.top - ofs.y};
   }
 
@@ -183,11 +182,11 @@ function History() {
       recording = true;
     },
     addRedo(event) {
-      if (!recording) {return;}
+      if (!recording) {this.startRecord();}
       redo.events.push(event);
     },
     addUndo(event) {
-      if (!recording) {return;}
+      if (!recording) {console.error('history addundo');}
       undo.events.push(event);
     },
     closeRecord() {
@@ -218,6 +217,10 @@ function History() {
       _s.events.forEach(e => {e();});
       at++;
     },
+    inspect() {
+      console.log('history ', at);
+      console.log(stack);
+    }
   }
 }
 
@@ -269,9 +272,7 @@ export default {
       });
     });
 
-    function insertTextAtCaret(text) {
-      h.addRedo(()=>{insertTextAtCaret(text);})
-
+    function _insertTextAtCaret(text) {
       let c = s.anchor();
       let ll = text.split(/\r?\n/);
       let t = lines.value[c.index].substring(c.pos);
@@ -285,8 +286,7 @@ export default {
       if (t.length>0) lines.value[c.index] += t;
 
       s.set(c);
-      h.addUndo(()=>{deleteTextAtCaret(-text.length);});
-      store.editor.changed = true;
+      return -text.length;
     }
 
     function preventBackspace() {
@@ -297,9 +297,7 @@ export default {
       return false;
     }
 
-    function deleteTextAtCaret(dir) {
-      h.addRedo(()=>{deleteTextAtCaret(dir);})
-
+    function _deleteTextAtCaret(dir) {
       s.shift(0, (s.isCollapsed()) ? dir : 0);
       let o = s.oriented();
       let t0 = lines.value[o[0]].substring(0,o[2]);
@@ -308,8 +306,7 @@ export default {
       lines.value.splice(o[0], o[1]+1-o[0], t0+t1);
 
       s.set({index: o[0], pos: o[2]});
-      h.addUndo(()=>{insertTextAtCaret(oldt);});
-      store.editor.changed = true;
+      return oldt;
     }
 
     function whiteSpaces(idx) {
@@ -327,9 +324,7 @@ export default {
       return Math.floor(whiteSpaces(c.index) / ntabs) * ntabs;
     }
 
-    function tab(m) {
-      h.addRedo(()=>{tab(m);})
-
+    function _tab(m) {
       let o = s.oriented();
       let shift = [];
       for (var i=o[0];i<o[1]+1;i++) {
@@ -341,13 +336,10 @@ export default {
       }
 
       s.translate(shift[0], shift[shift.length-1]);
-      h.addUndo(()=>{tab(-m);})
-      store.editor.changed = true;
+      return -m;
     }
 
-    function comment() {
-      h.addRedo(()=>{comment();})
-
+    function _comment() {
       let o = s.oriented();
       // dry run
       let count = 0;
@@ -367,8 +359,30 @@ export default {
       }
 
       s.translate(shift[0], shift[shift.length-1]);
-      h.addUndo(()=>{comment();})
+      return null;
+    }
+
+    function execute_command(f, farg, r) {
+      h.addRedo(()=>{f(farg);})
+      let rarg = f(farg);
+      h.addUndo(()=>{r(rarg);})
       store.editor.changed = true;
+    }
+
+    function insertTextAtCaret(text) {
+      execute_command(_insertTextAtCaret, text, _deleteTextAtCaret)
+    }
+
+    function deleteTextAtCaret(dir) {
+      execute_command(_deleteTextAtCaret, dir, _insertTextAtCaret);
+    }
+
+    function tab(m) {
+      execute_command(_tab, m, _tab);
+    }
+
+    function comment() {
+      execute_command(_comment, null, _comment);
     }
 
     function autoComplete(word) {
@@ -407,6 +421,8 @@ export default {
       this.$refs.editor.focus();
     },
     handleKeyDown: function(event) {
+      // h.inspect();
+
       let prevent = !["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(event.key);
       if (this.$refs.ac.isActive()) {
         if (["ArrowDown","ArrowUp"].includes(event.key)) {
@@ -416,39 +432,34 @@ export default {
       }      
       s.save();
 
-      console.log(event.key, event.key.length)
+      clearTimeout(user_typing.timer);
       if ((event.ctrlKey || event.metaKey)) {
+        if (h.isRecording()) h.closeRecord();
+        
         if (event.key == "z") {
           if (event.shiftKey) h.redo();
           else h.undo();
-        } else {
-          h.startRecord();
-
-          if (event.key == "/") this.comment();
-          else if (event.key == "x") {
-            clipboard.writeText(s.text());
-            this.deleteTextAtCaret(0);
-          } else if (event.key == "c") {
-            clipboard.writeText(s.text());
-          } else if (event.key == "v") {
-            this.deleteTextAtCaret(0);
-            this.insertTextAtCaret(clipboard.readText());
-          }
-
-          h.closeRecord();
+        } else if (event.key == "/") {
+          this.comment();
+        } else if (event.key == "x") {
+          clipboard.writeText(s.text());
+          this.deleteTextAtCaret(0);
+        } else if (event.key == "c") {
+          clipboard.writeText(s.text());
+        } else if (event.key == "v") {
+          this.deleteTextAtCaret(0);
+          this.insertTextAtCaret(clipboard.readText());
         }
+
+        if (h.isRecording()) h.closeRecord();
       } else {
         if (event.key.length == 1) {
-          if (!h.isRecording()) h.startRecord();
           this.deleteTextAtCaret(0);
           this.insertTextAtCaret(event.key);
-          clearTimeout(user_typing.timer);
           user_typing.timer = setTimeout(()=>{h.closeRecord()}, user_typing.time);
         } else {
-          clearTimeout(user_typing.timer);
           if (h.isRecording()) h.closeRecord();
-          h.startRecord();
-
+  
           if (event.key == "Enter") {
             if (this.$refs.ac.isActive()) {
               this.$refs.ac.handleKeyDown(event);
@@ -465,7 +476,7 @@ export default {
             this.deleteTextAtCaret(+1);
           }
 
-          h.closeRecord();
+          if (h.isRecording()) h.closeRecord();
         }
       }
 
@@ -476,7 +487,6 @@ export default {
         }
       }
 
-      console.log(event);
       if (prevent) {
         event.preventDefault();
       }
