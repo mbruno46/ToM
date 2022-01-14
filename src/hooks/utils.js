@@ -175,6 +175,7 @@ export default {
   rename,
   remove,
   exists,
+  terminal,
   resolve_path,
   isMainTexFile,
   compileTex,

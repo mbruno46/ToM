@@ -36,7 +36,7 @@ import { ref, watchEffect } from 'vue';
 import {debouncer} from '@/hooks/utils.js';
 
 import {MetaData} from '@/hooks/metadata.js';
-import MiniCell from '../components/MiniCell.vue';
+import MiniCell from '@/components/MiniCell.vue';
 var meta = MetaData();
 
 const {ipcRenderer} = window.require('electron');
