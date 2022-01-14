@@ -2,7 +2,7 @@
   <tool-bar>
     <div class="vert">
       <app-icon icon="fa-code-branch" 
-        :color="(git.status==1) ? 'var(--red)' : 'var(--green)'"
+        :color="git.color"
         :text="git.branch"/>
     </div>
     <div class="vert" style="padding: 0 1rem;">
@@ -43,16 +43,17 @@ export default {
     const git = reactive({active: false, status: 0, branch: 'no git'});
 
     function parse_git_status(err, stdout, stderr) {
+      git.color = 'var(--text)'
       if (err == null) {
         git.active = true;
-        git.status = 0;
+        git.color = 'var(--green)';
         git.branch = 'no git';
         stdout.split(/\r?\n/).forEach(line => {
           if (line.substring(0,2) == '##') {
             let tmp = line.match(/##\s(.*)\.\.\..*/);
             git.branch = tmp[1];
           }
-          if (line.match(/\sM\s.*/)) {git.status=1;} 
+          if (line.match(/\sM\s.*/)) {git.color='var(--red)';} 
         });
       } else {
         console.log(stderr);
