@@ -23,17 +23,22 @@
   </div>
   <input-popup ref="input_popup" @refresh_filetree="reload"/>
   <mini-cell :x="minicell.x" :y="minicell.y"/>
+  <div class="tbar">
+    <app-icon icon="fa-code-branch"
+      :color="git.color"
+      :text="git.branch"/>  
+  </div>
 </template>
 
 <script>
 import ToolBar from '@/components/ToolBar.vue';
+import AppIcon from '@/components/AppIcon.vue';
 import AppButton from '@/components/AppButton.vue';
 import TreeCell from '@/components/TreeCell.vue';
 import InputPopup from '@/components/InputPopup.vue';
 import store from '@/hooks/store'
-import { remove, terminal } from '@/hooks/utils';
-import { ref, watchEffect } from 'vue';
-import {debouncer} from '@/hooks/utils.js';
+import { remove, terminal, debouncer } from '@/hooks/utils';
+import { ref, reactive, watchEffect } from 'vue';
 
 import {MetaData} from '@/hooks/metadata.js';
 import MiniCell from '@/components/MiniCell.vue';
@@ -88,6 +93,7 @@ export default {
     TreeCell,
     ToolBar,
     AppButton,
+    AppIcon,
     InputPopup,
     MiniCell,
   },
@@ -95,6 +101,29 @@ export default {
     const ft = ref({});
     const minicell = ref({x:0, y:0});
     let dir = null;
+    const git = reactive({active: false, status: 0, branch: 'no git'});
+    
+    function check_git_status() {
+      function parse_git_status(err, stdout, stderr) {
+        git.color = 'var(--text)'
+        if (err == null) {
+          git.active = true;
+          git.color = 'var(--green)';
+          git.branch = 'no git';
+          stdout.split(/\r?\n/).forEach(line => {
+            if (line.substring(0,2) == '##') {
+              let tmp = line.match(/##\s(.*)\.\.\..*/);
+              git.branch = tmp[1];
+            }
+            if (line.match(/\sM\s.*/)) {git.color='var(--red)';} 
+          });
+        } else {
+          console.log(stderr);
+        }
+      }
+
+      terminal(`cd ${meta.getProjectDir()}; git status --porcelain -b`, parse_git_status);
+    }
 
     const debounce_open_folder = debouncer(_open_folder, 20);
 
@@ -121,18 +150,28 @@ export default {
       if (dir!=null) {
         ft.value = readDir(dir);
         meta.init(dir);
+        check_git_status();
       }
     }
 
     watchEffect(()=>{
       if (store.browser.selected.path=='#moved#') reload();
     })
+    watchEffect(()=>{
+      if (store.viewer.basepath != '') {check_git_status();}
+    });
+    watchEffect(()=>{
+      if (store.editor.changed) {
+        if (git.active) {git.status==1;}
+      }
+    });
 
     return {
       ft,
       open_folder,
       reload,
       minicell,
+      git,
     }
   },
   methods: {
@@ -187,5 +226,11 @@ export default {
   overflow-y: scroll;
   overflow-x: scroll;
   font-size: 0.8rem;
+}
+
+.tbar {
+  background-color: var(--bg0);
+  width: 100%;
+  /* height: var(--toolbar-height); */
 }
 </style>

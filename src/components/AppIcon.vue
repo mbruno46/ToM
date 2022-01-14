@@ -1,10 +1,12 @@
 <template>
-  <div class="icn" >
-    <i class="fa fa-lg" :class="icon"/>
+  <div class="icon-text">
+    <div class="icn" >
+      <i class="fa fa-lg" :class="icon"/>
+    </div>
+    <span class="text" :style="'color: ' + color + ';'">
+      {{short_text}}
+    </span>
   </div>
-  <span class="text" :style="'color: ' + color + ';'">
-    {{short_text}}
-  </span>
 </template>
 
 <script>
@@ -45,5 +47,11 @@ export default {
 .text {
   padding: 0 2% 0 2%;
   white-space: nowrap;
+}
+
+.icon-text {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
 }
 </style>
