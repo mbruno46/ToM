@@ -2,7 +2,7 @@
   "name": "tom",
   "productName": "ToM",
   "description": "TeX on Me",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "private": true,
   "keywords": [
     "note-taking",
@@ -50,7 +50,10 @@
     ],
     "mac": {
       "target": [
-        "zip"
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
       ],
       "category": "public.app-category.productivity",
       "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
