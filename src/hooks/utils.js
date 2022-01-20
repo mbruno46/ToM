@@ -93,7 +93,7 @@ export function terminal(cmd, callback = ()=>{}) {
 
 export function isMainTexFile(fname) {
   var data = fs.readFileSync(fname, 'utf-8');
-  if (data.match(/^\s*(%.*)?\s*\\documentclass/)) {
+  if (data.match(/^\s*(%.*)?\s*\\documentclass/gm)) {
     return true;
   }
   return false;
