@@ -2,10 +2,10 @@ import { loadTextFile, resolve_path } from './utils.js';
 
 const unit = Math.pow(2,16); //65781.76;
 const tag = '(\\d+)'
-const link = '(\\d),(\\d+)(?:,(\\d+))?'
+const link = '(\\d+),(\\d+)(?:,(\\d+))?'
 const point = '(-?\\d+),(-?\\d+)'
 const size = '(\\d+),(\\d+),(\\d+)'
-const width = '(\\d+)'
+const width = '(-?\\d+)'
 
 var regex = {
   version: /SyncTeX Version:(.*)/,
