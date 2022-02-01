@@ -22,7 +22,7 @@ var math = parse_latex_src(latex_math_src);
 function genericHighlighter(rules) {
   // we replace white space with &nbsp; only in text, not  inside <span style..>
   rules.set(/\s(?<!<span\s)/g, "&nbsp;");
-
+  
   return (text) => {
     text = text
       .replace(/&/g, "&amp;")
@@ -51,7 +51,7 @@ function init_latex() {
     [new RegExp(`(${re})\\[(.*?)\\]{(.*?)}`,'g'),
       '$1[<span class="highlight-square-bracket">$2</span>]{<span class="highlight-curly-bracket">$3</span>}'],
     [new RegExp(`(${re}){(.*?)}`,'g'),'$1{<span class="highlight-curly-bracket">$2</span>}'],
-    [/(\\\w+)/g,'<span class="highlight-command">$1</span>'],
+    [/(\\[a-zA-Z]+)/g,'<span class="highlight-command">$1</span>'],
   ]);
 
   return genericHighlighter(rules);
