@@ -5,4 +5,4 @@ NOTES:
 
 TODO:
   - currently history forgotten when new file is loaded in editor; ideally 1 history for each file
-  
+  - add parenthesis automatic checking  
