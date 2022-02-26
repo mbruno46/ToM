@@ -132,6 +132,7 @@ export default {
 
       if ((sel != null) && (dir != sel)) {
         store.reset_editor();
+        store.reset_viewer();
         ft.value = readDir(sel);
         dir = sel;
         meta.init(dir);
@@ -212,6 +213,9 @@ export default {
       store.reset_editor();
       remove(orig, isDir);
       this.reload();
+    });
+    ipcRenderer.on('contextmenu_setmain', (_, main) => {
+      store.viewer.basepath = main;
     });
   }
 }

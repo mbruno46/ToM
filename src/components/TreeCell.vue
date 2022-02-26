@@ -31,6 +31,10 @@ import store from '@/hooks/store.js'
 
 const {ipcRenderer} = window.require('electron');
 
+function get_basepath(p) {
+  return p.substring(0, p.lastIndexOf('.tex'))
+}
+
 export default {
   name: "TreeCell",
   props: {
@@ -48,8 +52,12 @@ export default {
 
     if (utils.getExtension(props.name) == 'tex') {
       if (utils.isMainTexFile(props.path)) {
-        store.viewer.basepath = props.path.substring(0, props.path.lastIndexOf('.tex'));
-        isMain.value = true;
+        if (store.viewer.basepath != '') {
+          alert('Multiple main tex files detected; set manually the right one!')
+        } else {
+          store.viewer.basepath = get_basepath(props.path);
+          // isMain.value = true;
+        }
       }
     }
 
@@ -90,8 +98,14 @@ export default {
     },
     fire_contextmenu() {    
       store.browser.moving = 0;
-      let open = utils.getAllowedExts('figure').includes('.'+utils.getExtension(this.name));
-      ipcRenderer.send('fire_contextmenu', this.name, this.path, this.isDir, open);
+      let info = {
+        name: this.name,
+        orig: this.path,
+        isDir: this.isDir,
+        main: utils.isMainTexFile(this.path) ? get_basepath(this.path) : '',
+        open: utils.getAllowedExts('figure').includes('.'+utils.getExtension(this.name))
+      }
+      ipcRenderer.send('fire_contextmenu', info);
     },
     handleSelection() {
       let name = store.browser.selected.name;
@@ -130,7 +144,14 @@ export default {
           el.children[0].classList.add('dir-open');
         }
       }
-    })
+    });
+    watchEffect(()=>{
+      if (store.viewer.basepath == get_basepath(this.path)) {
+        this.isMain = true;
+      } else {
+        this.isMain = false;
+      }
+    });
   },
 }
 </script>

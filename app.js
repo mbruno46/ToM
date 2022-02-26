@@ -92,22 +92,29 @@ ipcMain.on('fire_helpmenu', () => {
   menu.helpMenu.popup();
 });
 
-ipcMain.on('fire_contextmenu', (event, name, orig, isDir, open) => {
+ipcMain.on('fire_contextmenu', (event, info) => {
   let contextmenu = []
-  if (open) {
+  if (info.open) {
     contextmenu.push({
       label: 'Preview',
-      click: () => {mainWindow.webContents.send('contextmenu_preview', orig);}
+      click: () => {mainWindow.webContents.send('contextmenu_preview', info.orig);}
     });
     contextmenu.push({type: 'separator'});
   }
+  if (info.main != '') {
+    contextmenu.push({
+      label: 'Set main',
+      click: () => {mainWindow.webContents.send('contextmenu_setmain', info.main);}
+    });
+    contextmenu.push({type: 'separator'});    
+  }
   contextmenu.push({
     label: 'Rename',
-    click: () => {mainWindow.webContents.send('contextmenu_rename', name);}
+    click: () => {mainWindow.webContents.send('contextmenu_rename', info.name);}
   })
   contextmenu.push({
     label: 'Delete',
-    click: () => {mainWindow.webContents.send('contextmenu_remove', orig, isDir);}
+    click: () => {mainWindow.webContents.send('contextmenu_remove', info.orig, info.isDir);}
   });
 
   let m = Menu.buildFromTemplate(contextmenu);

@@ -40,6 +40,12 @@ function reset_editor() {
   editor.clean = true;
 }
 
+function reset_viewer() {
+  viewer.basepath = '';
+  viewer.aspect_ratio = 1;
+  viewer.refresh = false;
+}
+
 export default {
   editor,
   browser,
@@ -48,4 +54,5 @@ export default {
   preferences,
   reset_editor,
   editor_load,
+  reset_viewer,
 }
