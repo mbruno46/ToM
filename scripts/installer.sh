@@ -1,6 +1,12 @@
 #!/bin/bash
 
 EXT=$1
+if [ -z "$2" ]; then 
+  VERSION="latest"
+  echo "Installing latest version"
+else
+  VERSION="tags/$2"
+fi
 
 if [[ "$EXT" == "zip" ]]; then
   if [[ `uname -m` == "x86_64" ]]; then
@@ -14,10 +20,10 @@ elif [[ "$EXT" == "rpm" ]]; then
   ARCH='x86_64'
 fi
 
-CURL=$(curl -k -s "https://api.github.com/repos/mbruno46/ToM/releases/latest")
+CURL=$(curl -k -s "https://api.github.com/repos/mbruno46/ToM/releases/${VERSION}")
 
-LATEST_VERSION=$(echo $CURL | sed -e 's/.*"tag_name": "v\([^"]*\)".*/\1/')
-echo "Latest version $LATEST_VERSION"
+VERSION=$(echo $CURL | sed -e 's/.*"tag_name": "v\([^"]*\)".*/\1/')
+# echo "Installing version $VERSION"
 
 SED=`echo 's/.*"browser_download_url": "\([^"]*\)'${ARCH}'.'${EXT}'".*/\1/'`
 URL=$(echo $CURL | sed -e "${SED}")${ARCH}.$EXT
