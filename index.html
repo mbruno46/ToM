@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToM - TeX on Me</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/custom.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/highlight.css" type="text/css" />
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="#">ToM</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor" aria-controls="navbarColor" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor" style="">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link  active " href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="getstarted.html">Getting started</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="settings.html">Settings</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="page-header">
+        <div class="row">
+          <div class="col-lg-2">
+            <img src="assets/img/logo.png" style="width: 100%; max-width: 256px">
+          </div>
+          <div class="col-lg-8">
+            <h1>
+              ToM - TeX on Me </h1>
+            <p class="lead">An intuitive TeX editor with a modern interface for the everyday physicist.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bs-docs-section clearfix">
+
+        <img src="assets/img/screenshot.png" alt="Browser" style="width: 100%; max-width: 800px">
+
+        <hr>
+        <h2 id="installation">Installation</h2>
+        <p>Installers of the application for MacOS and Linux can be
+          found <a href="https://github.com/mbruno46/ToM/releases/latest">here</a>.</p>
+        <h3 id="macos">MacOS</h3>
+        <p>Note: the authors of ToM are not official Apple Developers. By installing
+          ToM you accept this risk.</p>
+        <p>To install ToM in the <code>$HOME/Applications</code> folder run the following command
+          in a terminal</p>
+        <pre><code class="language-bash hljs">curl -Ls https://raw.githubusercontent.com/mbruno46/ToM/main/scripts/installer.sh | bash -s -- zip</code></pre>
+        <p>For a manual installation the latest version should be downloaded in <code>zip</code> format from the
+          GitHub release page. After unzipping the content, copy the extracted <code>ToM.App</code> folder to
+          the desired location.</p>
+        <p>At this point, any version of MacOS will prevent the usage of ToM, since its author is not an
+          official Apple Developer. To be able to use ToM, open <code>ToM.app</code> which will fail;
+          then go to <code>System preferences -&gt; Security and privacy</code> and click on <code>Open Anyway</code>
+          as illustrated below.</p>
+        <img src="assets/img/apple_settings.png" alt="Apple settings" style="width: 100%; max-width: 600px">
+
+        <p>Alternatively, open a terminal and type</p>
+        <pre><code class="language-bash hljs">xattr -dr com.apple.quarantine /custom/path/to/ToM.app</code></pre>
+        <h3 id="updates">Updates</h3>
+        <p>The user can verify if new updates are available in the settings panel of the app.
+          By clicking on download and install the app will close and will be automatically
+          updated.</p>
+      </div>
+    </div>
+
+    <footer class="navbar navbar-dark bg-primary">
+      <div class="container navbar-text">
+        Copyright © 2021 Mattia Bruno. <span>Created using <a href="https://github.com/mbruno46/websmith.js">websmith.js</a> 0.2.0</span>
+      </div>
+    </footer>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+  </body>
+
+</html>
