@@ -56,7 +56,6 @@ export default {
           alert('Multiple main tex files detected; set manually the right one!')
         } else {
           store.viewer.basepath = get_basepath(props.path);
-          // isMain.value = true;
         }
       }
     }

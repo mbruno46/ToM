@@ -78,7 +78,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "electron-log": "^4.4.4",
     "electron-updater": "4.3.9",
-    "pdfjs-dist": "^2.13.216",
+    "pdfjs-dist": "2.12.313",
     "raw-loader": "^4.0.2"
   },
   "devDependencies": {
