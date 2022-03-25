@@ -79,7 +79,7 @@ export function terminal(cmd, callback = ()=>{}) {
   var precmd = ''
   if (platform == 'darwin') {
     precmd += "eval $(/usr/libexec/path_helper);"
-    precmd += "if [ -f $HOME/.bash_profile ]; then source $HOME/.bash_profile$HOME/.bash_profile; fi;"
+    precmd += "if [ -f $HOME/.bash_profile ]; then source $HOME/.bash_profile; fi;"
   }
   console.log(platform, precmd)
   exec(`${precmd} ${cmd}`, {

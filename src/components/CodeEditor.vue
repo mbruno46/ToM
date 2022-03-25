@@ -132,7 +132,6 @@ function Selection(editor, lines) {
         }
         return (sc<0) ? 0 : sc;
       }
-      console.log(c.x, p.scrollLeft, p.offsetWidth, scroll(c.x, p.scrollLeft, p.offsetWidth))
       p.scrollTo(scroll(c.x, p.scrollLeft, p.offsetWidth, 64), scroll(c.y+24, p.scrollTop, p.offsetHeight, 48));
     },
     isCollapsed() {
