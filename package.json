@@ -52,7 +52,10 @@
       "target": [
         {
           "target": "zip",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "category": "public.app-category.productivity",
@@ -73,10 +76,10 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "electron-log": "^4.4.4",
     "electron-updater": "4.3.9",
-    "pdfjs-dist": "^2.12.313",
-    "raw-loader": "^4.0.2",
-    "electron-log": "^4.4.4"
+    "pdfjs-dist": "^2.13.216",
+    "raw-loader": "^4.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.15",
